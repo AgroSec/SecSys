@@ -11,9 +11,9 @@ Version 1.0 - 2017.03.08
 #define ORANGE_CLAUDIU_1 0751538300
 #define ORANGE_CLAUDIU_2 0749256822
 
-#define SERIAL_DEBUG (1)
+#define GSM_SERIAL_DEBUG_ACTIVE (1)
 
-#if SERIAL_DEBUG  //If Serial Debug is On, security functions are not used
+#if GSM_SERIAL_DEBUG_ACTIVE  //If Serial Debug is On, security functions are not used
   #undef SECURITY_FUNCTIONS
 #else
   #define SECURITY_FUNCTIONS
@@ -33,6 +33,7 @@ Version 1.0 - 2017.03.08
 
 #define STARTUP_DELAY  (60)  //number of seconds to wait befor startup
 #define SMS_SEND_DELAY (5000)  //number of mili seconds to wait after sms sending
+#define SMS_READ_DELAY (1000)  //number of mili seconds to wait between SMS reads
 #define PIR_READ_DELAY (1000)  //number of mili seconds to wait between PIR reads
 
 #define ULTRA_SHORT_DELAY (10)  //10ms
@@ -40,7 +41,9 @@ Version 1.0 - 2017.03.08
 #define LONG_DELAY        (100)  //100ms
 #define ULTRA_LONG_DELAY  (500)  //500ms
 
-SoftwareSerial mySerial(GSM_RX_Pin, GSM_TX_Pin);  //10-RX, 11-TX
+#define SMS_PASSWORD (1234)  //mandatory content of every SMS command
+
+SoftwareSerial GSM_Serial(GSM_RX_Pin, GSM_TX_Pin);  //10-RX, 11-TX
 /*--------------------Global variables declaration secion---------------------*/
 enum enum_sms_messages {
   No_Message,
@@ -81,19 +84,19 @@ void setup() {
 
   PowerOnGSM();
   Serial.begin(9600);  //Setting the baud rate of serial communication with serial monitor
-  mySerial.begin(9600);  //Setting the baud rate of GSM Module
-  mySerial.println("AT+CMGF=1\r");  //convert the message style to text
+  GSM_Serial.begin(9600);  //Setting the baud rate of GSM Module
+  GSM_Serial.println("AT+CMGF=1\r");  //convert the message style to text
   
-  mySerial.println("AT+CSQ");  //Signal Quality Report
+  GSM_Serial.println("AT+CSQ");  //Signal Quality Report
   //delay(2000);
   //ShowSerialData();
-  mySerial.println("AT+CREG?");  //Attach or Detach  from Gprs Service
+  GSM_Serial.println("AT+CREG?");  //Attach or Detach  from Gprs Service
   //delay(2000);
   //ShowSerialData();
-  mySerial.println("AT+CMGF=1");  //convert the message style to text
+  GSM_Serial.println("AT+CMGF=1");  //convert the message style to text
   //delay(2000);
   //ShowSerialData();
-  mySerial.println("AT+CNMI=1,2,0,0,0");  //set SMS receive indications
+  GSM_Serial.println("AT+CNMI=1,2,0,0,0");  //set SMS receive indications
   //delay(2000);
   //ShowSerialData();
   
@@ -212,40 +215,39 @@ void PowerOnGSM(void){
 void SendSMS(enum_sms_messages message){
   unsigned long currentMillis = millis();
   static unsigned long previousMillis = 0;
-  static unsigned char smsState = LOW;
   
   if(currentMillis - previousMillis >= SMS_SEND_DELAY){
     previousMillis = currentMillis;
-    mySerial.println("AT+CMGS=\"0751538300\"\r");  //set the mobile number to send the SMS
+    GSM_Serial.println("AT+CMGS=\"0751538300\"\r");  //set the mobile number to send the SMS
     delay(ULTRA_LONG_DELAY);
     switch (message) {
       case PIR_A:
-        mySerial.println("PIR A Triggered");  //The SMS text you want to send
+        GSM_Serial.println("PIR A Triggered");  //The SMS text you want to send
         break;
       case PIR_B:
-        mySerial.println("PIR B Triggered");
+        GSM_Serial.println("PIR B Triggered");
         break;
       case Wire_1_Pull:
-        mySerial.println("Wire 1 Pulled");
+        GSM_Serial.println("Wire 1 Pulled");
         break;
       case Wire_1_Cut:
-        mySerial.println("Wire 1 Cut");
+        GSM_Serial.println("Wire 1 Cut");
         break;
       case Wire_2_Pull:
-        mySerial.println("Wire 2 Pulled");
+        GSM_Serial.println("Wire 2 Pulled");
         break;
       case Wire_2_Cut:
-        mySerial.println("Wire 2 Cut");
+        GSM_Serial.println("Wire 2 Cut");
         break;
       case Wire_3_Pull:
-        mySerial.println("Wire 3 Pulled");
+        GSM_Serial.println("Wire 3 Pulled");
         break;
       case Wire_3_Cut:
-        mySerial.println("Wire 3 Cut");
+        GSM_Serial.println("Wire 3 Cut");
         break;
       case Status: 
         //Send security system status
-        mySerial.println("Security system status:");
+        GSM_Serial.println("Security system status:");
         //TODO
         //Active_System
         //Active_Alarm
@@ -254,45 +256,67 @@ void SendSMS(enum_sms_messages message){
         break;
       case Wrong_Command:
         //Wrong SMS command received
-        mySerial.println("Wrong Command. (1)Deactivate Security. (2)Deactivate Alarm. (3)Trigger Alarm. (4)Get Status");
+        GSM_Serial.println("Wrong Command. (1)Deactivate Security. (2)Deactivate Alarm. (3)Trigger Alarm. (4)Get Status");
         break;
       default:
-        mySerial.println("Something misterious happened");
+        GSM_Serial.println("Something misterious happened");
     }
     delay(LONG_DELAY);
-    mySerial.println((char)26);  //ASCII code of CTRL+Z indicating end of message
+    GSM_Serial.println((char)26);  //ASCII code of CTRL+Z indicating end of message
     Serial.println("SMS Sent!");
   }
 
 }
 
-unsigned char ReceiveSMS(){
-  //TODO!!!
+unsigned char ReceiveSMS(void){
+  unsigned char message[] = {};
+  unsigned char i = 0;
+  unsigned int message_length = 0;
+  if(GSM_Serial.available()){
+    message[] = GSM_Serial.read();
+    if((message[0]=='+')&&(message[1]=='C')&&(message[2]=='M')&&(message[3]=='T')) { //serial message format confirms receival of SMS
+      i = 4;  //starting index after "+CMT"
+      message_length = 4;
+      while(message[i] != NULL){
+        i++;
+        message_length++;
+      }
+    }
+  }
+}
+
+void ReadSMS(void){
+  unsigned long currentMillis = millis();
+  static unsigned long previousMillis = 0;
   unsigned char reveive_message = 0;
-  //reveive_message = AT command to receive message
-  switch (reveive_message) {
-    case 0:
-      //Do nothing
-      break;
-    case 1:
-      //Deactivate Security System
-      Active_System = 0;
-      break;
-    case 2:
-      //Deactivate Alarm
-      Active_Alarm = 0;
-      break;
-    case 3:
-      //Trigger Alarm
-      Trigger_Alarm = 1;
-      break;
-    case 4:
-      //Get Security Status
-      SendSMS(Status);
-      break;
-    default:
-      //Wrong message
-      SendSMS(Wrong_Command);
+  
+  if(currentMillis - previousMillis >= SMS_READ_DELAY){
+    previousMillis = currentMillis;
+    reveive_message = ReceiveSMS();
+    switch (reveive_message) {
+      case 0:
+        //Do nothing
+        break;
+      case 1:
+        //Deactivate Security System
+        Active_System = 0;
+        break;
+      case 2:
+        //Deactivate Alarm
+        Active_Alarm = 0;
+        break;
+      case 3:
+        //Trigger Alarm
+        Trigger_Alarm = 1;
+        break;
+      case 4:
+        //Get Security Status
+        SendSMS(Status);
+        break;
+      default:
+        //Wrong message
+        SendSMS(Wrong_Command);
+    }
   }
 }
 
@@ -304,18 +328,18 @@ void Alarm(void){
 
 //Function to debug GSM module through serial monitor
 //When function content is active, other functions may be necessary to deactivate.
-void Serial_Debug(){
-#if SERIAL_DEBUG
-  if (mySerial.available()) {
-    Serial.write(mySerial.read());
+void GSM_Serial_Debug(){
+#if GSM_SERIAL_DEBUG_ACTIVE
+  if (GSM_Serial.available()) {
+    Serial.write(GSM_Serial.read());
   }
   if (Serial.available())
   { 
     while(Serial.available())
     {
-      mySerial.write(Serial.read());
+      GSM_Serial.write(Serial.read());
     }
-    mySerial.println();
+    GSM_Serial.println();
   }
   Toggle_LED(150,150);
 #endif
@@ -323,7 +347,7 @@ void Serial_Debug(){
 
 /*--------------------------------Loop secion---------------------------------*/
 void loop() {
-  Serial_Debug();
+  GSM_Serial_Debug();
 
 #ifdef SECURITY_FUNCTIONS  //If Serial Debug is OFF
   if(Active_System){
@@ -331,6 +355,7 @@ void loop() {
     Process_PIR();
     //Process_Wire_Guard();
   }
+  ReceiveSMS();
 #endif
 }
 
