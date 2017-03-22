@@ -11,7 +11,7 @@ Version 1.0 - 2017.03.08
 #define ORANGE_CLAUDIU_1 0751538300
 #define ORANGE_CLAUDIU_2 0749256822
 
-#define SERIAL_DEBUG (1)
+#define SERIAL_DEBUG (0)
 
 #if SERIAL_DEBUG  //If Serial Debug is On, security functions are not used
   #undef SECURITY_FUNCTIONS
