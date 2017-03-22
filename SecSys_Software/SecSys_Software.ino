@@ -41,6 +41,9 @@ Version 1.0 - 2017.03.08
 #define LONG_DELAY        (100)  //100ms
 #define ULTRA_LONG_DELAY  (500)  //500ms
 
+#define SMS_NUMBER_START_INDEX (7)
+#define SMS_NUMBER_END_INDEX  (18)
+#define SMS_DATA_START_INDEX  (48)
 #define SMS_PASSWORD (1234)  //mandatory content of every SMS command
 
 SoftwareSerial GSM_Serial(GSM_RX_Pin, GSM_TX_Pin);  //10-RX, 11-TX
@@ -96,7 +99,7 @@ void setup() {
   GSM_Serial.println("AT+CMGF=1");  //convert the message style to text
   //delay(2000);
   //ShowSerialData();
-  GSM_Serial.println("AT+CNMI=1,2,0,0,0");  //set SMS receive indications
+  GSM_Serial.println("AT+CNMI=2,2,0,0,0");  //set SMS receive indications
   //delay(2000);
   //ShowSerialData();
   
@@ -265,23 +268,34 @@ void SendSMS(enum_sms_messages message){
     GSM_Serial.println((char)26);  //ASCII code of CTRL+Z indicating end of message
     Serial.println("SMS Sent!");
   }
-
 }
+
 
 unsigned char ReceiveSMS(void){
   unsigned char message[] = {};
+  unsigned char message_byte = 0;
+  unsigned char message_length = 0;
   unsigned char i = 0;
-  unsigned int message_length = 0;
-  if(GSM_Serial.available()){
-    message[] = GSM_Serial.read();
-    if((message[0]=='+')&&(message[1]=='C')&&(message[2]=='M')&&(message[3]=='T')) { //serial message format confirms receival of SMS
-      i = 4;  //starting index after "+CMT"
-      message_length = 4;
-      while(message[i] != NULL){
-        i++;
-        message_length++;
-      }
+  unsigned char j = 0;
+  unsigned char sender_number[] = {};
+
+  while((GSM_Serial.available())&&(GSM_Serial.read() != NULL)){  //While there is data on serial and it's not the end of the string
+    message_byte = GSM_Serial.read();
+    message[i] = message_byte;
+    i++;
+      //Serial.write(message[i]);
+  }
+  message_length = i;
+  //Serial.write("Message recorded");
+  //Serial.write(message[]);
+  
+  if((message[0]=='+')&&(message[1]=='C')&&(message[2]=='M')&&(message[3]=='T')) { //serial message format confirms receival of SMS
+    for(i = SMS_NUMBER_START_INDEX; i <= SMS_NUMBER_END_INDEX; i++){
+      sender_number[j] = message[i];
+      j++;
     }
+    Serial.write("The sender number is");
+    Serial.write(sender_number[1]);
   }
 }
 
@@ -347,7 +361,7 @@ void GSM_Serial_Debug(){
 
 /*--------------------------------Loop secion---------------------------------*/
 void loop() {
-  GSM_Serial_Debug();
+  //GSM_Serial_Debug();
 
 #ifdef SECURITY_FUNCTIONS  //If Serial Debug is OFF
   if(Active_System){
@@ -357,6 +371,7 @@ void loop() {
   }
   ReceiveSMS();
 #endif
+  ReceiveSMS();
 }
 
 
