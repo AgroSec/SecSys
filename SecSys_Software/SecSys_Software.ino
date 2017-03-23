@@ -5,6 +5,7 @@ Version 1.0 - 2017.03.08
 */
 /*--------------------------Include & Defines secion--------------------------*/
 #include <SoftwareSerial.h>
+#include <string.h>   
 
 #define ALEX_GAAL1 0744424818
 #define ALEX_GAAL2 0758438903
@@ -89,19 +90,23 @@ void setup() {
   Serial.begin(9600);  //Setting the baud rate of serial communication with serial monitor
   GSM_Serial.begin(9600);  //Setting the baud rate of GSM Module
   GSM_Serial.println("AT+CMGF=1\r");  //convert the message style to text
+  delay(SHORT_DELAY);
   
   GSM_Serial.println("AT+CSQ");  //Signal Quality Report
-  //delay(2000);
-  //ShowSerialData();
+  delay(SHORT_DELAY);
+
   GSM_Serial.println("AT+CREG?");  //Attach or Detach  from Gprs Service
-  //delay(2000);
-  //ShowSerialData();
+  delay(SHORT_DELAY);
+
   GSM_Serial.println("AT+CMGF=1");  //convert the message style to text
-  //delay(2000);
-  //ShowSerialData();
+  delay(SHORT_DELAY);
+
   GSM_Serial.println("AT+CNMI=2,2,0,0,0");  //set SMS receive indications
-  //delay(2000);
-  //ShowSerialData();
+  delay(SHORT_DELAY);
+  
+  //AT+CNMI=2,1,0,0,0  //indicate memory and message index
+  //AT+CMGR=1  //read message 1
+  //AT+CMGDA="DEL ALL"  //delete all
   
 //  while(startup_delay){
 //    delay(2*ULTRA_LONG_DELAY);  //wait 1 second
@@ -278,25 +283,53 @@ unsigned char ReceiveSMS(void){
   unsigned char i = 0;
   unsigned char j = 0;
   unsigned char sender_number[] = {};
-
-  while((GSM_Serial.available())&&(GSM_Serial.read() != NULL)){  //While there is data on serial and it's not the end of the string
-    message_byte = GSM_Serial.read();
-    message[i] = message_byte;
-    i++;
-      //Serial.write(message[i]);
-  }
-  message_length = i;
-  //Serial.write("Message recorded");
-  //Serial.write(message[]);
+  unsigned char SMS_Received = 0;
+  Serial.write(".");
+//  while((GSM_Serial.available())&&(GSM_Serial.read() != '\n')){  //While there is data on serial and it's not the end of the string
+//    message_byte = GSM_Serial.read();
+//    message[i] = message_byte;
+//    i++;
+//      //Serial.write(message[i]);
+//  }
   
-  if((message[0]=='+')&&(message[1]=='C')&&(message[2]=='M')&&(message[3]=='T')) { //serial message format confirms receival of SMS
-    for(i = SMS_NUMBER_START_INDEX; i <= SMS_NUMBER_END_INDEX; i++){
-      sender_number[j] = message[i];
-      j++;
+  while((GSM_Serial.available())&&(GSM_Serial.read()=='+')) {
+    delay(1);
+    if(GSM_Serial.read()=='C'){
+      delay(1);
+      if(GSM_Serial.read()=='M'){
+        delay(1);
+        if(GSM_Serial.read()=='T'){
+          SMS_Received = 1;
+        }
+      }
     }
-    Serial.write("The sender number is");
-    Serial.write(sender_number[1]);
   }
+  if(SMS_Received == 1){
+    while(GSM_Serial.read() != '\n'){
+      message[i] = GSM_Serial.read();
+      i++;
+    }
+    Serial.write("Message received");
+    Serial.println(); 
+    message_length = i;
+    Serial.write("Message length");
+    Serial.write(message_length);
+    Serial.println();
+    Serial.write("The message is:");
+    for(i=0;i<message_length;i++){
+      Serial.write(message[i]);
+    }
+  }
+  
+//  if((message[0]=='+')&&(message[1]=='C')&&(message[2]=='M')&&(message[3]=='T')) { //serial message format confirms receival of SMS
+
+//    for(i = SMS_NUMBER_START_INDEX; i <= SMS_NUMBER_END_INDEX; i++){
+//      sender_number[j] = message[i];
+//      j++;
+//    }
+    //Serial.write("The sender number is");
+    //Serial.write(sender_number[1]);
+  //}
 }
 
 void ReadSMS(void){
