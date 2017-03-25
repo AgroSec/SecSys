@@ -63,7 +63,7 @@ void EndCritical(long sr);
 void WaitForInterrupt(void);  
 
 #line 11 ".\\OS\\os_hw.h"
-#line 1 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdbool.h"
+#line 1 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdbool.h"
  
 
 
@@ -77,12 +77,12 @@ void WaitForInterrupt(void);
 
 
 
-#line 25 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdbool.h"
+#line 25 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdbool.h"
 
 
 
 #line 12 ".\\OS\\os_hw.h"
-#line 1 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
+#line 1 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
  
  
 
@@ -101,7 +101,7 @@ void WaitForInterrupt(void);
 
 
      
-#line 27 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
+#line 27 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
      
 
 
@@ -114,7 +114,7 @@ void WaitForInterrupt(void);
 
 
 
-#line 46 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
+#line 46 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
 
 
 
@@ -278,7 +278,7 @@ typedef unsigned     long long uintmax_t;
      
 
      
-#line 216 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
+#line 216 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
 
      
 
@@ -297,7 +297,7 @@ typedef unsigned     long long uintmax_t;
 
 
 
-#line 241 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
+#line 241 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
 
      
 
@@ -330,7 +330,7 @@ typedef unsigned     long long uintmax_t;
 
 
 
-#line 305 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
+#line 305 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
 
 
 
@@ -494,12 +494,14 @@ void OS_Init(uint8_t clock_Mhz);
 
 int OS_AddThreads(void(*thread0)(void), uint32_t p0,
                   void(*thread1)(void), uint32_t p1,
-                  void(*thread2)(void), uint32_t p2,
-                  void(*thread3)(void), uint32_t p3,
-                  void(*thread4)(void), uint32_t p4,
-                  void(*thread5)(void), uint32_t p5,
-                  void(*thread6)(void), uint32_t p6,
-                  void(*thread7)(void), uint32_t p7,
+                  
+
+
+
+
+
+ 
+									void(*thread7)(void), uint32_t p7,
                   void(*thread8)(void), uint32_t p8,
                   void(*thread9)(void), uint32_t p9);
 
@@ -1778,6 +1780,8 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
+#line 44 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+#line 45 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1798,7 +1802,8 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 140 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+
+#line 143 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1807,7 +1812,7 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 155 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+#line 158 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1816,7 +1821,7 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 171 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+#line 174 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1824,7 +1829,7 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 185 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+#line 188 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
                                             
 
 
@@ -1847,7 +1852,7 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 214 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+#line 217 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1855,7 +1860,7 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 385 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+#line 388 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1863,15 +1868,7 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 462 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
-
-
-
-
-
-
-
-
+#line 465 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1881,7 +1878,15 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 486 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+
+
+
+
+
+
+
+
+#line 489 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1904,21 +1909,14 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 516 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+#line 519 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
 
 
 
-#line 535 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
-
-
-
-
-
-
-
+#line 538 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1927,7 +1925,14 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 556 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+
+
+
+
+
+
+
+#line 559 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -2662,46 +2667,81 @@ uint8_t Profile_Get(void);
 
 
 #line 14 "main.c"
+ 
+#line 1 ".\\drivers\\uart_handler\\uart_handler.h"
 
 
-uint32_t Count0;   
-uint32_t Count1;   
+
+ 
+#line 6 ".\\drivers\\uart_handler\\uart_handler.h"
+#line 7 ".\\drivers\\uart_handler\\uart_handler.h"
+
+ 
+
+
+
+#line 19 ".\\drivers\\uart_handler\\uart_handler.h"
+
+ 
+void UART0_Init(void);
+void UART0_SendChar(uint8_t data);
+void UART0_SendString(uint8_t *pt);
+void UART0_SendUDecimal(uint32_t n);
+void UART0_SendUHex(uint32_t number);
+void UART0_SendNewLine(void);
+uint8_t UART0_GetChar(void);
+void UART0_GetString(uint8_t *bufPt, uint16_t max);
+uint32_t UART0_GetUDecimal(void);
+uint32_t UART0_GetUHex(void);
+
+
+
+#line 16 "main.c"
+
+
+
+uint32_t Count0_PIRA;   
+uint32_t Count1_PIRB;   
 uint32_t Count2;   
 uint32_t Count3;   
 uint32_t Count4;   
 uint32_t Count5;   
 uint32_t Count6;   
-uint32_t Count7;   
-uint32_t Count8;   
+uint32_t Count7_SerialStatus;   
+uint32_t Count8_SerialCommand;  
 uint32_t CountIdle;  
 
 int32_t Task78Sync;
 int32_t Task87Sync;
+int32_t SerialMonitor; 
 
 fifo_t FifoA;
 
 extern ptcbType PerTask[2];
+extern PortSema_t SemPortC;
 extern PortSema_t SemPortD;
 extern PortSema_t SemPortF;
 
-void Task0(void){	
-  Count0 = 0;
+void Task0_PIRA(void){	
+  Count0_PIRA = 0;
   while(1){
-		OS_Wait(&PerTask[0].semaphore);
-		Count0++;
-		OS_FIFO_Put(&FifoA,Count0);
-    ((*((volatile uint32_t *)0x40024008)) ^= 0x02);
-		
+		OS_Wait(&SemPortC.pin6); 
+		OS_Sleep(50); 
+		if(GPIOPinRead(0x40006000,0x00000040)) {   
+			Count0_PIRA++;
+		}
+		OS_EdgeTrigger_Restart(PortC,0x00000040);
   }
 }
-void Task1(void){		
-  Count1 = 0;
+void Task1_PIRB(void){	
+  Count1_PIRB = 0;
   while(1){
-		OS_Wait(&PerTask[1].semaphore);
-		
-    Count1 = OS_FIFO_Get(&FifoA);
-    ((*((volatile uint32_t *)0x40024010)) ^= 0x04);
-		
+		OS_Wait(&SemPortC.pin7); 
+		OS_Sleep(50); 
+		if(GPIOPinRead(0x40006000,0x00000080)) {   
+			Count1_PIRB++;
+		}
+		OS_EdgeTrigger_Restart(PortC,0x00000080);
   }
 }
 void Task2(void){		
@@ -2782,26 +2822,26 @@ void Task6(void){
 	}
 }
 
-void Task7(void){
-	Count7 = 0;
+void Task7_SerialStatus(void){
+	Count7_SerialStatus = 0;
 	while(1){
-		Count7++;
-		OS_Signal(&Task78Sync);
-		OS_Wait(&Task87Sync);
-		
-		OS_Sleep(500);
-		
+		OS_Wait(&SerialMonitor);
+		Count7_SerialStatus++;
+		UART0_SendString("System status is: ");
+		UART0_SendNewLine();
+		OS_Sleep(5000);
+		OS_Signal(&SerialMonitor);		
 	}
 }
 
-void Task8(void){
-	Count8 = 0;
+void Task8_SerialCommand(void){
+	uint32_t command = 0;
 	while(1){
-		Count8++;
-		OS_Signal(&Task87Sync);
-		OS_Wait(&Task78Sync);
-		
-		
+		OS_Wait(&SerialMonitor);
+		UART0_SendNewLine();
+		UART0_SendString("Please input any command: ");
+		command = UART0_GetUDecimal();
+		UART0_SendNewLine();
 	}
 }
 
@@ -2815,35 +2855,39 @@ void Idle_Task(void){
 int main(void){
 	
 	OS_Init(80);  
+	
 	Profile_Init();  
 	
-	OS_InitSemaphore(&SemPortD.pin6,0);
-	OS_InitSemaphore(&SemPortD.pin7,0);	
-	OS_InitSemaphore(&SemPortF.pin0,0);
-	OS_InitSemaphore(&SemPortF.pin4,0);
 	
-	OS_EdgeTrigger_Init(PortD,0x00000040|0x00000080,(0),0x00000000,0x0000000A);
-	OS_EdgeTrigger_Init(PortF,0x00000001|0x00000010,(0),0x00000000,0x0000000A);
+	OS_InitSemaphore(&SemPortC.pin6,0);
+	OS_InitSemaphore(&SemPortC.pin7,0);
+	OS_InitSemaphore(&SerialMonitor,1);
+
+	
+	
+	
+	
+	OS_EdgeTrigger_Init(PortC,0x00000040|0x00000080,(0),0x00000004,0x0000000C);
+	
+	
 	
 	OS_AddPeriodicEventThread(&PerTask[0].semaphore, 10);
-	OS_AddPeriodicEventThread(&PerTask[1].semaphore, 50);
 	
-  OS_AddThreads(&Task0, 5, 
-	              &Task1, 5,
-	              &Task2, 5,
-	              &Task3, 5,
-	              &Task4, 5,
-	              &Task5, 5,
-	              &Task6, 5,
-	              &Task7, 5,
-	              &Task8, 5,								
+	
+	
+  OS_AddThreads(&Task0_PIRA, 15,
+	              &Task1_PIRB, 15,
+								&Task7_SerialStatus,250,
+                &Task8_SerialCommand,200,
 	              &Idle_Task,254);	
 	
-	OS_FIFO_Init(&FifoA);
 	
-	OS_InitSemaphore(&Task78Sync,0);
-	OS_InitSemaphore(&Task87Sync,0);
+
+
+ 
   
+	UART0_Init();
+	
 	OS_Launch(SysCtlClockGet()/1000); 
   return 0;  
 }

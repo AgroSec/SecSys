@@ -4,6 +4,15 @@
 
 
 
+
+
+
+
+
+
+
+
+ 
  
 #line 1 "OS\\os_hw.h"
 
@@ -60,7 +69,7 @@ void EndCritical(long sr);
 void WaitForInterrupt(void);  
 
 #line 11 "OS\\os_hw.h"
-#line 1 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdbool.h"
+#line 1 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdbool.h"
  
 
 
@@ -74,12 +83,12 @@ void WaitForInterrupt(void);
 
 
 
-#line 25 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdbool.h"
+#line 25 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdbool.h"
 
 
 
 #line 12 "OS\\os_hw.h"
-#line 1 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
+#line 1 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
  
  
 
@@ -98,7 +107,7 @@ void WaitForInterrupt(void);
 
 
      
-#line 27 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
+#line 27 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
      
 
 
@@ -111,7 +120,7 @@ void WaitForInterrupt(void);
 
 
 
-#line 46 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
+#line 46 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
 
 
 
@@ -275,7 +284,7 @@ typedef unsigned     long long uintmax_t;
      
 
      
-#line 216 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
+#line 216 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
 
      
 
@@ -294,7 +303,7 @@ typedef unsigned     long long uintmax_t;
 
 
 
-#line 241 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
+#line 241 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
 
      
 
@@ -327,7 +336,7 @@ typedef unsigned     long long uintmax_t;
 
 
 
-#line 305 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
+#line 305 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
 
 
 
@@ -491,12 +500,14 @@ void OS_Init(uint8_t clock_Mhz);
 
 int OS_AddThreads(void(*thread0)(void), uint32_t p0,
                   void(*thread1)(void), uint32_t p1,
-                  void(*thread2)(void), uint32_t p2,
-                  void(*thread3)(void), uint32_t p3,
-                  void(*thread4)(void), uint32_t p4,
-                  void(*thread5)(void), uint32_t p5,
-                  void(*thread6)(void), uint32_t p6,
-                  void(*thread7)(void), uint32_t p7,
+                  
+
+
+
+
+
+ 
+									void(*thread7)(void), uint32_t p7,
                   void(*thread8)(void), uint32_t p8,
                   void(*thread9)(void), uint32_t p9);
 
@@ -1775,6 +1786,8 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
+#line 44 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+#line 45 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1795,7 +1808,8 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 140 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+
+#line 143 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1804,7 +1818,7 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 155 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+#line 158 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1813,7 +1827,7 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 171 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+#line 174 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1821,7 +1835,7 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 185 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+#line 188 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
                                             
 
 
@@ -1844,7 +1858,7 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 214 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+#line 217 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1852,7 +1866,7 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 385 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+#line 388 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1860,15 +1874,7 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 462 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
-
-
-
-
-
-
-
-
+#line 465 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1878,7 +1884,15 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 486 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+
+
+
+
+
+
+
+
+#line 489 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1901,21 +1915,14 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 516 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+#line 519 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
 
 
 
-#line 535 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
-
-
-
-
-
-
-
+#line 538 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1924,7 +1931,14 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 556 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+
+
+
+
+
+
+
+#line 559 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -2377,7 +2391,7 @@ void OS_SysTick_Init(uint32_t time);
 
 
 
-#line 8 "OS\\os_hw.c"
+#line 17 "OS\\os_hw.c"
 
 
 extern void (*OS_PeriodicTask[2])(void);   
@@ -2391,6 +2405,28 @@ PortSema_t SemPortC;
 PortSema_t SemPortD;
 PortSema_t SemPortE;
 PortSema_t SemPortF;
+
+void GPIOPortC_Handler(void){	 
+	
+  
+  
+	uint8_t status;	
+	status = GPIOIntStatus(0x40006000, 1);
+	if(status & 0x00000001) {
+		GPIOIntClear(0x40006000,0x00000001); 
+		OS_Signal(&SemPortC.pin0);  
+		GPIOIntDisable(0x40006000, 0x00000001);  
+	}
+	if(status & 0x00000002) { GPIOIntClear(0x40006000,0x00000002); OS_Signal(&SemPortC.pin1); GPIOIntDisable(0x40006000, 0x00000002);}
+	if(status & 0x00000004) { GPIOIntClear(0x40006000,0x00000004); OS_Signal(&SemPortC.pin2); GPIOIntDisable(0x40006000, 0x00000004);}
+	if(status & 0x00000008) {	GPIOIntClear(0x40006000,0x00000008); OS_Signal(&SemPortC.pin3); GPIOIntDisable(0x40006000, 0x00000008);}
+	if(status & 0x00000010) { GPIOIntClear(0x40006000,0x00000010); OS_Signal(&SemPortC.pin4); GPIOIntDisable(0x40006000, 0x00000010);}
+	if(status & 0x00000020) {	GPIOIntClear(0x40006000,0x00000020); OS_Signal(&SemPortC.pin5); GPIOIntDisable(0x40006000, 0x00000020);}
+	if(status & 0x00000040) { GPIOIntClear(0x40006000,0x00000040); OS_Signal(&SemPortC.pin6); GPIOIntDisable(0x40006000, 0x00000040);}
+	if(status & 0x00000080) {	GPIOIntClear(0x40006000,0x00000080); OS_Signal(&SemPortC.pin7); GPIOIntDisable(0x40006000, 0x00000080);}
+  OS_Suspend();
+}
+
 
 void GPIOPortD_Handler(void){	 
 	
@@ -2444,6 +2480,21 @@ uint8_t OS_EdgeTrigger_Init(ports_t port, uint8_t pin, uint8_t priority, uint8_t
 			break;
 		case PortC:  
 			
+			SysCtlPeripheralEnable(0xf0000802);
+			while(!SysCtlPeripheralReady(0xf0000802));
+			if(pin & (0x00000001|0x00000002|0x00000004|0x00000008)){
+				(*((volatile uint32_t *)0x40006520)) = 0x4C4F434B; 
+			}
+			(*((volatile uint32_t *)0x40006524)) |= 0xFF;  
+			IntDisable(18);
+			GPIOIntDisable(0x40006000,pin);
+			GPIOPinTypeGPIOInput(0x40006000, pin);
+			GPIOIntTypeSet(0x40006000, pin, type);
+			GPIODirModeSet(0x40006000, pin, 0x00000000);
+			GPIOPadConfigSet(0x40006000, pin, 0x00000001,resistor);
+			GPIOIntEnable(0x40006000, pin);
+			IntPrioritySet(18,(priority<<5));
+			IntEnable(18);		
 			break;
 		case PortD:  
 			SysCtlPeripheralEnable(0xf0000803);

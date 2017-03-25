@@ -2,7 +2,16 @@
 // ssOS - stupid simple Operating System
 // A very simple real time operating system with minimal features.
 // For copyright, configuration and usage read readme.txt
-
+/*
+Pins with special purposes, need to be unlocked
+-----------------------------------------------
+PA[1:0] UART0
+PA[5:2] SSI0
+PB[3:2] I21C0
+PC[3:0] JTAG/SWD
+PD[7] 	GPIO
+PF[0] 	GPIO
+*/
 /*------OS Includes------*/
 #include "os_hw.h"
 //#include "profile.h"
@@ -18,6 +27,28 @@ PortSema_t SemPortC;
 PortSema_t SemPortD;
 PortSema_t SemPortE;
 PortSema_t SemPortF;
+
+void GPIOPortC_Handler(void){	 //PortC GPIO interrupt handler
+	// step 1 acknowledge by clearing flag
+  // step 2 signal semaphore (no need to run scheduler)
+  // step 3 disarm interrupt to prevent bouncing to create multiple signals
+	uint8_t status;	
+	status = GPIOIntStatus(GPIO_PORTC_BASE,/*false*/true);
+	if(status & GPIO_INT_PIN_0) {
+		GPIOIntClear(GPIO_PORTC_BASE,GPIO_INT_PIN_0); //acknowledge by clearing flag
+		OS_Signal(&SemPortC.pin0);  //signal semaphore
+		GPIOIntDisable(GPIO_PORTC_BASE, GPIO_INT_PIN_0);  //disarm interrupt to prevent bouncing to create multiple signals
+	}
+	if(status & GPIO_INT_PIN_1) { GPIOIntClear(GPIO_PORTC_BASE,GPIO_INT_PIN_1); OS_Signal(&SemPortC.pin1); GPIOIntDisable(GPIO_PORTC_BASE, GPIO_INT_PIN_1);}
+	if(status & GPIO_INT_PIN_2) { GPIOIntClear(GPIO_PORTC_BASE,GPIO_INT_PIN_2); OS_Signal(&SemPortC.pin2); GPIOIntDisable(GPIO_PORTC_BASE, GPIO_INT_PIN_2);}
+	if(status & GPIO_INT_PIN_3) {	GPIOIntClear(GPIO_PORTC_BASE,GPIO_INT_PIN_3); OS_Signal(&SemPortC.pin3); GPIOIntDisable(GPIO_PORTC_BASE, GPIO_INT_PIN_3);}
+	if(status & GPIO_INT_PIN_4) { GPIOIntClear(GPIO_PORTC_BASE,GPIO_INT_PIN_4); OS_Signal(&SemPortC.pin4); GPIOIntDisable(GPIO_PORTC_BASE, GPIO_INT_PIN_4);}
+	if(status & GPIO_INT_PIN_5) {	GPIOIntClear(GPIO_PORTC_BASE,GPIO_INT_PIN_5); OS_Signal(&SemPortC.pin5); GPIOIntDisable(GPIO_PORTC_BASE, GPIO_INT_PIN_5);}
+	if(status & GPIO_INT_PIN_6) { GPIOIntClear(GPIO_PORTC_BASE,GPIO_INT_PIN_6); OS_Signal(&SemPortC.pin6); GPIOIntDisable(GPIO_PORTC_BASE, GPIO_INT_PIN_6);}
+	if(status & GPIO_INT_PIN_7) {	GPIOIntClear(GPIO_PORTC_BASE,GPIO_INT_PIN_7); OS_Signal(&SemPortC.pin7); GPIOIntDisable(GPIO_PORTC_BASE, GPIO_INT_PIN_7);}
+  OS_Suspend();
+}
+
 
 void GPIOPortD_Handler(void){	 //PortD GPIO interrupt handler
 	// step 1 acknowledge by clearing flag
@@ -71,6 +102,21 @@ uint8_t OS_EdgeTrigger_Init(ports_t port, uint8_t pin, uint8_t priority, uint8_t
 			break;
 		case PortC:  //PortC
 			//Need to unlock
+			SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOC);
+			while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOC));
+			if(pin & (GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3)){
+				GPIO_PORTC_LOCK_R = 0x4C4F434B; //Unlock GPIO PC0-3 if necessary
+			}
+			GPIO_PORTC_CR_R |= 0xFF;  //Allow changes to PC7-0
+			IntDisable(INT_GPIOC);
+			GPIOIntDisable(GPIO_PORTC_BASE,pin);
+			GPIOPinTypeGPIOInput(GPIO_PORTC_BASE, pin);
+			GPIOIntTypeSet(GPIO_PORTC_BASE, pin, type);
+			GPIODirModeSet(GPIO_PORTC_BASE, pin, GPIO_DIR_MODE_IN);
+			GPIOPadConfigSet(GPIO_PORTC_BASE, pin, GPIO_STRENGTH_2MA,resistor);
+			GPIOIntEnable(GPIO_PORTC_BASE, pin);
+			IntPrioritySet(INT_GPIOC,(priority<<5));
+			IntEnable(INT_GPIOC);		
 			break;
 		case PortD:  //PortD	
 			SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);

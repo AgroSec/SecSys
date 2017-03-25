@@ -61,7 +61,7 @@ void EndCritical(long sr);
 void WaitForInterrupt(void);  
 
 #line 11 "OS\\os_core.h"
-#line 1 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdbool.h"
+#line 1 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdbool.h"
  
 
 
@@ -75,12 +75,12 @@ void WaitForInterrupt(void);
 
 
 
-#line 25 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdbool.h"
+#line 25 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdbool.h"
 
 
 
 #line 12 "OS\\os_core.h"
-#line 1 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
+#line 1 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
  
  
 
@@ -99,7 +99,7 @@ void WaitForInterrupt(void);
 
 
      
-#line 27 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
+#line 27 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
      
 
 
@@ -112,7 +112,7 @@ void WaitForInterrupt(void);
 
 
 
-#line 46 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
+#line 46 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
 
 
 
@@ -276,7 +276,7 @@ typedef unsigned     long long uintmax_t;
      
 
      
-#line 216 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
+#line 216 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
 
      
 
@@ -295,7 +295,7 @@ typedef unsigned     long long uintmax_t;
 
 
 
-#line 241 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
+#line 241 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
 
      
 
@@ -328,7 +328,7 @@ typedef unsigned     long long uintmax_t;
 
 
 
-#line 305 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
+#line 305 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
 
 
 
@@ -400,7 +400,7 @@ void WaitForInterrupt(void);
 
 
 
-#line 158 "OS\\os_core.h"
+#line 160 "OS\\os_core.h"
 
 #line 14 "OS\\os_hw.h"
 #line 1 "OS\\os_config.h"
@@ -1629,6 +1629,8 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
+#line 44 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+#line 45 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1649,7 +1651,8 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 140 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+
+#line 143 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1658,7 +1661,7 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 155 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+#line 158 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1667,7 +1670,7 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 171 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+#line 174 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1675,7 +1678,7 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 185 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+#line 188 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
                                             
 
 
@@ -1698,7 +1701,7 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 214 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+#line 217 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1706,7 +1709,7 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 385 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+#line 388 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1714,15 +1717,7 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 462 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
-
-
-
-
-
-
-
-
+#line 465 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1732,7 +1727,15 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 486 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+
+
+
+
+
+
+
+
+#line 489 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1755,21 +1758,14 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 516 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+#line 519 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
 
 
 
-#line 535 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
-
-
-
-
-
-
-
+#line 538 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1778,7 +1774,14 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 556 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+
+
+
+
+
+
+
+#line 559 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -2283,12 +2286,14 @@ void OS_Init(uint8_t clock_Mhz);
 
 int OS_AddThreads(void(*thread0)(void), uint32_t p0,
                   void(*thread1)(void), uint32_t p1,
-                  void(*thread2)(void), uint32_t p2,
-                  void(*thread3)(void), uint32_t p3,
-                  void(*thread4)(void), uint32_t p4,
-                  void(*thread5)(void), uint32_t p5,
-                  void(*thread6)(void), uint32_t p6,
-                  void(*thread7)(void), uint32_t p7,
+                  
+
+
+
+
+
+ 
+									void(*thread7)(void), uint32_t p7,
                   void(*thread8)(void), uint32_t p8,
                   void(*thread9)(void), uint32_t p9);
 
@@ -2673,9 +2678,9 @@ void static runsleep(void);
 
 
 
-tcbType tcbs[10];  
+tcbType tcbs[4];  
 tcbType *RunPt;  
-int32_t Stacks[10][100];  
+int32_t Stacks[4][100];  
 ptcbType PerTask[2];  
 uint8_t Periodic_Event_Nr = 0;	
 void (*OS_PeriodicTask[2])(void);   
@@ -2729,12 +2734,14 @@ void SetInitialStack(int i){
 
 int OS_AddThreads(void(*thread0)(void), uint32_t p0,
                   void(*thread1)(void), uint32_t p1,
-                  void(*thread2)(void), uint32_t p2,
-                  void(*thread3)(void), uint32_t p3,
-                  void(*thread4)(void), uint32_t p4,
-                  void(*thread5)(void), uint32_t p5,
-                  void(*thread6)(void), uint32_t p6,
-                  void(*thread7)(void), uint32_t p7,
+                  
+
+
+
+
+
+ 
+									void(*thread7)(void), uint32_t p7,
                   void(*thread8)(void), uint32_t p8,
                   void(*thread9)(void), uint32_t p9){
   int32_t status; 
@@ -2744,17 +2751,19 @@ int OS_AddThreads(void(*thread0)(void), uint32_t p0,
 	
 	tcbs[0].next = &tcbs[1];	
 	tcbs[1].next = &tcbs[2];	
+	
+
+
+
+
+
+ 
 	tcbs[2].next = &tcbs[3];	
 	tcbs[3].next = &tcbs[4];	
-	tcbs[4].next = &tcbs[5];	
-	tcbs[5].next = &tcbs[6];	
-	tcbs[6].next = &tcbs[7];	
-	tcbs[7].next = &tcbs[8];	
-	tcbs[8].next = &tcbs[9];	
-	tcbs[9].next = &tcbs[0];	
+	tcbs[4].next = &tcbs[0];	
 	
 	
-	for(i=0; i< 10; i++){tcbs[i].blocked = 0;}
+	for(i=0; i< 4; i++){tcbs[i].blocked = 0;}
 	
 	
 	RunPt = &tcbs[0];
@@ -2764,35 +2773,39 @@ int OS_AddThreads(void(*thread0)(void), uint32_t p0,
 	Stacks[0][100-2] = (int32_t)(thread0);	
 	SetInitialStack(1);	
 	Stacks[1][100-2] = (int32_t)(thread1);	
-	SetInitialStack(2);	
-	Stacks[2][100-2] = (int32_t)(thread2);	
-	SetInitialStack(3);	
-	Stacks[3][100-2] = (int32_t)(thread3);	
-	SetInitialStack(4);	
-	Stacks[4][100-2] = (int32_t)(thread4);	
-	SetInitialStack(5);	
-	Stacks[5][100-2] = (int32_t)(thread5);	
-	SetInitialStack(6);	
-	Stacks[6][100-2] = (int32_t)(thread6);	
+	
+
+
+
+
+
+
+
+
+
+
+ 
 	SetInitialStack(7);	
 	Stacks[7][100-2] = (int32_t)(thread7);	
-	SetInitialStack(8);	
-	Stacks[8][100-2] = (int32_t)(thread8);	
-	SetInitialStack(9);	
-	Stacks[9][100-2] = (int32_t)(thread9);	
+	SetInitialStack(1);	
+	Stacks[1][100-2] = (int32_t)(thread8);	
+	SetInitialStack(2);	
+	Stacks[2][100-2] = (int32_t)(thread9);	
 
 	
 	
 	tcbs[0].priority = p0;
 	tcbs[1].priority = p1;
-	tcbs[2].priority = p2;
-	tcbs[3].priority = p3;
-	tcbs[4].priority = p4;
-	tcbs[5].priority = p5;
-	tcbs[6].priority = p6;
+	
+
+
+
+
+
+ 
 	tcbs[7].priority = p7;
-	tcbs[8].priority = p8;
-	tcbs[9].priority = p9;
+	tcbs[1].priority = p8;
+	tcbs[2].priority = p9;
 	
 	EndCritical(status);	
 	return 1;         
@@ -2993,7 +3006,7 @@ int OS_AddPeriodicEventThread(int32_t *semaPt, uint32_t period){
 void static runsleep(void){
 
 	uint8_t i;
-	for (i=0;i<10;i++){ if(tcbs[i].sleep != 0) {	
+	for (i=0;i<4;i++){ if(tcbs[i].sleep != 0) {	
 			tcbs[i].sleep --;	
 		}
 	}

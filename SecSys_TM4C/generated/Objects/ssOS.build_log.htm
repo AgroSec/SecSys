@@ -5,11 +5,11 @@
 <h2>Tool Versions:</h2>
 IDE-Version: µVision V5.21.1.0
 Copyright (C) 2016 ARM Ltd and ARM Germany GmbH. All rights reserved.
-License Information: Gaal Alexandru, none, LIC=----
+License Information: Gaal Alexandru, Home, LIC=----
  
 Tool Versions:
 Toolchain:       MDK-Lite  Version: 5.21a
-Toolchain Path:  C:\Keil_v5\ARM\ARMCC\Bin
+Toolchain Path:  F:\0_Tools\Keil_v5\ARM\ARMCC\Bin
 C Compiler:      Armcc.exe V5.06 update 3 (build 300)
 Assembler:       Armasm.exe V5.06 update 3 (build 300)
 Linker/Locator:  ArmLink.exe V5.06 update 3 (build 300)
@@ -17,53 +17,49 @@ Library Manager: ArmAr.exe V5.06 update 3 (build 300)
 Hex Converter:   FromElf.exe V5.06 update 3 (build 300)
 CPU DLL:         SARMCM3.DLL V5.21a
 Dialog DLL:      DCM.DLL V1.13.8.0
-Target DLL:      UL2CM3.DLL V1.158.5.0
+Target DLL:      lmidk-agdi.dll V???
 Dialog DLL:      TCM.DLL V1.14.14.0
  
 <h2>Project:</h2>
-C:\Users\alexandru.gaal\Documents\GitHub\SecSys\SecSys_TM4C\SecSysTM4c.uvprojx
-Project File Date:  02/21/2017
+F:\1_Projects\SecSys\SecSys_TM4C\SecSysTM4c.uvprojx
+Project File Date:  03/25/2017
 
 <h2>Output:</h2>
-*** Using Compiler 'V5.06 update 3 (build 300)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
+*** Using Compiler 'V5.06 update 3 (build 300)', folder: 'F:\0_Tools\Keil_v5\ARM\ARMCC\Bin'
 Rebuild target 'SecSysTM4C'
 creating preprocessor file for os_core.c...
 compiling os_core.c...
+OS\os_core.c(108): warning:  #175-D: subscript out of range
+        tcbs[4].next = &tcbs[0];        //main thread 9 points to main thread 0
+OS\os_core.c(134): warning:  #175-D: subscript out of range
+        Stacks[7][STACKSIZE-2] = (int32_t)(thread7);    //Set address of thread 7 as PC
+OS\os_core.c(151): warning:  #175-D: subscript out of range
+        tcbs[7].priority = p7;
+OS\os_core.c: 3 warnings, 0 errors
 assembling osasm.s...
 creating preprocessor file for os_hw.c...
 compiling os_hw.c...
 creating preprocessor file for main.c...
 compiling main.c...
+main.c(154): warning:  #550-D: variable "command" was set but never used
+        uint32_t command = 0;
+main.c: 1 warning, 0 errors
 creating preprocessor file for Profile.c...
 compiling Profile.c...
-creating preprocessor file for GSM_Handler.c...
-modules\GSM_Handler.c(1): warning:  #1-D: last line of file ends without a newline
-  #include "GSM_Handler.h"
-modules\GSM_Handler.c: 1 warning, 0 errors
-compiling GSM_Handler.c...
-modules\GSM_Handler.c(1): warning:  #1-D: last line of file ends without a newline
-  #include "GSM_Handler.h"
-modules\GSM_Handler.c: 1 warning, 0 errors
-creating preprocessor file for PIR_Handler.c...
-modules\PIR_Handler.c(1): warning:  #1-D: last line of file ends without a newline
-  #include "PIR_Handler.h"
-modules\PIR_Handler.c: 1 warning, 0 errors
-compiling PIR_Handler.c...
-modules\PIR_Handler.c(1): warning:  #1-D: last line of file ends without a newline
-  #include "PIR_Handler.h"
-modules\PIR_Handler.c: 1 warning, 0 errors
+creating preprocessor file for uart_handler.c...
+compiling uart_handler.c...
 assembling startup_TM4C123.s...
 creating preprocessor file for system_TM4C123.c...
 compiling system_TM4C123.c...
 linking...
-Program Size: Code=7248 RO-data=1372 RW-data=64 ZI-data=5080  
+Program Size: Code=7532 RO-data=1900 RW-data=72 ZI-data=2504  
 FromELF: creating hex file...
 ".\generated\Objects\ssOS.axf" - 0 Error(s), 4 Warning(s).
 
 <h2>Software Packages used:</h2>
 
 Package Vendor: ARM
-                http://www.keil.com/pack/ARM.CMSIS.5.0.0-Beta4.pack
+                http://www.keil.com/pack/ARM.CMSIS.5.0.0-Beta12.pack
                 ARM::CMSIS:CORE:5.0.0
                 CMSIS (Cortex Microcontroller Software Interface Standard)
    * Component: CORE Version: 5.0.0
@@ -75,9 +71,9 @@ Package Vendor: Keil
    * Component: Startup Version: 1.0.1
 
 <h2>Collection of Component include folders:</h2>
-  C:\Users\alexandru.gaal\Documents\GitHub\SecSys\SecSys_TM4C\RTE
-  C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0-Beta4\CMSIS\Include
-  C:\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C123
+  F:\1_Projects\SecSys\SecSys_TM4C\RTE
+  F:\0_Tools\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0-Beta12\CMSIS\Include
+  F:\0_Tools\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C123
 
 <h2>Collection of Component Files used:</h2>
 
@@ -87,7 +83,7 @@ Package Vendor: Keil
       Include file:  Device\Include\TM4C123\TM4C123.h
       Source file:   Device\Source\ARM\startup_TM4C123.s
       Source file:   Device\Source\system_TM4C123.c
-Build Time Elapsed:  00:00:03
+Build Time Elapsed:  00:00:04
 </pre>
 </body>
 </html>
