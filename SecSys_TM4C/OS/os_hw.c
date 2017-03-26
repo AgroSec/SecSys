@@ -121,7 +121,7 @@ uint8_t OS_EdgeTrigger_Init(ports_t port, uint8_t pin, uint8_t priority, uint8_t
 		case PortD:  //PortD	
 			SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
 			while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOD));
-			if(pin && GPIO_PIN_7) { GPIO_PORTD_LOCK_R = 0x4C4F434B; } //Unlock GPIO PD7 if necessary
+			if(pin & GPIO_PIN_7) { GPIO_PORTD_LOCK_R = 0x4C4F434B; } //Unlock GPIO PD7 if necessary
 			GPIO_PORTD_CR_R |= 0xFF;  //Allow changes to PD7-0
 			IntDisable(INT_GPIOD);
 			GPIOIntDisable(GPIO_PORTD_BASE,pin);
@@ -172,6 +172,8 @@ uint8_t OS_EdgeTrigger_Restart(ports_t port, uint8_t pin){
 		case PortB:  //PortB
 			break;
 		case PortC:  //PortC
+			GPIOIntEnable(GPIO_PORTC_BASE, pin);  //Enable GPIO pin interrupt
+			IntEnable(INT_GPIOC); //GPIO Port D enable of interrupts
 			break;
 		case PortD:  //PortD
 			GPIOIntEnable(GPIO_PORTD_BASE, pin);  //Enable GPIO pin interrupt

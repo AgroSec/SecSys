@@ -18,7 +18,7 @@
 #define THREADFREQ 1000   // frequency in Hz
 
 //Define number of threads and number of periodic event threads
-#define NUMTHREADS  4  // maximum number of threads
+#define NUMTHREADS  5  // maximum number of threads
 #define NUMPERIODIC 2 // maximum number of periodic threads
 
 //Number of OS embedded periodic tasks, DO NOT modify this if you are not changing the OS.

@@ -148,9 +148,9 @@ int OS_AddThreads(void(*thread0)(void), uint32_t p0,
 	tcbs[5].priority = p5;
 	tcbs[6].priority = p6;
 	*/
-	tcbs[7].priority = p7;
-	tcbs[1].priority = p8;
-	tcbs[2].priority = p9;
+	tcbs[2].priority = p7;
+	tcbs[3].priority = p8;
+	tcbs[4].priority = p9;
 	
 	EndCritical(status);	//Enable Interrupts
 	return 1;         // successful
@@ -351,7 +351,8 @@ int OS_AddPeriodicEventThread(int32_t *semaPt, uint32_t period){
 void static runsleep(void){
 // **DECREMENT SLEEP COUNTERS
 	uint8_t i;
-	for (i=0;i<NUMTHREADS;i++){ if(tcbs[i].sleep != 0) {	//search for sleeping main threads
+	for (i=0;i<NUMTHREADS;i++){ 
+		if(tcbs[i].sleep != 0) {	//search for sleeping main threads
 			tcbs[i].sleep --;	//decrement sleep period by 1ms
 		}
 	}

@@ -2499,7 +2499,7 @@ uint8_t OS_EdgeTrigger_Init(ports_t port, uint8_t pin, uint8_t priority, uint8_t
 		case PortD:  
 			SysCtlPeripheralEnable(0xf0000803);
 			while(!SysCtlPeripheralReady(0xf0000803));
-			if(pin && 0x00000080) { (*((volatile uint32_t *)0x40007520)) = 0x4C4F434B; } 
+			if(pin & 0x00000080) { (*((volatile uint32_t *)0x40007520)) = 0x4C4F434B; } 
 			(*((volatile uint32_t *)0x40007524)) |= 0xFF;  
 			IntDisable(19);
 			GPIOIntDisable(0x40007000,pin);
@@ -2550,6 +2550,8 @@ uint8_t OS_EdgeTrigger_Restart(ports_t port, uint8_t pin){
 		case PortB:  
 			break;
 		case PortC:  
+			GPIOIntEnable(0x40006000, pin);  
+			IntEnable(18); 
 			break;
 		case PortD:  
 			GPIOIntEnable(0x40007000, pin);  

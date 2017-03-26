@@ -45,6 +45,12 @@ void Task0_PIRA(void){	//Edge triggered task
 		OS_Sleep(50); //sleep to debounce switch		
 		if(GPIOPinRead(GPIO_PORTC_BASE,GPIO_INT_PIN_6)) {   
 			Count0_PIRA++;
+			OS_Wait(&SerialMonitor);
+			UART0_SendString("PIR A Triggered a number of: ");
+			UART0_SendUDecimal(Count0_PIRA);
+			UART0_SendString(" times.");
+			UART0_SendNewLine();
+			OS_Signal(&SerialMonitor);
 		}
 		OS_EdgeTrigger_Restart(PortC,GPIO_PIN_6);
   }
@@ -54,8 +60,14 @@ void Task1_PIRB(void){	//Edge triggered task
   while(1){
 		OS_Wait(&SemPortC.pin7); // signaled in OS on button touch
 		OS_Sleep(50); //sleep to debounce switch		
-		if(GPIOPinRead(GPIO_PORTC_BASE,GPIO_INT_PIN_7)) {   
+		if(GPIOPinRead(GPIO_PORTC_BASE,GPIO_INT_PIN_7)) {
 			Count1_PIRB++;
+			OS_Wait(&SerialMonitor);
+			UART0_SendString("PIR B Triggered a number of: ");
+			UART0_SendUDecimal(Count1_PIRB);
+			UART0_SendString(" times.");
+			UART0_SendNewLine();
+			OS_Signal(&SerialMonitor);
 		}
 		OS_EdgeTrigger_Restart(PortC,GPIO_PIN_7);
   }
@@ -145,19 +157,19 @@ void Task7_SerialStatus(void){
 		Count7_SerialStatus++;
 		UART0_SendString("System status is: ");
 		UART0_SendNewLine();
-		OS_Sleep(5000);
-		OS_Signal(&SerialMonitor);		
+		OS_Signal(&SerialMonitor);
+		//OS_Sleep(500);		
 	}
 }
 
 void Task8_SerialCommand(void){
-	uint32_t command = 0;
 	while(1){
-		OS_Wait(&SerialMonitor);
-		UART0_SendNewLine();
-		UART0_SendString("Please input any command: ");
-		command = UART0_GetUDecimal();
-		UART0_SendNewLine();
+//		OS_Wait(&SerialMonitor);
+//		UART0_SendNewLine();
+//		UART0_SendString("Please input any command: ");
+//		UART0_SendNewLine();
+//		OS_Signal(&SerialMonitor);
+		//OS_Sleep(50);	
 	}
 }
 
@@ -187,14 +199,14 @@ int main(void){
 	//OS_EdgeTrigger_Init(PortF,GPIO_PIN_0|GPIO_PIN_4,INT_PRIO_PIN,GPIO_FALLING_EDGE,GPIO_PIN_TYPE_STD_WPU);
 	
 	//5
-	OS_AddPeriodicEventThread(&PerTask[0].semaphore, 10);
+	OS_AddPeriodicEventThread(&PerTask[0].semaphore, 1000);
 	//OS_AddPeriodicEventThread(&PerTask[1].semaphore, 50);
 	
 	//6
   OS_AddThreads(&Task0_PIRA, 15,
 	              &Task1_PIRB, 15,
 								&Task7_SerialStatus,250,
-                &Task8_SerialCommand,200,
+                &Task8_SerialCommand,252,
 	              &Idle_Task,254);	//Idle task is lowest priority
 	//7
 	/*OS_FIFO_Init(&FifoA);

@@ -2678,9 +2678,9 @@ void static runsleep(void);
 
 
 
-tcbType tcbs[4];  
+tcbType tcbs[5];  
 tcbType *RunPt;  
-int32_t Stacks[4][100];  
+int32_t Stacks[5][100];  
 ptcbType PerTask[2];  
 uint8_t Periodic_Event_Nr = 0;	
 void (*OS_PeriodicTask[2])(void);   
@@ -2763,7 +2763,7 @@ int OS_AddThreads(void(*thread0)(void), uint32_t p0,
 	tcbs[4].next = &tcbs[0];	
 	
 	
-	for(i=0; i< 4; i++){tcbs[i].blocked = 0;}
+	for(i=0; i< 5; i++){tcbs[i].blocked = 0;}
 	
 	
 	RunPt = &tcbs[0];
@@ -2803,9 +2803,9 @@ int OS_AddThreads(void(*thread0)(void), uint32_t p0,
 
 
  
-	tcbs[7].priority = p7;
-	tcbs[1].priority = p8;
-	tcbs[2].priority = p9;
+	tcbs[2].priority = p7;
+	tcbs[3].priority = p8;
+	tcbs[4].priority = p9;
 	
 	EndCritical(status);	
 	return 1;         
@@ -3006,7 +3006,8 @@ int OS_AddPeriodicEventThread(int32_t *semaPt, uint32_t period){
 void static runsleep(void){
 
 	uint8_t i;
-	for (i=0;i<4;i++){ if(tcbs[i].sleep != 0) {	
+	for (i=0;i<5;i++){ 
+		if(tcbs[i].sleep != 0) {	
 			tcbs[i].sleep --;	
 		}
 	}
