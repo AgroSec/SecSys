@@ -18,7 +18,7 @@
 #define THREADFREQ 1000   // frequency in Hz
 
 //Define number of threads and number of periodic event threads
-#define NUMTHREADS  5  // maximum number of threads
+#define NUMTHREADS  6  // maximum number of threads
 #define NUMPERIODIC 2 // maximum number of periodic threads
 
 //Number of OS embedded periodic tasks, DO NOT modify this if you are not changing the OS.
@@ -36,7 +36,7 @@
 #define RUN_PERIODIC_FREQ (1000)  //The frequency the runperiodicevents scheduler is called
 #define RUN_SLEEP_FREQ  (1000)  //The frequency the runsleep sleep counter is called
 
-//Configure HW port unlock registers, DO NOY change for TM4C controller
+//Configure HW port unlock registers, DO NOT change for TM4C controller
 #define GPIO_PORTA_LOCK_R       (*((volatile uint32_t *)0x40004520))
 #define GPIO_PORTA_CR_R         (*((volatile uint32_t *)0x40004524))
 #define GPIO_PORTB_LOCK_R       (*((volatile uint32_t *)0x40005520))

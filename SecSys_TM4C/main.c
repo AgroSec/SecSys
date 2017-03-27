@@ -12,19 +12,19 @@
 #include "os_config.h"
 #include "profile.h"
 /*-------------------Service Includes-----------------*/
+#include "gpio_handler.h"
 #include "uart_handler.h"
 
-
 // runs each thread 2 ms
-uint32_t Count0_PIRA;   // number of times Task0 loops
-uint32_t Count1_PIRB;   // number of times Task1 loops
-uint32_t Count2;   // number of times Task2 loops
+uint32_t Count0_PIRA;  // number of times Task0 loops
+uint32_t Count1_PIRB;  // number of times Task1 loops
+uint32_t Count2_ToggleLED;  // number of times Task2 loops
 uint32_t Count3;   // number of times Task3 loops
 uint32_t Count4;   // number of times Task4 loops
 uint32_t Count5;   // number of times Task5 loops
 uint32_t Count6;   // number of times Task6 loops
-uint32_t Count7_SerialStatus;   // number of times Task7 loops
-uint32_t Count8_SerialCommand;  // number of times Task8 loops
+uint32_t Count7_SerialStatus;  // number of times Task7 loops
+uint32_t Count8_SerialStatus;  // number of times Task8 loops
 uint32_t CountIdle;  // number of times Idle_Task loops
 
 int32_t Task78Sync;
@@ -72,21 +72,14 @@ void Task1_PIRB(void){	//Edge triggered task
 		OS_EdgeTrigger_Restart(PortC,GPIO_PIN_7);
   }
 }
-void Task2(void){		//Edge triggered task PF0
-  Count2 = 0;
+void Task2_ToggleLED(void){  //Periodic task
+  Count2_ToggleLED = 0;
+	uint8_t LED_Status = 0;
   while(1){
-		OS_Wait(&SemPortF.pin0); // signaled in OS on button touch
-		OS_Sleep(50); //sleep to debounce switch		
-		if(!GPIOPinRead(GPIO_PORTF_BASE,GPIO_INT_PIN_0)) {   
-			Profile_Toggle2();
-			Count2++;
-		}
-		OS_EdgeTrigger_Restart(PortF,GPIO_PIN_0);
-		/*
-		Count2++;
-		Profile_Toggle2();
-		OS_Sleep(50);
-		*/
+		OS_Wait(&PerTask[0].semaphore);
+		Count2_ToggleLED++;
+		GPIO_SetPin(PortF,GPIO_PIN_2,LED_Status);
+		LED_Status ^= GPIO_PIN_2; //toggle
 	}
 }
 void Task3(void){	 //response to task PF4
@@ -150,26 +143,35 @@ void Task6(void){
 	}
 }
 
-void Task7_SerialStatus(void){
+void Task7_BlankTask(void){
 	Count7_SerialStatus = 0;
 	while(1){
 		OS_Wait(&SerialMonitor);
 		Count7_SerialStatus++;
-		UART0_SendString("System status is: ");
+		UART0_SendString("Task7 goes to sleep 5 seconds... ");
 		UART0_SendNewLine();
 		OS_Signal(&SerialMonitor);
-		//OS_Sleep(500);		
+		OS_Sleep(5000);
+		OS_Wait(&SerialMonitor);
+		UART0_SendString("... Task7 waked up after 5 seconds.");
+		UART0_SendNewLine();
+		OS_Signal(&SerialMonitor);
+		OS_Sleep(100);
 	}
 }
 
-void Task8_SerialCommand(void){
+void Task8_SerialStatus(void){
+Count8_SerialStatus = 0;
 	while(1){
-//		OS_Wait(&SerialMonitor);
-//		UART0_SendNewLine();
-//		UART0_SendString("Please input any command: ");
-//		UART0_SendNewLine();
-//		OS_Signal(&SerialMonitor);
-		//OS_Sleep(50);	
+		OS_Wait(&PerTask[1].semaphore);
+		OS_Wait(&SerialMonitor);
+		Count8_SerialStatus++;
+		UART0_SendNewLine();
+		UART0_SendString("System startup since ");
+		UART0_SendUDecimal(Count8_SerialStatus);
+		UART0_SendString(" seconds.");		
+		UART0_SendNewLine();
+		OS_Signal(&SerialMonitor);
 	}
 }
 
@@ -199,14 +201,15 @@ int main(void){
 	//OS_EdgeTrigger_Init(PortF,GPIO_PIN_0|GPIO_PIN_4,INT_PRIO_PIN,GPIO_FALLING_EDGE,GPIO_PIN_TYPE_STD_WPU);
 	
 	//5
-	OS_AddPeriodicEventThread(&PerTask[0].semaphore, 1000);
-	//OS_AddPeriodicEventThread(&PerTask[1].semaphore, 50);
+	OS_AddPeriodicEventThread(&PerTask[0].semaphore, 2000);
+	OS_AddPeriodicEventThread(&PerTask[1].semaphore, 1000);
 	
 	//6
   OS_AddThreads(&Task0_PIRA, 15,
-	              &Task1_PIRB, 15,
-								&Task7_SerialStatus,250,
-                &Task8_SerialCommand,252,
+	              &Task1_PIRB, 10,
+								&Task2_ToggleLED,50,
+								&Task7_BlankTask,150,
+                &Task8_SerialStatus,250,
 	              &Idle_Task,254);	//Idle task is lowest priority
 	//7
 	/*OS_FIFO_Init(&FifoA);
@@ -215,7 +218,7 @@ int main(void){
 	OS_InitSemaphore(&Task87Sync,0);*/
   //9
 	UART0_Init();
-	
+	GPIO_InitPortOutput(PortF,GPIO_PIN_2);
 	OS_Launch(SysCtlClockGet()/THREADFREQ); // doesn't return, interrupts enabled in here
   return 0;  // this never executes
 }

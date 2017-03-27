@@ -14,6 +14,8 @@ SET CPU_CLOCK=0x00B71B00
 "F:\0_Tools\Keil_v5\ARM\ARMCC\Bin\ArmCC" --Via ".\generated\objects\profile.__i"
 "F:\0_Tools\Keil_v5\ARM\ARMCC\Bin\ArmCC" --Via "generated\listings\uart_handler._ip"
 "F:\0_Tools\Keil_v5\ARM\ARMCC\Bin\ArmCC" --Via ".\generated\objects\uart_handler.__i"
+"F:\0_Tools\Keil_v5\ARM\ARMCC\Bin\ArmCC" --Via "generated\listings\gpio_handler._ip"
+"F:\0_Tools\Keil_v5\ARM\ARMCC\Bin\ArmCC" --Via ".\generated\objects\gpio_handler.__i"
 "F:\0_Tools\Keil_v5\ARM\ARMCC\Bin\ArmAsm" --Via ".\generated\objects\startup_tm4c123._ia"
 "F:\0_Tools\Keil_v5\ARM\ARMCC\Bin\ArmCC" --Via "generated\listings\system_tm4c123._ip"
 "F:\0_Tools\Keil_v5\ARM\ARMCC\Bin\ArmCC" --Via ".\generated\objects\system_tm4c123.__i"

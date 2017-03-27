@@ -2286,8 +2286,8 @@ void OS_Init(uint8_t clock_Mhz);
 
 int OS_AddThreads(void(*thread0)(void), uint32_t p0,
                   void(*thread1)(void), uint32_t p1,
+									void(*thread2)(void), uint32_t p2,
                   
-
 
 
 
@@ -2678,9 +2678,9 @@ void static runsleep(void);
 
 
 
-tcbType tcbs[5];  
+tcbType tcbs[6];  
 tcbType *RunPt;  
-int32_t Stacks[5][100];  
+int32_t Stacks[6][100];  
 ptcbType PerTask[2];  
 uint8_t Periodic_Event_Nr = 0;	
 void (*OS_PeriodicTask[2])(void);   
@@ -2734,8 +2734,8 @@ void SetInitialStack(int i){
 
 int OS_AddThreads(void(*thread0)(void), uint32_t p0,
                   void(*thread1)(void), uint32_t p1,
+									void(*thread2)(void), uint32_t p2,
                   
-
 
 
 
@@ -2751,19 +2751,19 @@ int OS_AddThreads(void(*thread0)(void), uint32_t p0,
 	
 	tcbs[0].next = &tcbs[1];	
 	tcbs[1].next = &tcbs[2];	
+	tcbs[2].next = &tcbs[3];	
 	
-
 
 
 
 
  
-	tcbs[2].next = &tcbs[3];	
 	tcbs[3].next = &tcbs[4];	
-	tcbs[4].next = &tcbs[0];	
+	tcbs[4].next = &tcbs[5];	
+	tcbs[5].next = &tcbs[0];	
 	
 	
-	for(i=0; i< 5; i++){tcbs[i].blocked = 0;}
+	for(i=0; i< 6; i++){tcbs[i].blocked = 0;}
 	
 	
 	RunPt = &tcbs[0];
@@ -2773,6 +2773,8 @@ int OS_AddThreads(void(*thread0)(void), uint32_t p0,
 	Stacks[0][100-2] = (int32_t)(thread0);	
 	SetInitialStack(1);	
 	Stacks[1][100-2] = (int32_t)(thread1);	
+	SetInitialStack(2);	
+	Stacks[2][100-2] = (int32_t)(thread2);	
 	
 
 
@@ -2782,30 +2784,28 @@ int OS_AddThreads(void(*thread0)(void), uint32_t p0,
 
 
 
-
-
  
-	SetInitialStack(7);	
-	Stacks[7][100-2] = (int32_t)(thread7);	
-	SetInitialStack(1);	
-	Stacks[1][100-2] = (int32_t)(thread8);	
-	SetInitialStack(2);	
-	Stacks[2][100-2] = (int32_t)(thread9);	
+	SetInitialStack(3);	
+	Stacks[3][100-2] = (int32_t)(thread7);	
+	SetInitialStack(4);	
+	Stacks[4][100-2] = (int32_t)(thread8);	
+	SetInitialStack(5);	
+	Stacks[5][100-2] = (int32_t)(thread9);	
 
 	
 	
 	tcbs[0].priority = p0;
 	tcbs[1].priority = p1;
+	tcbs[2].priority = p2;
 	
 
 
 
 
-
  
-	tcbs[2].priority = p7;
-	tcbs[3].priority = p8;
-	tcbs[4].priority = p9;
+	tcbs[3].priority = p7;
+	tcbs[4].priority = p8;
+	tcbs[5].priority = p9;
 	
 	EndCritical(status);	
 	return 1;         
@@ -3006,7 +3006,7 @@ int OS_AddPeriodicEventThread(int32_t *semaPt, uint32_t period){
 void static runsleep(void){
 
 	uint8_t i;
-	for (i=0;i<5;i++){ 
+	for (i=0;i<6;i++){ 
 		if(tcbs[i].sleep != 0) {	
 			tcbs[i].sleep --;	
 		}

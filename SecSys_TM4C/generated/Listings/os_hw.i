@@ -500,8 +500,8 @@ void OS_Init(uint8_t clock_Mhz);
 
 int OS_AddThreads(void(*thread0)(void), uint32_t p0,
                   void(*thread1)(void), uint32_t p1,
+									void(*thread2)(void), uint32_t p2,
                   
-
 
 
 

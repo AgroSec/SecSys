@@ -335,7 +335,7 @@
               <MiscControls></MiscControls>
               <Define>rvmdk PART_TM4C123GH6PM TARGET_IS_TM4C123_RA1</Define>
               <Undefine></Undefine>
-              <IncludePath>.\inc;.\OS;.\3rd_party;..\..\TivaWare_C_Series-2.1.1.71;.\modules;.\drivers\uart_handler</IncludePath>
+              <IncludePath>.\inc;.\OS;.\3rd_party;..\..\TivaWare_C_Series-2.1.1.71;.\modules;.\drivers\uart_handler;.\drivers\gpio_handler</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -451,6 +451,11 @@
               <FileName>uart_handler.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\drivers\uart_handler\uart_handler.c</FilePath>
+            </File>
+            <File>
+              <FileName>gpio_handler.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\drivers\gpio_handler\gpio_handler.c</FilePath>
             </File>
           </Files>
         </Group>
