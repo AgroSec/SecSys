@@ -436,10 +436,31 @@ void WaitForInterrupt(void);
 
 
 
-#line 38 ".\\OS\\os_config.h"
 
 
-#line 52 ".\\OS\\os_config.h"
+
+
+
+
+
+
+
+
+
+#line 51 ".\\OS\\os_config.h"
+
+
+
+
+
+
+
+#line 66 ".\\OS\\os_config.h"
+
+
+#line 80 ".\\OS\\os_config.h"
+
+#line 98 ".\\OS\\os_config.h"
 
 
 
@@ -495,12 +516,10 @@ void OS_Init(uint8_t clock_Mhz);
 int OS_AddThreads(void(*thread0)(void), uint32_t p0,
                   void(*thread1)(void), uint32_t p1,
 									void(*thread2)(void), uint32_t p2,
-                  
-
-
-
-
- 
+									void(*thread3)(void), uint32_t p3,
+                  void(*thread4)(void), uint32_t p4,
+                  void(*thread5)(void), uint32_t p5,
+                  void(*thread6)(void), uint32_t p6,
 									void(*thread7)(void), uint32_t p7,
                   void(*thread8)(void), uint32_t p8,
                   void(*thread9)(void), uint32_t p9);
@@ -2668,21 +2687,32 @@ uint8_t Profile_Get(void);
 
 #line 14 "main.c"
  
-#line 1 ".\\drivers\\gpio_handler\\gpio_handler.h"
+#line 1 ".\\drivers\\startup_handler\\startup_handler.h"
 
 
 
 
  
-#line 7 ".\\drivers\\gpio_handler\\gpio_handler.h"
-
- 
-uint8_t GPIO_InitPortOutput(ports_t port, uint8_t pin);
-uint8_t GPIO_SetPin(ports_t port, uint8_t pin, uint8_t status);
-
+void InitDrivers(void);
+void InitApplications(void);
 
 
 #line 16 "main.c"
+#line 1 ".\\drivers\\cyclic_activity_handler\\cyclic_activity_handler.h"
+
+
+
+
+ 
+void CYCL_10ms(void);
+void CYCL_50ms(void);
+void CYCL_100ms(void);
+void CYCL_500ms(void);
+void CYCL_1000ms(void);
+
+
+#line 17 "main.c"
+
 #line 1 ".\\drivers\\uart_handler\\uart_handler.h"
 
 
@@ -2711,19 +2741,20 @@ uint32_t UART0_GetUHex(void);
 
 
 
-#line 17 "main.c"
+#line 19 "main.c"
+
 
 
 uint32_t Count0_PIRA;  
 uint32_t Count1_PIRB;  
-uint32_t Count2_ToggleLED;  
-uint32_t Count3;   
-uint32_t Count4;   
-uint32_t Count5;   
-uint32_t Count6;   
-uint32_t Count7_SerialStatus;  
-uint32_t Count8_SerialStatus;  
-uint32_t CountIdle;  
+uint32_t Count2_Cyclic10ms;   
+uint32_t Count3_Cyclic50ms;   
+uint32_t Count4_Cyclic100ms;  
+uint32_t Count5_Cyclic500ms;  
+uint32_t Count6_Cyclic1000ms; 
+uint32_t Count7_Blank; 
+uint32_t Count8_Blank; 
+uint32_t CountIdle;    
 
 int32_t Task78Sync;
 int32_t Task87Sync;
@@ -2731,7 +2762,7 @@ int32_t SerialMonitor;
 
 fifo_t FifoA;
 
-extern ptcbType PerTask[2];
+extern ptcbType PerTask[10];
 extern PortSema_t SemPortC;
 extern PortSema_t SemPortD;
 extern PortSema_t SemPortF;
@@ -2743,6 +2774,7 @@ void Task0_PIRA(void){
 		OS_Sleep(50); 
 		if(GPIOPinRead(0x40006000,0x00000040)) {   
 			Count0_PIRA++;
+			(((*((volatile uint32_t *)0x40024008)) ^= 0x02));
 			OS_Wait(&SerialMonitor);
 			UART0_SendString("PIR A Triggered a number of: ");
 			UART0_SendUDecimal(Count0_PIRA);
@@ -2760,6 +2792,7 @@ void Task1_PIRB(void){
 		OS_Sleep(50); 
 		if(GPIOPinRead(0x40006000,0x00000080)) {
 			Count1_PIRB++;
+			(((*((volatile uint32_t *)0x40024010)) ^= 0x04));
 			OS_Wait(&SerialMonitor);
 			UART0_SendString("PIR B Triggered a number of: ");
 			UART0_SendUDecimal(Count1_PIRB);
@@ -2770,106 +2803,71 @@ void Task1_PIRB(void){
 		OS_EdgeTrigger_Restart(PortC,0x00000080);
   }
 }
-void Task2_ToggleLED(void){  
-  Count2_ToggleLED = 0;
+void Task2_Cyclic10ms(void){  
+  Count2_Cyclic10ms = 0;
 	uint8_t LED_Status = 0;
   while(1){
 		OS_Wait(&PerTask[0].semaphore);
-		Count2_ToggleLED++;
-		GPIO_SetPin(PortF,0x00000004,LED_Status);
-		LED_Status ^= 0x00000004; 
+		CYCL_10ms();
+		Count2_Cyclic10ms++;
+		(((*((volatile uint32_t *)0x40024020)) ^= 0x08));
 	}
 }
-void Task3(void){	 
-  Count3 = 0;
+void Task3_Cyclic50ms(void){  
+  Count3_Cyclic50ms = 0;
   while(1){
-		OS_Wait(&SemPortF.pin4); 
-		OS_Sleep(50); 
-		if(!GPIOPinRead(0x40025000,0x00000010)) {   
-			((*((volatile uint32_t *)0x40025008)) ^= 0x02);
-			Count3++;
-		}
-		OS_EdgeTrigger_Restart(PortF,0x00000010);
-		
-
-
-
- 
+		OS_Wait(&PerTask[1].semaphore);
+		CYCL_50ms();
+		Count3_Cyclic50ms++;
+		(((*((volatile uint32_t *)0x40025008)) ^= 0x02));	
 	}
 }
 
-void Task4(void){	 
-	Count4 = 0;
+void Task4_Cyclic100ms(void){  
+	Count4_Cyclic100ms = 0;
   while(1){
-		OS_Wait(&SemPortD.pin6); 
-		OS_Sleep(50); 
-		if(!GPIOPinRead(0x40007000,0x00000040)) {   
-			((*((volatile uint32_t *)0x40024004)) ^= 0x01);
-			Count4++;
-		}
-		OS_EdgeTrigger_Restart(PortD,0x00000040);
-		
-		
-		
-		
+		OS_Wait(&PerTask[2].semaphore);
+		CYCL_100ms();
+		Count4_Cyclic100ms++;
+		(((*((volatile uint32_t *)0x40024004)) ^= 0x01));	
 	}
 }
 
-void Task5(void){	 
-	Count5 = 0;
+void Task5_Cyclic500ms(void){  
+	Count5_Cyclic500ms = 0;
   while(1){
-		OS_Wait(&SemPortD.pin7); 
-		OS_Sleep(50); 
-		if(!GPIOPinRead(0x40007000,0x00000080)) {   
-			((*((volatile uint32_t *)0x40006080)) ^= 0x20);
-			Count5++;
-		}
-		OS_EdgeTrigger_Restart(PortD,0x00000080);
-		
-		
-		
-		
+		OS_Wait(&PerTask[3].semaphore);
+		CYCL_500ms();
+		Count5_Cyclic500ms++;
+		(((*((volatile uint32_t *)0x40006080)) ^= 0x20));
 	}
 }
 
-void Task6(void){
-	Count6 = 0;
+void Task6_Cyclic1000ms(void){
+	Count6_Cyclic1000ms = 0;
 	while(1){
-		Count6++;
-		
-		OS_Sleep(500);
+		OS_Wait(&PerTask[4].semaphore);
+		CYCL_1000ms();
+		Count6_Cyclic1000ms++;
+		(((*((volatile uint32_t *)0x40006200)) ^= 0x80));
 	}
 }
 
 void Task7_BlankTask(void){
-	Count7_SerialStatus = 0;
+	Count7_Blank = 0;
 	while(1){
-		OS_Wait(&SerialMonitor);
-		Count7_SerialStatus++;
-		UART0_SendString("Task7 goes to sleep 5 seconds... ");
-		UART0_SendNewLine();
-		OS_Signal(&SerialMonitor);
-		OS_Sleep(5000);
-		OS_Wait(&SerialMonitor);
-		UART0_SendString("... Task7 waked up after 5 seconds.");
-		UART0_SendNewLine();
-		OS_Signal(&SerialMonitor);
-		OS_Sleep(100);
+		Count7_Blank++;
+		(((*((volatile uint32_t *)0x40024008)) ^= 0x02));
+		OS_Sleep(1000);
 	}
 }
 
-void Task8_SerialStatus(void){
-Count8_SerialStatus = 0;
+void Task8_BlankTask(void){
+Count8_Blank = 0;
 	while(1){
-		OS_Wait(&PerTask[1].semaphore);
-		OS_Wait(&SerialMonitor);
-		Count8_SerialStatus++;
-		UART0_SendNewLine();
-		UART0_SendString("System startup since ");
-		UART0_SendUDecimal(Count8_SerialStatus);
-		UART0_SendString(" seconds.");		
-		UART0_SendNewLine();
-		OS_Signal(&SerialMonitor);
+		Count8_Blank++;
+		(((*((volatile uint32_t *)0x40024010)) ^= 0x04));
+		OS_Sleep(1000);
 	}
 }
 
@@ -2899,24 +2897,32 @@ int main(void){
 	
 	
 	
-	OS_AddPeriodicEventThread(&PerTask[0].semaphore, 2000);
-	OS_AddPeriodicEventThread(&PerTask[1].semaphore, 1000);
+	OS_AddPeriodicEventThread(&PerTask[0].semaphore, 10);
+	OS_AddPeriodicEventThread(&PerTask[1].semaphore, 50);
+	OS_AddPeriodicEventThread(&PerTask[2].semaphore, 100);
+	OS_AddPeriodicEventThread(&PerTask[3].semaphore, 500);
+	OS_AddPeriodicEventThread(&PerTask[4].semaphore, 1000);
 	
 	
-  OS_AddThreads(&Task0_PIRA, 15,
-	              &Task1_PIRB, 10,
-								&Task2_ToggleLED,50,
-								&Task7_BlankTask,150,
-                &Task8_SerialStatus,250,
-	              &Idle_Task,254);	
+  OS_AddThreads(&Task0_PIRA, (5),
+	              &Task1_PIRB, (5),
+								&Task2_Cyclic10ms,  (10),
+								&Task3_Cyclic50ms,  (100),
+								&Task4_Cyclic100ms, (150),
+								&Task5_Cyclic500ms, (200),
+								&Task6_Cyclic1000ms,(250),
+								&Task7_BlankTask,(253),
+                &Task8_BlankTask,(253),
+	              &Idle_Task,(254));	
 	
 	
 
 
  
   
-	UART0_Init();
-	GPIO_InitPortOutput(PortF,0x00000004);
+	InitDrivers();
+	InitApplications();
+	
 	OS_Launch(SysCtlClockGet()/1000); 
   return 0;  
 }

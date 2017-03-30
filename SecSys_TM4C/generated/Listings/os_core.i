@@ -400,7 +400,7 @@ void WaitForInterrupt(void);
 
 
 
-#line 160 "OS\\os_core.h"
+#line 158 "OS\\os_core.h"
 
 #line 14 "OS\\os_hw.h"
 #line 1 "OS\\os_config.h"
@@ -433,10 +433,31 @@ void WaitForInterrupt(void);
 
 
 
-#line 38 "OS\\os_config.h"
 
 
-#line 52 "OS\\os_config.h"
+
+
+
+
+
+
+
+
+
+#line 51 "OS\\os_config.h"
+
+
+
+
+
+
+
+#line 66 "OS\\os_config.h"
+
+
+#line 80 "OS\\os_config.h"
+
+#line 98 "OS\\os_config.h"
 
 
 
@@ -2287,12 +2308,10 @@ void OS_Init(uint8_t clock_Mhz);
 int OS_AddThreads(void(*thread0)(void), uint32_t p0,
                   void(*thread1)(void), uint32_t p1,
 									void(*thread2)(void), uint32_t p2,
-                  
-
-
-
-
- 
+									void(*thread3)(void), uint32_t p3,
+                  void(*thread4)(void), uint32_t p4,
+                  void(*thread5)(void), uint32_t p5,
+                  void(*thread6)(void), uint32_t p6,
 									void(*thread7)(void), uint32_t p7,
                   void(*thread8)(void), uint32_t p8,
                   void(*thread9)(void), uint32_t p9);
@@ -2678,10 +2697,10 @@ void static runsleep(void);
 
 
 
-tcbType tcbs[6];  
+tcbType tcbs[10];  
 tcbType *RunPt;  
-int32_t Stacks[6][100];  
-ptcbType PerTask[2];  
+int32_t Stacks[10][100];  
+ptcbType PerTask[10];  
 uint8_t Periodic_Event_Nr = 0;	
 void (*OS_PeriodicTask[2])(void);   
 
@@ -2734,13 +2753,11 @@ void SetInitialStack(int i){
 
 int OS_AddThreads(void(*thread0)(void), uint32_t p0,
                   void(*thread1)(void), uint32_t p1,
-									void(*thread2)(void), uint32_t p2,
-                  
-
-
-
-
- 
+									void(*thread2)(void), uint32_t p2,               
+									void(*thread3)(void), uint32_t p3,
+                  void(*thread4)(void), uint32_t p4,
+                  void(*thread5)(void), uint32_t p5,
+                  void(*thread6)(void), uint32_t p6,
 									void(*thread7)(void), uint32_t p7,
                   void(*thread8)(void), uint32_t p8,
                   void(*thread9)(void), uint32_t p9){
@@ -2752,18 +2769,16 @@ int OS_AddThreads(void(*thread0)(void), uint32_t p0,
 	tcbs[0].next = &tcbs[1];	
 	tcbs[1].next = &tcbs[2];	
 	tcbs[2].next = &tcbs[3];	
-	
-
-
-
-
- 
 	tcbs[3].next = &tcbs[4];	
 	tcbs[4].next = &tcbs[5];	
-	tcbs[5].next = &tcbs[0];	
+	tcbs[5].next = &tcbs[6];	
+	tcbs[6].next = &tcbs[7];	
+	tcbs[7].next = &tcbs[8];	
+	tcbs[8].next = &tcbs[9];	
+	tcbs[9].next = &tcbs[0];	
 	
 	
-	for(i=0; i< 6; i++){tcbs[i].blocked = 0;}
+	for(i=0; i< 10; i++){tcbs[i].blocked = 0;}
 	
 	
 	RunPt = &tcbs[0];
@@ -2775,37 +2790,33 @@ int OS_AddThreads(void(*thread0)(void), uint32_t p0,
 	Stacks[1][100-2] = (int32_t)(thread1);	
 	SetInitialStack(2);	
 	Stacks[2][100-2] = (int32_t)(thread2);	
-	
-
-
-
-
-
-
-
-
- 
 	SetInitialStack(3);	
-	Stacks[3][100-2] = (int32_t)(thread7);	
+	Stacks[3][100-2] = (int32_t)(thread3);	
 	SetInitialStack(4);	
-	Stacks[4][100-2] = (int32_t)(thread8);	
+	Stacks[4][100-2] = (int32_t)(thread4);	
 	SetInitialStack(5);	
-	Stacks[5][100-2] = (int32_t)(thread9);	
+	Stacks[5][100-2] = (int32_t)(thread5);	
+	SetInitialStack(6);	
+	Stacks[6][100-2] = (int32_t)(thread6);	
+	SetInitialStack(7);	
+	Stacks[7][100-2] = (int32_t)(thread7);	
+	SetInitialStack(8);	
+	Stacks[8][100-2] = (int32_t)(thread8);	
+	SetInitialStack(9);	
+	Stacks[9][100-2] = (int32_t)(thread9);	
 
 	
 	
 	tcbs[0].priority = p0;
 	tcbs[1].priority = p1;
 	tcbs[2].priority = p2;
-	
-
-
-
-
- 
-	tcbs[3].priority = p7;
-	tcbs[4].priority = p8;
-	tcbs[5].priority = p9;
+	tcbs[3].priority = p3;
+	tcbs[4].priority = p4;
+	tcbs[5].priority = p5;
+	tcbs[6].priority = p6;
+	tcbs[7].priority = p7;
+	tcbs[8].priority = p8;
+	tcbs[9].priority = p9;
 	
 	EndCritical(status);	
 	return 1;         
@@ -2990,8 +3001,7 @@ uint32_t OS_FIFO_Get(fifo_t *fifo){uint32_t data;
 
 
 int OS_AddPeriodicEventThread(int32_t *semaPt, uint32_t period){
-	
-	if(Periodic_Event_Nr < 2) {
+	if(Periodic_Event_Nr < 10) {
 		OS_InitSemaphore(semaPt,0);
 		PerTask[Periodic_Event_Nr].period = period;
 		PerTask[Periodic_Event_Nr].counter = 10;
@@ -3006,7 +3016,7 @@ int OS_AddPeriodicEventThread(int32_t *semaPt, uint32_t period){
 void static runsleep(void){
 
 	uint8_t i;
-	for (i=0;i<6;i++){ 
+	for (i=0;i<10;i++){ 
 		if(tcbs[i].sleep != 0) {	
 			tcbs[i].sleep --;	
 		}

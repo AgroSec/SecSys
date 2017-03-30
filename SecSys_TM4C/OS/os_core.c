@@ -79,13 +79,11 @@ void SetInitialStack(int i){
 // This function will only be called once, after OS_Init and before OS_Launch
 int OS_AddThreads(void(*thread0)(void), uint32_t p0,
                   void(*thread1)(void), uint32_t p1,
-									void(*thread2)(void), uint32_t p2,
-                  /*
+									void(*thread2)(void), uint32_t p2,               
 									void(*thread3)(void), uint32_t p3,
                   void(*thread4)(void), uint32_t p4,
                   void(*thread5)(void), uint32_t p5,
                   void(*thread6)(void), uint32_t p6,
-                  */
 									void(*thread7)(void), uint32_t p7,
                   void(*thread8)(void), uint32_t p8,
                   void(*thread9)(void), uint32_t p9){
@@ -97,15 +95,13 @@ int OS_AddThreads(void(*thread0)(void), uint32_t p0,
 	tcbs[0].next = &tcbs[1];	//main thread 0 points to main thread 1
 	tcbs[1].next = &tcbs[2];	//main thread 1 points to main thread 2
 	tcbs[2].next = &tcbs[3];	//main thread 2 points to main thread 3	
-	/*
 	tcbs[3].next = &tcbs[4];	//main thread 3 points to main thread 4
 	tcbs[4].next = &tcbs[5];	//main thread 4 points to main thread 5
 	tcbs[5].next = &tcbs[6];	//main thread 5 points to main thread 6
 	tcbs[6].next = &tcbs[7];	//main thread 6 points to main thread 7
-	*/
-	tcbs[3].next = &tcbs[4];	//main thread 7 points to main thread 8
-	tcbs[4].next = &tcbs[5];	//main thread 8 points to main thread 9
-	tcbs[5].next = &tcbs[0];	//main thread 9 points to main thread 0
+	tcbs[7].next = &tcbs[8];	//main thread 7 points to main thread 8
+	tcbs[8].next = &tcbs[9];	//main thread 8 points to main thread 9
+	tcbs[9].next = &tcbs[0];	//main thread 9 points to main thread 0
 	
 	//initialize threads as not blocked									
 	for(i=0; i< NUMTHREADS; i++){tcbs[i].blocked = 0;}
@@ -120,7 +116,6 @@ int OS_AddThreads(void(*thread0)(void), uint32_t p0,
 	Stacks[1][STACKSIZE-2] = (int32_t)(thread1);	//Set address of thread 1 as PC
 	SetInitialStack(2);	//SetInitialStack initial stack of main thread 2
 	Stacks[2][STACKSIZE-2] = (int32_t)(thread2);	//Set address of thread 2 as PC
-	/*
 	SetInitialStack(3);	//SetInitialStack initial stack of main thread 3
 	Stacks[3][STACKSIZE-2] = (int32_t)(thread3);	//Set address of thread 3 as PC
 	SetInitialStack(4);	//SetInitialStack initial stack of main thread 4
@@ -129,28 +124,25 @@ int OS_AddThreads(void(*thread0)(void), uint32_t p0,
 	Stacks[5][STACKSIZE-2] = (int32_t)(thread5);	//Set address of thread 5 as PC	
 	SetInitialStack(6);	//SetInitialStack initial stack of main thread 6
 	Stacks[6][STACKSIZE-2] = (int32_t)(thread6);	//Set address of thread 6 as PC
-	*/
-	SetInitialStack(3);	//SetInitialStack initial stack of main thread 7
-	Stacks[3][STACKSIZE-2] = (int32_t)(thread7);	//Set address of thread 7 as PC
-	SetInitialStack(4);	//SetInitialStack initial stack of main thread 8
-	Stacks[4][STACKSIZE-2] = (int32_t)(thread8);	//Set address of thread 8 as PC
-	SetInitialStack(5);	//SetInitialStack initial stack of main thread 9
-	Stacks[5][STACKSIZE-2] = (int32_t)(thread9);	//Set address of thread 9 as PC
+	SetInitialStack(7);	//SetInitialStack initial stack of main thread 7
+	Stacks[7][STACKSIZE-2] = (int32_t)(thread7);	//Set address of thread 7 as PC
+	SetInitialStack(8);	//SetInitialStack initial stack of main thread 8
+	Stacks[8][STACKSIZE-2] = (int32_t)(thread8);	//Set address of thread 8 as PC
+	SetInitialStack(9);	//SetInitialStack initial stack of main thread 9
+	Stacks[9][STACKSIZE-2] = (int32_t)(thread9);	//Set address of thread 9 as PC
 
 	
 	//initialize priority for each thread
 	tcbs[0].priority = p0;
 	tcbs[1].priority = p1;
 	tcbs[2].priority = p2;
-	/*
 	tcbs[3].priority = p3;
 	tcbs[4].priority = p4;
 	tcbs[5].priority = p5;
 	tcbs[6].priority = p6;
-	*/
-	tcbs[3].priority = p7;
-	tcbs[4].priority = p8;
-	tcbs[5].priority = p9;
+	tcbs[7].priority = p7;
+	tcbs[8].priority = p8;
+	tcbs[9].priority = p9;
 	
 	EndCritical(status);	//Enable Interrupts
 	return 1;         // successful
@@ -335,7 +327,6 @@ uint32_t OS_FIFO_Get(fifo_t *fifo){uint32_t data;
 // Outputs: 1 if OK
 //          0 if ERROR
 int OS_AddPeriodicEventThread(int32_t *semaPt, uint32_t period){
-	//int32_t static event_number = 0;
 	if(Periodic_Event_Nr < NUMPERIODIC) {
 		OS_InitSemaphore(semaPt,0);
 		PerTask[Periodic_Event_Nr].period = period;

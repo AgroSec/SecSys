@@ -14,12 +14,40 @@
 #define TARGET_TM4C
 //#define TARGET_MSP432
 
+//If PROFILE_DEBUG is set, specific pins are toggled at every task execution
+//Use only for OS task scheduler debugging, since these pins can be used by applications as well
+//If that is the case, deactivate the application while debugging the OS
+// The following pins were selected to be Profile pins:
+// J3.27/PE1 Profile 0
+// J3.28/PE2 Profile 1
+// J3.29/PE3 Profile 2
+// J3.30/PF1 Profile 3
+// J2.18/PE0 Profile 4
+// J4.36/PC5 Profile 5
+// J4.34/PC7 Profile 6
+#define PROFILE_DEBUG (0)
+
 //Define the frequency of the scheduler, in version 1.2 only 1000 Hz is supported
 #define THREADFREQ 1000   // frequency in Hz
 
 //Define number of threads and number of periodic event threads
-#define NUMTHREADS  6  // maximum number of threads
-#define NUMPERIODIC 2 // maximum number of periodic threads
+#define NUMTHREADS  10  // maximum number of threads
+#define NUMPERIODIC NUMTHREADS // number of periodic threads
+//for less chance of human configuration error, it's defined to be equal to nr of threads in the OS
+//however it will take up more memory at compile time
+
+//Task priority definition: 0 - Highest priorty, 254 - Lowest priority
+//Idle_Task must have the lowest priority
+#define TASK0_PRIO (5)
+#define TASK1_PRIO (5)
+#define TASK2_PRIO (10)
+#define TASK3_PRIO (100)
+#define TASK4_PRIO (150)
+#define TASK5_PRIO (200)
+#define TASK6_PRIO (250)
+#define BLANK_TASK_PRIO (253)
+#define BLANK_TASK_PRIO (253)
+#define IDLE_TASK_PRIO (254)
 
 //Number of OS embedded periodic tasks, DO NOT modify this if you are not changing the OS.
 //This needed for OS to run (i.e. runsleep, runperiodicevents)
@@ -27,7 +55,7 @@
 #define NUM_OS_PERIODIC_TASK 2 
 
 //Configure the OS
-#define STACKSIZE   100      // number of 32-bit words in stack per thread
+#define STACKSIZE 100  // number of 32-bit words in stack per thread
 #define FSIZE 10  // general FIFO size
 #define STARTUP_DELAY 10
 #define INT_PRIO_PIN (0)  //HW pin interrupt priority for external HW events
@@ -49,6 +77,24 @@
 #define GPIO_PORTE_CR_R         (*((volatile uint32_t *)0x40024524))
 #define GPIO_PORTF_LOCK_R       (*((volatile uint32_t *)0x40025520))
 #define GPIO_PORTF_CR_R         (*((volatile uint32_t *)0x40025524))
+
+#ifdef PROFILE_DEBUG		
+	#define Toggle0() (Profile_Toggle0())
+	#define Toggle1() (Profile_Toggle1())
+	#define Toggle2() (Profile_Toggle2())
+	#define Toggle3() (Profile_Toggle3())
+	#define Toggle4() (Profile_Toggle4())
+	#define Toggle5() (Profile_Toggle5())
+ 	#define Toggle6() (Profile_Toggle6())
+#else
+	#define Toggle0()
+	#define Toggle1()
+	#define Toggle2()
+	#define Toggle3()
+	#define Toggle4()
+	#define Toggle5()
+	#define Toggle6()
+#endif	
 
 #endif
 //EOF

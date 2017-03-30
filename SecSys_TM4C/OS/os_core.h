@@ -63,12 +63,10 @@ void OS_Init(uint8_t clock_Mhz);
 int OS_AddThreads(void(*thread0)(void), uint32_t p0,
                   void(*thread1)(void), uint32_t p1,
 									void(*thread2)(void), uint32_t p2,
-                  /*
 									void(*thread3)(void), uint32_t p3,
                   void(*thread4)(void), uint32_t p4,
                   void(*thread5)(void), uint32_t p5,
                   void(*thread6)(void), uint32_t p6,
-                  */
 									void(*thread7)(void), uint32_t p7,
                   void(*thread8)(void), uint32_t p8,
                   void(*thread9)(void), uint32_t p9);

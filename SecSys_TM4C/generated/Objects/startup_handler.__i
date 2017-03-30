@@ -3,4 +3,4 @@
 -IF:\0_Tools\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0-Beta12\CMSIS\Include
 -IF:\0_Tools\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C123
 -D__UVISION_VERSION="521" -D_RTE_ -DTM4C123GH6PM -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RA1
--o .\generated\objects\gpio_handler.o --omf_browse .\generated\objects\gpio_handler.crf --depend .\generated\objects\gpio_handler.d "drivers\gpio_handler\gpio_handler.c"
+-o .\generated\objects\startup_handler.o --omf_browse .\generated\objects\startup_handler.crf --depend .\generated\objects\startup_handler.d "drivers\startup_handler\startup_handler.c"

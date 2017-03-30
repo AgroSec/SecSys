@@ -335,7 +335,7 @@
               <MiscControls></MiscControls>
               <Define>rvmdk PART_TM4C123GH6PM TARGET_IS_TM4C123_RA1</Define>
               <Undefine></Undefine>
-              <IncludePath>.\inc;.\OS;.\3rd_party;..\..\TivaWare_C_Series-2.1.1.71;.\modules;.\drivers\uart_handler;.\drivers\gpio_handler</IncludePath>
+              <IncludePath>.\inc;.\OS;.\3rd_party;..\..\TivaWare_C_Series-2.1.1.71;.\modules;.\drivers\uart_handler;.\drivers\gpio_handler;.\drivers\cyclic_activity_handler;.\drivers\startup_handler</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -377,6 +377,16 @@
       </TargetOption>
       <Groups>
         <Group>
+          <GroupName>main</GroupName>
+          <Files>
+            <File>
+              <FileName>main.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\main.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>OS</GroupName>
           <Files>
             <File>
@@ -402,12 +412,47 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>main</GroupName>
+          <GroupName>modules</GroupName>
           <Files>
             <File>
-              <FileName>main.c</FileName>
+              <FileName>GSM.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\main.c</FilePath>
+              <FilePath>.\modules\GSM\GSM.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>drivers</GroupName>
+          <Files>
+            <File>
+              <FileName>uart_handler.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\drivers\uart_handler\uart_handler.c</FilePath>
+            </File>
+            <File>
+              <FileName>gpio_handler.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\drivers\gpio_handler\gpio_handler.c</FilePath>
+            </File>
+            <File>
+              <FileName>cyclic_activity_handler.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\drivers\cyclic_activity_handler\cyclic_activity_handler.c</FilePath>
+            </File>
+            <File>
+              <FileName>startup_handler.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\drivers\startup_handler\startup_handler.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>driverlib</GroupName>
+          <Files>
+            <File>
+              <FileName>driverlib.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\TivaWare_C_Series-2.1.1.71\driverlib\rvmdk\driverlib.lib</FilePath>
             </File>
           </Files>
         </Group>
@@ -428,34 +473,6 @@
               <FileName>ssOS_readme.txt</FileName>
               <FileType>5</FileType>
               <FilePath>.\ssOS_readme.txt</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>driverlib</GroupName>
-          <Files>
-            <File>
-              <FileName>driverlib.lib</FileName>
-              <FileType>4</FileType>
-              <FilePath>..\..\TivaWare_C_Series-2.1.1.71\driverlib\rvmdk\driverlib.lib</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>modules</GroupName>
-        </Group>
-        <Group>
-          <GroupName>drivers</GroupName>
-          <Files>
-            <File>
-              <FileName>uart_handler.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\drivers\uart_handler\uart_handler.c</FilePath>
-            </File>
-            <File>
-              <FileName>gpio_handler.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\drivers\gpio_handler\gpio_handler.c</FilePath>
             </File>
           </Files>
         </Group>

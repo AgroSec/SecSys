@@ -16,5 +16,6 @@
 .\generated\objects\main.o: ..\..\TivaWare_C_Series-2.1.1.71\driverlib/timer.h
 .\generated\objects\main.o: ..\..\TivaWare_C_Series-2.1.1.71\driverlib/systick.h
 .\generated\objects\main.o: .\inc\profile.h
-.\generated\objects\main.o: .\drivers\gpio_handler\gpio_handler.h
+.\generated\objects\main.o: .\drivers\startup_handler\startup_handler.h
+.\generated\objects\main.o: .\drivers\cyclic_activity_handler\cyclic_activity_handler.h
 .\generated\objects\main.o: .\drivers\uart_handler\uart_handler.h
