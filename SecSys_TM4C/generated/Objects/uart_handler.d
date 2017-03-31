@@ -2,6 +2,7 @@
 .\generated\objects\uart_handler.o: drivers\uart_handler\uart_handler.h
 .\generated\objects\uart_handler.o: F:\0_Tools\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\generated\objects\uart_handler.o: F:\0_Tools\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\generated\objects\uart_handler.o: .\OS\os_config.h
 .\generated\objects\uart_handler.o: ..\..\TivaWare_C_Series-2.1.1.71\driverlib/sysctl.h
 .\generated\objects\uart_handler.o: ..\..\TivaWare_C_Series-2.1.1.71\driverlib/uart.h
 .\generated\objects\uart_handler.o: ..\..\TivaWare_C_Series-2.1.1.71\driverlib/pin_map.h

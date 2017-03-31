@@ -2727,7 +2727,10 @@ void CYCL_1000ms(void);
 
 #line 19 ".\\drivers\\uart_handler\\uart_handler.h"
 
+
+
  
+
 void UART0_Init(void);
 void UART0_SendChar(uint8_t data);
 void UART0_SendString(uint8_t *pt);
@@ -2740,10 +2743,75 @@ uint32_t UART0_GetUDecimal(void);
 uint32_t UART0_GetUHex(void);
 
 
+void UART2_Init(void);
+void UART2_SendChar(uint8_t data);
+void UART2_SendString(uint8_t *pt);
+void UART2_SendUDecimal(uint32_t n);
+void UART2_SendUHex(uint32_t number);
+void UART2_SendNewLine(void);
+uint8_t UART2_GetChar(void);
+void UART2_GetString(uint8_t *bufPt, uint16_t max);
+uint32_t UART2_GetUDecimal(void);
+uint32_t UART2_GetUHex(void);
+
 
 #line 19 "main.c"
+#line 1 ".\\modules\\GSM\\GSM.h"
 
 
+
+ 
+#line 6 ".\\modules\\GSM\\GSM.h"
+#line 7 ".\\modules\\GSM\\GSM.h"
+#line 1 "..\\SecSys_TM4C\\custom_types.h"
+
+
+
+
+ 
+
+
+
+
+
+ 
+#line 18 "..\\SecSys_TM4C\\custom_types.h"
+
+ 
+typedef struct Xyz
+{
+	char z;
+	char y;
+	char x;
+} Xyz_st;
+
+typedef enum SMS_Message
+{
+	PIR_A = 0,
+	PIR_B,
+	Wire_1_Pull,
+	Wire_1_Cut,
+	Wire_2_Pull,
+	Wire_2_Cut,
+	Wire_3_Pull,
+	Wire_3_Cut,
+	Status,
+	Wrong_Command
+} SMS_Message_en;
+
+
+
+
+#line 8 ".\\modules\\GSM\\GSM.h"
+
+void PowerOnGSM(void);
+void SendSMS(SMS_Message_en message);
+unsigned char ReceiveSMS(void);
+void ReadSMS(void);
+
+
+
+#line 20 "main.c"
 
 uint32_t Count0_PIRA;  
 uint32_t Count1_PIRB;  
@@ -2759,6 +2827,7 @@ uint32_t CountIdle;
 int32_t Task78Sync;
 int32_t Task87Sync;
 int32_t SerialMonitor; 
+int32_t GSMModule; 
 
 fifo_t FifoA;
 
@@ -2774,13 +2843,16 @@ void Task0_PIRA(void){
 		OS_Sleep(50); 
 		if(GPIOPinRead(0x40006000,0x00000040)) {   
 			Count0_PIRA++;
-			(((*((volatile uint32_t *)0x40024008)) ^= 0x02));
+			;
 			OS_Wait(&SerialMonitor);
 			UART0_SendString("PIR A Triggered a number of: ");
 			UART0_SendUDecimal(Count0_PIRA);
 			UART0_SendString(" times.");
 			UART0_SendNewLine();
 			OS_Signal(&SerialMonitor);
+			OS_Wait(&GSMModule);
+			SendSMS(PIR_A);
+			OS_Signal(&GSMModule);
 		}
 		OS_EdgeTrigger_Restart(PortC,0x00000040);
   }
@@ -2792,13 +2864,16 @@ void Task1_PIRB(void){
 		OS_Sleep(50); 
 		if(GPIOPinRead(0x40006000,0x00000080)) {
 			Count1_PIRB++;
-			(((*((volatile uint32_t *)0x40024010)) ^= 0x04));
+			;
 			OS_Wait(&SerialMonitor);
 			UART0_SendString("PIR B Triggered a number of: ");
 			UART0_SendUDecimal(Count1_PIRB);
 			UART0_SendString(" times.");
 			UART0_SendNewLine();
 			OS_Signal(&SerialMonitor);
+			OS_Wait(&GSMModule);
+			SendSMS(PIR_B);
+			OS_Signal(&GSMModule);
 		}
 		OS_EdgeTrigger_Restart(PortC,0x00000080);
   }
@@ -2810,7 +2885,7 @@ void Task2_Cyclic10ms(void){
 		OS_Wait(&PerTask[0].semaphore);
 		CYCL_10ms();
 		Count2_Cyclic10ms++;
-		(((*((volatile uint32_t *)0x40024020)) ^= 0x08));
+		;
 	}
 }
 void Task3_Cyclic50ms(void){  
@@ -2819,7 +2894,7 @@ void Task3_Cyclic50ms(void){
 		OS_Wait(&PerTask[1].semaphore);
 		CYCL_50ms();
 		Count3_Cyclic50ms++;
-		(((*((volatile uint32_t *)0x40025008)) ^= 0x02));	
+		;	
 	}
 }
 
@@ -2829,7 +2904,7 @@ void Task4_Cyclic100ms(void){
 		OS_Wait(&PerTask[2].semaphore);
 		CYCL_100ms();
 		Count4_Cyclic100ms++;
-		(((*((volatile uint32_t *)0x40024004)) ^= 0x01));	
+		;	
 	}
 }
 
@@ -2839,7 +2914,7 @@ void Task5_Cyclic500ms(void){
 		OS_Wait(&PerTask[3].semaphore);
 		CYCL_500ms();
 		Count5_Cyclic500ms++;
-		(((*((volatile uint32_t *)0x40006080)) ^= 0x20));
+		;
 	}
 }
 
@@ -2849,7 +2924,7 @@ void Task6_Cyclic1000ms(void){
 		OS_Wait(&PerTask[4].semaphore);
 		CYCL_1000ms();
 		Count6_Cyclic1000ms++;
-		(((*((volatile uint32_t *)0x40006200)) ^= 0x80));
+		;
 	}
 }
 
@@ -2857,7 +2932,7 @@ void Task7_BlankTask(void){
 	Count7_Blank = 0;
 	while(1){
 		Count7_Blank++;
-		(((*((volatile uint32_t *)0x40024008)) ^= 0x02));
+		;
 		OS_Sleep(1000);
 	}
 }
@@ -2866,8 +2941,9 @@ void Task8_BlankTask(void){
 Count8_Blank = 0;
 	while(1){
 		Count8_Blank++;
-		(((*((volatile uint32_t *)0x40024010)) ^= 0x04));
-		OS_Sleep(1000);
+		;
+		OS_Sleep(60000);
+		SendSMS(Status);
 	}
 }
 
@@ -2888,6 +2964,7 @@ int main(void){
 	OS_InitSemaphore(&SemPortC.pin6,0);
 	OS_InitSemaphore(&SemPortC.pin7,0);
 	OS_InitSemaphore(&SerialMonitor,1);
+	OS_InitSemaphore(&GSMModule,1);
 
 	
 	

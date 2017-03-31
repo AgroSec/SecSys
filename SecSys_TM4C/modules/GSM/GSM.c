@@ -1,69 +1,101 @@
-//#include "GSM.h"
 
-//void PowerOnGSM(void){
+
+/*-------------------Configuration Includes-----------*/
+
+/*-------------------HW define Includes--------------*/
+
+/*-------------------Driver Includes-----------------*/
+
+/*------Export interface---Self header Includes------*/
+#include "GSM.h"
+/*-------------------Service Includes-----------------*/
+#include "gpio_handler.h"
+#include "uart_handler.h"
+/*-------------Global Variable Definitions------------*/
+extern uint32_t Count0_PIRA;  // number of times Task0 loops
+extern uint32_t Count1_PIRB;  // number of times Task1 loops
+extern uint32_t Count7_Blank; //increments every second
+extern uint32_t Count8_Blank; //increments every minute
+/*-------------Local Variable Definitions-------------*/
+
+/*-------------------Function Definitions-------------*/
+
+void PowerOnGSM(void){
 //  digitalWrite(GSM_Power_Pin, HIGH);
 //  delay(1000);
 //  digitalWrite(GSM_Power_Pin, LOW);
 //  delay(7000);
-//}
+}
 
-//void SendSMS(enum_sms_messages message){
-//  unsigned long currentMillis = millis();
-//  static unsigned long previousMillis = 0;
-//  
-//  if(currentMillis - previousMillis >= SMS_SEND_DELAY){
-//    previousMillis = currentMillis;
-//    GSM_Serial.println("AT+CMGS=\"0751538300\"\r");  //set the mobile number to send the SMS
-//    delay(ULTRA_LONG_DELAY);
-//    switch (message) {
-//      case PIR_A:
-//        GSM_Serial.println("PIR A Triggered");  //The SMS text you want to send
-//        break;
-//      case PIR_B:
-//        GSM_Serial.println("PIR B Triggered");
-//        break;
-//      case Wire_1_Pull:
-//        GSM_Serial.println("Wire 1 Pulled");
-//        break;
-//      case Wire_1_Cut:
-//        GSM_Serial.println("Wire 1 Cut");
-//        break;
-//      case Wire_2_Pull:
-//        GSM_Serial.println("Wire 2 Pulled");
-//        break;
-//      case Wire_2_Cut:
-//        GSM_Serial.println("Wire 2 Cut");
-//        break;
-//      case Wire_3_Pull:
-//        GSM_Serial.println("Wire 3 Pulled");
-//        break;
-//      case Wire_3_Cut:
-//        GSM_Serial.println("Wire 3 Cut");
-//        break;
-//      case Status: 
-//        //Send security system status
-//        GSM_Serial.println("Security system status:");
-//        //TODO
-//        //Active_System
-//        //Active_Alarm
-//        //Wire Guard State
-//        //PIR State
-//        break;
-//      case Wrong_Command:
-//        //Wrong SMS command received
-//        GSM_Serial.println("Wrong Command. (1)Deactivate Security. (2)Deactivate Alarm. (3)Trigger Alarm. (4)Get Status");
-//        break;
-//      default:
-//        GSM_Serial.println("Something misterious happened");
-//    }
-//    delay(LONG_DELAY);
-//    GSM_Serial.println((char)26);  //ASCII code of CTRL+Z indicating end of message
-//    Serial.println("SMS Sent!");
-//  }
-//}
+void SendSMS(SMS_Message_en message){
+	uint8_t message_id = 0;
+	UART2_SendString("AT+CMGS=\"0751538300\"");  //set the mobile number to send the SMS
+	//UART2_SendNewLine();
+	UART2_SendChar(CR);
+	//UART2_SendChar(LF);
+	SysCtlDelay(7999900);  //At 80MHz aprox 1 ms, Interrupts are NOT disabled and OS is NOT stoped during delay!
+  switch (message) {
+		case PIR_A:
+			UART2_SendString("PIR A Triggered ");  //The SMS text you want to send
+			UART2_SendUDecimal(Count0_PIRA);
+			UART2_SendString(" times!!!");
+			break;
+		case PIR_B:
+			UART2_SendString("PIR B Triggered ");
+			UART2_SendUDecimal(Count1_PIRB);
+			UART2_SendString(" times!!!");
+			break;
+		case Wire_1_Pull:
+			UART2_SendString("Wire 1 Pulled");
+			break;
+		case Wire_1_Cut:
+			UART2_SendString("Wire 1 Cut");
+			break;
+		case Wire_2_Pull:
+			UART2_SendString("Wire 2 Pulled");
+			break;
+		case Wire_2_Cut:
+			UART2_SendString("Wire 2 Cut");
+			break;
+		case Wire_3_Pull:
+			UART2_SendString("Wire 3 Pulled");
+			break;
+		case Wire_3_Cut:
+			UART2_SendString("Wire 3 Cut");
+			break;
+		case Status: 
+			//Send security system status
+			UART2_SendString("Status:");
+			UART2_SendNewLine();
+			UART2_SendUDecimal(Count7_Blank);
+			UART2_SendString(" seconds");
+			UART2_SendNewLine();
+			UART2_SendUDecimal(Count8_Blank);
+			UART2_SendString(" minutes");
+			//TODO
+			//Active_System
+			//Active_Alarm
+			//Wire Guard State
+			//PIR State
+			break;
+		case Wrong_Command:
+			//Wrong SMS command received
+			UART2_SendString("Wrong Command. (1)Deactivate Security. (2)Deactivate Alarm. (3)Trigger Alarm. (4)Get Status");
+			break;
+		default:
+			UART2_SendString("Something misterious happened");
+	}
+	UART2_SendChar(SUB);  //ASCII code of CTRL+Z indicating end of message
+	UART0_SendNewLine();
+	UART0_SendString("SMS sent with message ID: ");
+	UART0_SendChar((uint8_t)message+'0');
+	UART0_SendNewLine();	
+	
+}
 
 
-//unsigned char ReceiveSMS(void){
+
+unsigned char ReceiveSMS(void){
 //  unsigned char message[] = {};
 //  unsigned char message_byte = 0;
 //  unsigned char message_length = 0;
@@ -117,9 +149,9 @@
 //    //Serial.write("The sender number is");
 //    //Serial.write(sender_number[1]);
 //  //}
-//}
+}
 
-//void ReadSMS(void){
+void ReadSMS(void){
 //  unsigned long currentMillis = millis();
 //  static unsigned long previousMillis = 0;
 //  unsigned char reveive_message = 0;
@@ -152,4 +184,4 @@
 //        SendSMS(Wrong_Command);
 //    }
 //  }
-//}
+}

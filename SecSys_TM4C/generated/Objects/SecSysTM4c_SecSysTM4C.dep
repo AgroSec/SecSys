@@ -1,11 +1,11 @@
 Dependencies for Project 'SecSysTM4c', Target 'SecSysTM4C': (DO NOT MODIFY !)
-F (.\main.c)(0x58DCF0DE)(--c99 -c --cpu Cortex-M4 -D__EVAL -g -O0 --apcs=interwork --split_sections --signed_chars -I .\inc -I .\OS -I .\3rd_party -I ..\..\TivaWare_C_Series-2.1.1.71 -I .\modules -I .\drivers\uart_handler -I .\drivers\gpio_handler -I .\drivers\cyclic_activity_handler -I .\drivers\startup_handler-IF:\1_Projects\SecSys\SecSys_TM4C\RTE-IF:\0_Tools\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0-Beta12\CMSIS\Include-IF:\0_Tools\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C123-D__UVISION_VERSION="521" -D_RTE_ -DTM4C123GH6PM -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RA1-o .\generated\objects\main.o --omf_browse .\generated\objects\main.crf --depend .\generated\objects\main.d)
+F (.\main.c)(0x58DE33E5)(--c99 -c --cpu Cortex-M4 -D__EVAL -g -O0 --apcs=interwork --split_sections --signed_chars -I .\inc -I .\OS -I .\3rd_party -I ..\..\TivaWare_C_Series-2.1.1.71 -I .\modules -I .\drivers\uart_handler -I .\drivers\gpio_handler -I .\drivers\cyclic_activity_handler -I .\drivers\startup_handler -I ..\SecSys_TM4C -I .\modules\GSM-IF:\1_Projects\SecSys\SecSys_TM4C\RTE-IF:\0_Tools\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0-Beta12\CMSIS\Include-IF:\0_Tools\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C123-D__UVISION_VERSION="521" -D_RTE_ -DTM4C123GH6PM -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RA1-o .\generated\objects\main.o --omf_browse .\generated\objects\main.crf --depend .\generated\objects\main.d)
 I (.\OS\os_hw.h)(0x58D6E829)
 I (.\inc\CortexM.h)(0x58D58635)
 I (F:\0_Tools\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x574E9286)
 I (F:\0_Tools\Keil_v5\ARM\ARMCC\include\stdint.h)(0x574E9286)
 I (.\OS\os_core.h)(0x58DCC674)
-I (.\OS\os_config.h)(0x58DCE807)
+I (.\OS\os_config.h)(0x58DE1A89)
 I (..\..\TivaWare_C_Series-2.1.1.71\inc/hw_ints.h)(0x5648E7CD)
 I (..\..\TivaWare_C_Series-2.1.1.71\inc/hw_memmap.h)(0x581F1834)
 I (..\..\TivaWare_C_Series-2.1.1.71\driverlib/gpio.h)(0x58D6E940)
@@ -17,14 +17,18 @@ I (..\..\TivaWare_C_Series-2.1.1.71\driverlib/systick.h)(0x5648E778)
 I (.\inc\profile.h)(0x58D58635)
 I (.\drivers\startup_handler\startup_handler.h)(0x58DCF09C)
 I (.\drivers\cyclic_activity_handler\cyclic_activity_handler.h)(0x58DCF097)
-I (.\drivers\uart_handler\uart_handler.h)(0x58D6E62A)
-F (.\OS\os_core.c)(0x58DCDF00)(--c99 -c --cpu Cortex-M4 -D__EVAL -g -O0 --apcs=interwork --split_sections --signed_chars -I .\inc -I .\OS -I .\3rd_party -I ..\..\TivaWare_C_Series-2.1.1.71 -I .\modules -I .\drivers\uart_handler -I .\drivers\gpio_handler -I .\drivers\cyclic_activity_handler -I .\drivers\startup_handler-IF:\1_Projects\SecSys\SecSys_TM4C\RTE-IF:\0_Tools\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0-Beta12\CMSIS\Include-IF:\0_Tools\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C123-D__UVISION_VERSION="521" -D_RTE_ -DTM4C123GH6PM -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RA1-o .\generated\objects\os_core.o --omf_browse .\generated\objects\os_core.crf --depend .\generated\objects\os_core.d)
+I (.\drivers\uart_handler\uart_handler.h)(0x58DDFA87)
+I (.\modules\GSM\GSM.h)(0x58DDFDA3)
+I (..\SecSys_TM4C\custom_types.h)(0x58DDE756)
+F (.\custom_types.h)(0x58DDE756)()
+F (.\SecSys_Config.h)(0x58DD2251)()
+F (.\OS\os_core.c)(0x58DCDF00)(--c99 -c --cpu Cortex-M4 -D__EVAL -g -O0 --apcs=interwork --split_sections --signed_chars -I .\inc -I .\OS -I .\3rd_party -I ..\..\TivaWare_C_Series-2.1.1.71 -I .\modules -I .\drivers\uart_handler -I .\drivers\gpio_handler -I .\drivers\cyclic_activity_handler -I .\drivers\startup_handler -I ..\SecSys_TM4C -I .\modules\GSM-IF:\1_Projects\SecSys\SecSys_TM4C\RTE-IF:\0_Tools\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0-Beta12\CMSIS\Include-IF:\0_Tools\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C123-D__UVISION_VERSION="521" -D_RTE_ -DTM4C123GH6PM -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RA1-o .\generated\objects\os_core.o --omf_browse .\generated\objects\os_core.crf --depend .\generated\objects\os_core.d)
 I (OS\os_core.h)(0x58DCC674)
 I (.\inc\CortexM.h)(0x58D58635)
 I (F:\0_Tools\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x574E9286)
 I (F:\0_Tools\Keil_v5\ARM\ARMCC\include\stdint.h)(0x574E9286)
 I (OS\os_hw.h)(0x58D6E829)
-I (OS\os_config.h)(0x58DCE807)
+I (OS\os_config.h)(0x58DE1A89)
 I (..\..\TivaWare_C_Series-2.1.1.71\inc/hw_ints.h)(0x5648E7CD)
 I (..\..\TivaWare_C_Series-2.1.1.71\inc/hw_memmap.h)(0x581F1834)
 I (..\..\TivaWare_C_Series-2.1.1.71\driverlib/gpio.h)(0x58D6E940)
@@ -35,13 +39,13 @@ I (..\..\TivaWare_C_Series-2.1.1.71\driverlib/timer.h)(0x5648E778)
 I (..\..\TivaWare_C_Series-2.1.1.71\driverlib/systick.h)(0x5648E778)
 I (.\inc\profile.h)(0x58D58635)
 F (.\OS\osasm.s)(0x58D58635)(--cpu Cortex-M4 --pd "__EVAL SETA 1" -g --apcs=interwork -IF:\1_Projects\SecSys\SecSys_TM4C\RTE-IF:\0_Tools\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0-Beta12\CMSIS\Include-IF:\0_Tools\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C123--pd "__UVISION_VERSION SETA 521" --pd "_RTE_ SETA 1" --pd "TM4C123GH6PM SETA 1"--list .\generated\listings\osasm.lst --xref -o .\generated\objects\osasm.o --depend .\generated\objects\osasm.d)
-F (.\OS\os_hw.c)(0x58DCDFC8)(--c99 -c --cpu Cortex-M4 -D__EVAL -g -O0 --apcs=interwork --split_sections --signed_chars -I .\inc -I .\OS -I .\3rd_party -I ..\..\TivaWare_C_Series-2.1.1.71 -I .\modules -I .\drivers\uart_handler -I .\drivers\gpio_handler -I .\drivers\cyclic_activity_handler -I .\drivers\startup_handler-IF:\1_Projects\SecSys\SecSys_TM4C\RTE-IF:\0_Tools\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0-Beta12\CMSIS\Include-IF:\0_Tools\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C123-D__UVISION_VERSION="521" -D_RTE_ -DTM4C123GH6PM -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RA1-o .\generated\objects\os_hw.o --omf_browse .\generated\objects\os_hw.crf --depend .\generated\objects\os_hw.d)
+F (.\OS\os_hw.c)(0x58DCDFC8)(--c99 -c --cpu Cortex-M4 -D__EVAL -g -O0 --apcs=interwork --split_sections --signed_chars -I .\inc -I .\OS -I .\3rd_party -I ..\..\TivaWare_C_Series-2.1.1.71 -I .\modules -I .\drivers\uart_handler -I .\drivers\gpio_handler -I .\drivers\cyclic_activity_handler -I .\drivers\startup_handler -I ..\SecSys_TM4C -I .\modules\GSM-IF:\1_Projects\SecSys\SecSys_TM4C\RTE-IF:\0_Tools\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0-Beta12\CMSIS\Include-IF:\0_Tools\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C123-D__UVISION_VERSION="521" -D_RTE_ -DTM4C123GH6PM -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RA1-o .\generated\objects\os_hw.o --omf_browse .\generated\objects\os_hw.crf --depend .\generated\objects\os_hw.d)
 I (OS\os_hw.h)(0x58D6E829)
 I (.\inc\CortexM.h)(0x58D58635)
 I (F:\0_Tools\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x574E9286)
 I (F:\0_Tools\Keil_v5\ARM\ARMCC\include\stdint.h)(0x574E9286)
 I (OS\os_core.h)(0x58DCC674)
-I (OS\os_config.h)(0x58DCE807)
+I (OS\os_config.h)(0x58DE1A89)
 I (..\..\TivaWare_C_Series-2.1.1.71\inc/hw_ints.h)(0x5648E7CD)
 I (..\..\TivaWare_C_Series-2.1.1.71\inc/hw_memmap.h)(0x581F1834)
 I (..\..\TivaWare_C_Series-2.1.1.71\driverlib/gpio.h)(0x58D6E940)
@@ -50,18 +54,37 @@ I (..\..\TivaWare_C_Series-2.1.1.71\driverlib/interrupt.h)(0x5648E778)
 I (..\..\TivaWare_C_Series-2.1.1.71\driverlib/sysctl.h)(0x5831B413)
 I (..\..\TivaWare_C_Series-2.1.1.71\driverlib/timer.h)(0x5648E778)
 I (..\..\TivaWare_C_Series-2.1.1.71\driverlib/systick.h)(0x5648E778)
-F (.\OS\os_config.h)(0x58DCE807)()
-F (.\modules\GSM\GSM.c)(0x58DCE845)(--c99 -c --cpu Cortex-M4 -D__EVAL -g -O0 --apcs=interwork --split_sections --signed_chars -I .\inc -I .\OS -I .\3rd_party -I ..\..\TivaWare_C_Series-2.1.1.71 -I .\modules -I .\drivers\uart_handler -I .\drivers\gpio_handler -I .\drivers\cyclic_activity_handler -I .\drivers\startup_handler-IF:\1_Projects\SecSys\SecSys_TM4C\RTE-IF:\0_Tools\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0-Beta12\CMSIS\Include-IF:\0_Tools\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C123-D__UVISION_VERSION="521" -D_RTE_ -DTM4C123GH6PM -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RA1-o .\generated\objects\gsm.o --omf_browse .\generated\objects\gsm.crf --depend .\generated\objects\gsm.d)
-F (.\drivers\uart_handler\uart_handler.c)(0x58D9585C)(--c99 -c --cpu Cortex-M4 -D__EVAL -g -O0 --apcs=interwork --split_sections --signed_chars -I .\inc -I .\OS -I .\3rd_party -I ..\..\TivaWare_C_Series-2.1.1.71 -I .\modules -I .\drivers\uart_handler -I .\drivers\gpio_handler -I .\drivers\cyclic_activity_handler -I .\drivers\startup_handler-IF:\1_Projects\SecSys\SecSys_TM4C\RTE-IF:\0_Tools\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0-Beta12\CMSIS\Include-IF:\0_Tools\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C123-D__UVISION_VERSION="521" -D_RTE_ -DTM4C123GH6PM -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RA1-o .\generated\objects\uart_handler.o --omf_browse .\generated\objects\uart_handler.crf --depend .\generated\objects\uart_handler.d)
-I (drivers\uart_handler\uart_handler.h)(0x58D6E62A)
+F (.\OS\os_config.h)(0x58DE1A89)()
+F (.\modules\GSM\GSM.c)(0x58DE3F2C)(--c99 -c --cpu Cortex-M4 -D__EVAL -g -O0 --apcs=interwork --split_sections --signed_chars -I .\inc -I .\OS -I .\3rd_party -I ..\..\TivaWare_C_Series-2.1.1.71 -I .\modules -I .\drivers\uart_handler -I .\drivers\gpio_handler -I .\drivers\cyclic_activity_handler -I .\drivers\startup_handler -I ..\SecSys_TM4C -I .\modules\GSM-IF:\1_Projects\SecSys\SecSys_TM4C\RTE-IF:\0_Tools\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0-Beta12\CMSIS\Include-IF:\0_Tools\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C123-D__UVISION_VERSION="521" -D_RTE_ -DTM4C123GH6PM -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RA1-o .\generated\objects\gsm.o --omf_browse .\generated\objects\gsm.crf --depend .\generated\objects\gsm.d)
+I (modules\GSM\GSM.h)(0x58DDFDA3)
 I (F:\0_Tools\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x574E9286)
 I (F:\0_Tools\Keil_v5\ARM\ARMCC\include\stdint.h)(0x574E9286)
+I (..\SecSys_TM4C\custom_types.h)(0x58DDE756)
+I (.\drivers\gpio_handler\gpio_handler.h)(0x58D965B7)
+I (.\OS\os_hw.h)(0x58D6E829)
+I (.\inc\CortexM.h)(0x58D58635)
+I (.\OS\os_core.h)(0x58DCC674)
+I (.\OS\os_config.h)(0x58DE1A89)
+I (..\..\TivaWare_C_Series-2.1.1.71\inc/hw_ints.h)(0x5648E7CD)
+I (..\..\TivaWare_C_Series-2.1.1.71\inc/hw_memmap.h)(0x581F1834)
+I (..\..\TivaWare_C_Series-2.1.1.71\driverlib/gpio.h)(0x58D6E940)
+I (..\..\TivaWare_C_Series-2.1.1.71\driverlib/pin_map.h)(0x5648E778)
+I (..\..\TivaWare_C_Series-2.1.1.71\driverlib/interrupt.h)(0x5648E778)
+I (..\..\TivaWare_C_Series-2.1.1.71\driverlib/sysctl.h)(0x5831B413)
+I (..\..\TivaWare_C_Series-2.1.1.71\driverlib/timer.h)(0x5648E778)
+I (..\..\TivaWare_C_Series-2.1.1.71\driverlib/systick.h)(0x5648E778)
+I (.\drivers\uart_handler\uart_handler.h)(0x58DDFA87)
+F (.\drivers\uart_handler\uart_handler.c)(0x58DE2C1E)(--c99 -c --cpu Cortex-M4 -D__EVAL -g -O0 --apcs=interwork --split_sections --signed_chars -I .\inc -I .\OS -I .\3rd_party -I ..\..\TivaWare_C_Series-2.1.1.71 -I .\modules -I .\drivers\uart_handler -I .\drivers\gpio_handler -I .\drivers\cyclic_activity_handler -I .\drivers\startup_handler -I ..\SecSys_TM4C -I .\modules\GSM-IF:\1_Projects\SecSys\SecSys_TM4C\RTE-IF:\0_Tools\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0-Beta12\CMSIS\Include-IF:\0_Tools\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C123-D__UVISION_VERSION="521" -D_RTE_ -DTM4C123GH6PM -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RA1-o .\generated\objects\uart_handler.o --omf_browse .\generated\objects\uart_handler.crf --depend .\generated\objects\uart_handler.d)
+I (drivers\uart_handler\uart_handler.h)(0x58DDFA87)
+I (F:\0_Tools\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x574E9286)
+I (F:\0_Tools\Keil_v5\ARM\ARMCC\include\stdint.h)(0x574E9286)
+I (.\OS\os_config.h)(0x58DE1A89)
 I (..\..\TivaWare_C_Series-2.1.1.71\driverlib/sysctl.h)(0x5831B413)
 I (..\..\TivaWare_C_Series-2.1.1.71\driverlib/uart.h)(0x5648E778)
 I (..\..\TivaWare_C_Series-2.1.1.71\driverlib/pin_map.h)(0x5648E778)
 I (..\..\TivaWare_C_Series-2.1.1.71\driverlib/gpio.h)(0x58D6E940)
 I (..\..\TivaWare_C_Series-2.1.1.71\inc/hw_memmap.h)(0x581F1834)
-F (.\drivers\gpio_handler\gpio_handler.c)(0x58DCCACF)(--c99 -c --cpu Cortex-M4 -D__EVAL -g -O0 --apcs=interwork --split_sections --signed_chars -I .\inc -I .\OS -I .\3rd_party -I ..\..\TivaWare_C_Series-2.1.1.71 -I .\modules -I .\drivers\uart_handler -I .\drivers\gpio_handler -I .\drivers\cyclic_activity_handler -I .\drivers\startup_handler-IF:\1_Projects\SecSys\SecSys_TM4C\RTE-IF:\0_Tools\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0-Beta12\CMSIS\Include-IF:\0_Tools\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C123-D__UVISION_VERSION="521" -D_RTE_ -DTM4C123GH6PM -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RA1-o .\generated\objects\gpio_handler.o --omf_browse .\generated\objects\gpio_handler.crf --depend .\generated\objects\gpio_handler.d)
+F (.\drivers\gpio_handler\gpio_handler.c)(0x58DCCACF)(--c99 -c --cpu Cortex-M4 -D__EVAL -g -O0 --apcs=interwork --split_sections --signed_chars -I .\inc -I .\OS -I .\3rd_party -I ..\..\TivaWare_C_Series-2.1.1.71 -I .\modules -I .\drivers\uart_handler -I .\drivers\gpio_handler -I .\drivers\cyclic_activity_handler -I .\drivers\startup_handler -I ..\SecSys_TM4C -I .\modules\GSM-IF:\1_Projects\SecSys\SecSys_TM4C\RTE-IF:\0_Tools\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0-Beta12\CMSIS\Include-IF:\0_Tools\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C123-D__UVISION_VERSION="521" -D_RTE_ -DTM4C123GH6PM -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RA1-o .\generated\objects\gpio_handler.o --omf_browse .\generated\objects\gpio_handler.crf --depend .\generated\objects\gpio_handler.d)
 I (F:\0_Tools\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x574E9286)
 I (F:\0_Tools\Keil_v5\ARM\ARMCC\include\stdint.h)(0x574E9286)
 I (..\..\TivaWare_C_Series-2.1.1.71\inc/hw_memmap.h)(0x581F1834)
@@ -74,14 +97,15 @@ I (drivers\gpio_handler\gpio_handler.h)(0x58D965B7)
 I (.\OS\os_hw.h)(0x58D6E829)
 I (.\inc\CortexM.h)(0x58D58635)
 I (.\OS\os_core.h)(0x58DCC674)
-I (.\OS\os_config.h)(0x58DCE807)
+I (.\OS\os_config.h)(0x58DE1A89)
 I (..\..\TivaWare_C_Series-2.1.1.71\driverlib/timer.h)(0x5648E778)
 I (..\..\TivaWare_C_Series-2.1.1.71\driverlib/systick.h)(0x5648E778)
-F (.\drivers\cyclic_activity_handler\cyclic_activity_handler.c)(0x58DCED09)(--c99 -c --cpu Cortex-M4 -D__EVAL -g -O0 --apcs=interwork --split_sections --signed_chars -I .\inc -I .\OS -I .\3rd_party -I ..\..\TivaWare_C_Series-2.1.1.71 -I .\modules -I .\drivers\uart_handler -I .\drivers\gpio_handler -I .\drivers\cyclic_activity_handler -I .\drivers\startup_handler-IF:\1_Projects\SecSys\SecSys_TM4C\RTE-IF:\0_Tools\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0-Beta12\CMSIS\Include-IF:\0_Tools\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C123-D__UVISION_VERSION="521" -D_RTE_ -DTM4C123GH6PM -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RA1-o .\generated\objects\cyclic_activity_handler.o --omf_browse .\generated\objects\cyclic_activity_handler.crf --depend .\generated\objects\cyclic_activity_handler.d)
+F (.\drivers\cyclic_activity_handler\cyclic_activity_handler.c)(0x58DE1BAD)(--c99 -c --cpu Cortex-M4 -D__EVAL -g -O0 --apcs=interwork --split_sections --signed_chars -I .\inc -I .\OS -I .\3rd_party -I ..\..\TivaWare_C_Series-2.1.1.71 -I .\modules -I .\drivers\uart_handler -I .\drivers\gpio_handler -I .\drivers\cyclic_activity_handler -I .\drivers\startup_handler -I ..\SecSys_TM4C -I .\modules\GSM-IF:\1_Projects\SecSys\SecSys_TM4C\RTE-IF:\0_Tools\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0-Beta12\CMSIS\Include-IF:\0_Tools\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C123-D__UVISION_VERSION="521" -D_RTE_ -DTM4C123GH6PM -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RA1-o .\generated\objects\cyclic_activity_handler.o --omf_browse .\generated\objects\cyclic_activity_handler.crf --depend .\generated\objects\cyclic_activity_handler.d)
 I (F:\0_Tools\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x574E9286)
 I (F:\0_Tools\Keil_v5\ARM\ARMCC\include\stdint.h)(0x574E9286)
 I (drivers\cyclic_activity_handler\cyclic_activity_handler.h)(0x58DCF097)
-F (.\drivers\startup_handler\startup_handler.c)(0x58DCF059)(--c99 -c --cpu Cortex-M4 -D__EVAL -g -O0 --apcs=interwork --split_sections --signed_chars -I .\inc -I .\OS -I .\3rd_party -I ..\..\TivaWare_C_Series-2.1.1.71 -I .\modules -I .\drivers\uart_handler -I .\drivers\gpio_handler -I .\drivers\cyclic_activity_handler -I .\drivers\startup_handler-IF:\1_Projects\SecSys\SecSys_TM4C\RTE-IF:\0_Tools\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0-Beta12\CMSIS\Include-IF:\0_Tools\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C123-D__UVISION_VERSION="521" -D_RTE_ -DTM4C123GH6PM -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RA1-o .\generated\objects\startup_handler.o --omf_browse .\generated\objects\startup_handler.crf --depend .\generated\objects\startup_handler.d)
+I (.\drivers\uart_handler\uart_handler.h)(0x58DDFA87)
+F (.\drivers\startup_handler\startup_handler.c)(0x58DE1B88)(--c99 -c --cpu Cortex-M4 -D__EVAL -g -O0 --apcs=interwork --split_sections --signed_chars -I .\inc -I .\OS -I .\3rd_party -I ..\..\TivaWare_C_Series-2.1.1.71 -I .\modules -I .\drivers\uart_handler -I .\drivers\gpio_handler -I .\drivers\cyclic_activity_handler -I .\drivers\startup_handler -I ..\SecSys_TM4C -I .\modules\GSM-IF:\1_Projects\SecSys\SecSys_TM4C\RTE-IF:\0_Tools\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0-Beta12\CMSIS\Include-IF:\0_Tools\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C123-D__UVISION_VERSION="521" -D_RTE_ -DTM4C123GH6PM -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RA1-o .\generated\objects\startup_handler.o --omf_browse .\generated\objects\startup_handler.crf --depend .\generated\objects\startup_handler.d)
 I (F:\0_Tools\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x574E9286)
 I (F:\0_Tools\Keil_v5\ARM\ARMCC\include\stdint.h)(0x574E9286)
 I (drivers\startup_handler\startup_handler.h)(0x58DCF09C)
@@ -89,7 +113,7 @@ I (.\drivers\gpio_handler\gpio_handler.h)(0x58D965B7)
 I (.\OS\os_hw.h)(0x58D6E829)
 I (.\inc\CortexM.h)(0x58D58635)
 I (.\OS\os_core.h)(0x58DCC674)
-I (.\OS\os_config.h)(0x58DCE807)
+I (.\OS\os_config.h)(0x58DE1A89)
 I (..\..\TivaWare_C_Series-2.1.1.71\inc/hw_ints.h)(0x5648E7CD)
 I (..\..\TivaWare_C_Series-2.1.1.71\inc/hw_memmap.h)(0x581F1834)
 I (..\..\TivaWare_C_Series-2.1.1.71\driverlib/gpio.h)(0x58D6E940)
@@ -98,14 +122,14 @@ I (..\..\TivaWare_C_Series-2.1.1.71\driverlib/interrupt.h)(0x5648E778)
 I (..\..\TivaWare_C_Series-2.1.1.71\driverlib/sysctl.h)(0x5831B413)
 I (..\..\TivaWare_C_Series-2.1.1.71\driverlib/timer.h)(0x5648E778)
 I (..\..\TivaWare_C_Series-2.1.1.71\driverlib/systick.h)(0x5648E778)
-I (.\drivers\uart_handler\uart_handler.h)(0x58D6E62A)
+I (.\drivers\uart_handler\uart_handler.h)(0x58DDFA87)
 F (..\..\TivaWare_C_Series-2.1.1.71\driverlib\rvmdk\driverlib.lib)(0x581EE253)()
-F (.\3rd_party\Profile.c)(0x58D58635)(--c99 -c --cpu Cortex-M4 -D__EVAL -g -O0 --apcs=interwork --split_sections --signed_chars -I .\inc -I .\OS -I .\3rd_party -I ..\..\TivaWare_C_Series-2.1.1.71 -I .\modules -I .\drivers\uart_handler -I .\drivers\gpio_handler -I .\drivers\cyclic_activity_handler -I .\drivers\startup_handler-IF:\1_Projects\SecSys\SecSys_TM4C\RTE-IF:\0_Tools\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0-Beta12\CMSIS\Include-IF:\0_Tools\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C123-D__UVISION_VERSION="521" -D_RTE_ -DTM4C123GH6PM -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RA1-o .\generated\objects\profile.o --omf_browse .\generated\objects\profile.crf --depend .\generated\objects\profile.d)
+F (.\3rd_party\Profile.c)(0x58D58635)(--c99 -c --cpu Cortex-M4 -D__EVAL -g -O0 --apcs=interwork --split_sections --signed_chars -I .\inc -I .\OS -I .\3rd_party -I ..\..\TivaWare_C_Series-2.1.1.71 -I .\modules -I .\drivers\uart_handler -I .\drivers\gpio_handler -I .\drivers\cyclic_activity_handler -I .\drivers\startup_handler -I ..\SecSys_TM4C -I .\modules\GSM-IF:\1_Projects\SecSys\SecSys_TM4C\RTE-IF:\0_Tools\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0-Beta12\CMSIS\Include-IF:\0_Tools\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C123-D__UVISION_VERSION="521" -D_RTE_ -DTM4C123GH6PM -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RA1-o .\generated\objects\profile.o --omf_browse .\generated\objects\profile.crf --depend .\generated\objects\profile.d)
 I (F:\0_Tools\Keil_v5\ARM\ARMCC\include\stdint.h)(0x574E9286)
 I (3rd_party\../inc/tm4c123gh6pm.h)(0x58D58635)
 F (.\ssOS_readme.txt)(0x58D58635)()
 F (RTE\Device\TM4C123GH6PM\startup_TM4C123.s)(0x58D58635)(--cpu Cortex-M4 --pd "__EVAL SETA 1" -g --apcs=interwork -IF:\1_Projects\SecSys\SecSys_TM4C\RTE-IF:\0_Tools\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0-Beta12\CMSIS\Include-IF:\0_Tools\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C123--pd "__UVISION_VERSION SETA 521" --pd "_RTE_ SETA 1" --pd "TM4C123GH6PM SETA 1"--list .\generated\listings\startup_tm4c123.lst --xref -o .\generated\objects\startup_tm4c123.o --depend .\generated\objects\startup_tm4c123.d)
-F (RTE\Device\TM4C123GH6PM\system_TM4C123.c)(0x58D58635)(--c99 -c --cpu Cortex-M4 -D__EVAL -g -O0 --apcs=interwork --split_sections --signed_chars -I .\inc -I .\OS -I .\3rd_party -I ..\..\TivaWare_C_Series-2.1.1.71 -I .\modules -I .\drivers\uart_handler -I .\drivers\gpio_handler -I .\drivers\cyclic_activity_handler -I .\drivers\startup_handler-IF:\1_Projects\SecSys\SecSys_TM4C\RTE-IF:\0_Tools\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0-Beta12\CMSIS\Include-IF:\0_Tools\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C123-D__UVISION_VERSION="521" -D_RTE_ -DTM4C123GH6PM -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RA1-o .\generated\objects\system_tm4c123.o --omf_browse .\generated\objects\system_tm4c123.crf --depend .\generated\objects\system_tm4c123.d)
+F (RTE\Device\TM4C123GH6PM\system_TM4C123.c)(0x58D58635)(--c99 -c --cpu Cortex-M4 -D__EVAL -g -O0 --apcs=interwork --split_sections --signed_chars -I .\inc -I .\OS -I .\3rd_party -I ..\..\TivaWare_C_Series-2.1.1.71 -I .\modules -I .\drivers\uart_handler -I .\drivers\gpio_handler -I .\drivers\cyclic_activity_handler -I .\drivers\startup_handler -I ..\SecSys_TM4C -I .\modules\GSM-IF:\1_Projects\SecSys\SecSys_TM4C\RTE-IF:\0_Tools\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0-Beta12\CMSIS\Include-IF:\0_Tools\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C123-D__UVISION_VERSION="521" -D_RTE_ -DTM4C123GH6PM -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RA1-o .\generated\objects\system_tm4c123.o --omf_browse .\generated\objects\system_tm4c123.crf --depend .\generated\objects\system_tm4c123.d)
 I (F:\0_Tools\Keil_v5\ARM\ARMCC\include\stdint.h)(0x574E9286)
 I (F:\0_Tools\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C123\TM4C123.h)(0x530F0F16)
 I (F:\0_Tools\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C123\TM4C123GH6PM.h)(0x550FFE4C)

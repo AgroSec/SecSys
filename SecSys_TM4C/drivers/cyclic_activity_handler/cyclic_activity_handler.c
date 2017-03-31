@@ -15,7 +15,7 @@
 #include "cyclic_activity_handler.h"
 
 /*-------------------Service Includes-----------------*/
-
+#include "uart_handler.h"
 /*-------------Global Variable Definitions------------*/
 
 /*-------------Local Variable Definitions-------------*/
@@ -39,5 +39,7 @@ void CYCL_500ms(void) {
 
 void CYCL_1000ms(void) {
 	//Function calls that runs only every 1000 ms
+	UART0_SendString("1 second passed...");
+	UART0_SendNewLine();
 }
 //EOF

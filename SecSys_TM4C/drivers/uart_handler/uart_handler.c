@@ -1,6 +1,6 @@
 /*------------------Project Includes-----------------*/
 #include "uart_handler.h"
-
+#include "os_config.h"
 /*-------------------Driver Includes-----------------*/
 #include "driverlib/sysctl.h"
 #include "driverlib/uart.h"
@@ -11,7 +11,9 @@
 #include "inc/hw_memmap.h"
 
 uint32_t Baud_Rate_Read = 0;
+uint32_t GSM_Baud_Rate_Read = 0;
 
+//UART0 functions
 void UART0_Init(void){
 	uint32_t uart_config_read = 0;
 	SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);  //Enable clock on UART0
@@ -181,6 +183,153 @@ char character;
       UART0_SendChar(character);
     }
     character = UART0_GetChar();
+  }
+  return number;
+}
+
+//UART2 functions
+void UART2_Init(void){
+	uint32_t uart_config_read = 0;
+	SysCtlPeripheralEnable(SYSCTL_PERIPH_UART2);  //Enable clock on UART2
+	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);  //Enable clock on port D  //PD6 and PD7 will be RX and TX to GSM module
+	while(!SysCtlPeripheralReady(SYSCTL_PERIPH_UART2));  //wait for UART2 to initialize
+	while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOD));  //wait for PortD to initialize
+	GPIO_PORTD_LOCK_R = 0x4C4F434B; //Unlock GPIO PD7
+	GPIO_PORTD_CR_R |= 0xFF;  //Allow changes to PD7-0
+		
+	UARTDisable(UART2_BASE);  //Disable UART2 while configuration
+	
+	GPIOPinConfigure(GPIO_PD6_U2RX);
+	GPIOPinConfigure(GPIO_PD7_U2TX);
+	GPIOPinTypeUART(GPIO_PORTD_BASE, GPIO_PIN_6 | GPIO_PIN_7);
+	UARTClockSourceSet(UART2_BASE, UART_CLOCK_SYSTEM);  //Set the clock source for UART2
+	//Next: Set the BAUD RATE, and configure UART2 with 8 data bits, 1 stop bit and no parity bit
+	UARTConfigSetExpClk(UART2_BASE, SysCtlClockGet(), GSM_BAUD_RATE, (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE |UART_CONFIG_PAR_NONE));  
+	UARTParityModeSet(UART2_BASE, UART_CONFIG_PAR_NONE);
+	
+	UARTFIFOEnable(UART2_BASE);  //Enable the UART FIFO
+	UARTEnable(UART2_BASE);  //Enable UART2
+	UARTConfigGetExpClk(UART2_BASE, SysCtlClockGet(), &GSM_Baud_Rate_Read, &uart_config_read);  //Get the Baud Rate
+}
+
+void UART2_SendChar(uint8_t data){
+	UARTCharPut(UART2_BASE, data);
+}
+
+void UART2_SendString(uint8_t *pt){
+	while(*pt) { //While not the end of the string
+		UART2_SendChar(*pt);  //send current character
+		pt++;  //move to next character
+	}
+}
+
+void UART2_SendUDecimal(uint32_t n){
+	if(n >= 10){
+		UART2_SendUDecimal(n/10);
+		n = n%10;
+  }
+  UART2_SendChar(n+'0'); /* n is between 0 and 9 */
+}
+
+void UART2_SendUHex(uint32_t number){
+  if(number >= 0x10){
+    UART2_SendUHex(number/0x10);
+    UART2_SendUHex(number%0x10);
+  }
+  else{
+    if(number < 0xA){
+      UART2_SendChar(number+'0');
+     }
+    else{
+      UART2_SendChar((number-0x0A)+'A');
+    }
+  }
+}
+
+void UART2_SendNewLine(void){
+  UART2_SendChar(CR);
+  UART2_SendChar(LF);
+}
+
+uint8_t UART2_GetChar(void){
+	return (uint8_t)UARTCharGet(UART2_BASE);
+}
+
+void UART2_GetString(uint8_t *bufPt, uint16_t max) {
+int length=0;
+char character;
+  character = UART2_GetChar();
+  while(character != CR){
+    if(character == BS){
+      if(length){
+        bufPt--;
+        length--;
+        UART2_SendChar(BS);
+      }
+    }
+    else if(length < max){
+      *bufPt = character;
+      bufPt++;
+      length++;
+      UART2_SendChar(character);
+    }
+    character = UART2_GetChar();
+  }
+  *bufPt = 0;
+}
+
+uint32_t UART2_GetUDecimal(void){
+uint32_t number=0, length=0;
+char character;
+  character = UART2_GetChar();
+  while(character != CR){ // accepts until <enter> is typed
+// The next line checks that the input is a digit, 0-9.
+// If the character is not 0-9, it is ignored and not echoed
+    if((character>='0') && (character<='9')) {
+      number = 10*number+(character-'0');   // this line overflows if above 4294967295
+      length++;
+      UART2_SendChar(character);
+    }
+// If the input is a backspace, then the return number is
+// changed and a backspace is outputted to the screen
+    else if((character==BS) && length){
+      number /= 10;
+      length--;
+      UART2_SendChar(character);
+    }
+    character = UART2_GetChar();
+  }
+  return number;
+}
+
+uint32_t UART2_GetUHex(void){
+uint32_t number=0, digit, length=0;
+char character;
+  character = UART2_GetChar();
+  while(character != CR){
+    digit = 0x10; // assume bad
+    if((character>='0') && (character<='9')){
+      digit = character-'0';
+    }
+    else if((character>='A') && (character<='F')){
+      digit = (character-'A')+0xA;
+    }
+    else if((character>='a') && (character<='f')){
+      digit = (character-'a')+0xA;
+    }
+// If the character is not 0-9 or A-F, it is ignored and not echoed
+    if(digit <= 0xF){
+      number = number*0x10+digit;
+      length++;
+      UART2_SendChar(character);
+    }
+// Backspace outputted and return value changed if a backspace is inputted
+    else if((character==BS) && length){
+      number /= 0x10;
+      length--;
+      UART2_SendChar(character);
+    }
+    character = UART2_GetChar();
   }
   return number;
 }

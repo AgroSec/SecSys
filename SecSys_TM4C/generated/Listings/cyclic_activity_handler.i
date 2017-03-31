@@ -303,7 +303,49 @@ void CYCL_1000ms(void);
 #line 16 "drivers\\cyclic_activity_handler\\cyclic_activity_handler.c"
 
  
+#line 1 ".\\drivers\\uart_handler\\uart_handler.h"
 
+
+
+ 
+#line 6 ".\\drivers\\uart_handler\\uart_handler.h"
+#line 7 ".\\drivers\\uart_handler\\uart_handler.h"
+
+ 
+
+
+
+#line 19 ".\\drivers\\uart_handler\\uart_handler.h"
+
+
+
+ 
+
+void UART0_Init(void);
+void UART0_SendChar(uint8_t data);
+void UART0_SendString(uint8_t *pt);
+void UART0_SendUDecimal(uint32_t n);
+void UART0_SendUHex(uint32_t number);
+void UART0_SendNewLine(void);
+uint8_t UART0_GetChar(void);
+void UART0_GetString(uint8_t *bufPt, uint16_t max);
+uint32_t UART0_GetUDecimal(void);
+uint32_t UART0_GetUHex(void);
+
+
+void UART2_Init(void);
+void UART2_SendChar(uint8_t data);
+void UART2_SendString(uint8_t *pt);
+void UART2_SendUDecimal(uint32_t n);
+void UART2_SendUHex(uint32_t number);
+void UART2_SendNewLine(void);
+uint8_t UART2_GetChar(void);
+void UART2_GetString(uint8_t *bufPt, uint16_t max);
+uint32_t UART2_GetUDecimal(void);
+uint32_t UART2_GetUHex(void);
+
+
+#line 19 "drivers\\cyclic_activity_handler\\cyclic_activity_handler.c"
  
 
  
@@ -327,5 +369,7 @@ void CYCL_500ms(void) {
 
 void CYCL_1000ms(void) {
 	
+	UART0_SendString("1 second passed...");
+	UART0_SendNewLine();
 }
 

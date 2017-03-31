@@ -16,9 +16,8 @@
 #include "cyclic_activity_handler.h"
 //#include "gpio_handler.h"
 #include "uart_handler.h"
+#include "GSM.h"
 
-
-// runs each thread 2 ms
 uint32_t Count0_PIRA;  // number of times Task0 loops
 uint32_t Count1_PIRB;  // number of times Task1 loops
 uint32_t Count2_Cyclic10ms;   // number of times Task2 loops
@@ -33,6 +32,7 @@ uint32_t CountIdle;    // number of times Idle_Task loops
 int32_t Task78Sync;
 int32_t Task87Sync;
 int32_t SerialMonitor; //Semaphore to block serial monitor
+int32_t GSMModule; //Semaphore to block GSM module
 
 fifo_t FifoA;
 
@@ -55,6 +55,9 @@ void Task0_PIRA(void){	//Edge triggered task
 			UART0_SendString(" times.");
 			UART0_SendNewLine();
 			OS_Signal(&SerialMonitor);
+			OS_Wait(&GSMModule);
+			SendSMS(PIR_A);
+			OS_Signal(&GSMModule);
 		}
 		OS_EdgeTrigger_Restart(PortC,GPIO_PIN_6);
   }
@@ -73,6 +76,9 @@ void Task1_PIRB(void){	//Edge triggered task
 			UART0_SendString(" times.");
 			UART0_SendNewLine();
 			OS_Signal(&SerialMonitor);
+			OS_Wait(&GSMModule);
+			SendSMS(PIR_B);
+			OS_Signal(&GSMModule);
 		}
 		OS_EdgeTrigger_Restart(PortC,GPIO_PIN_7);
   }
@@ -141,7 +147,8 @@ Count8_Blank = 0;
 	while(1){
 		Count8_Blank++;
 		Toggle1();
-		OS_Sleep(1000);
+		OS_Sleep(60000);
+		SendSMS(Status);
 	}
 }
 
@@ -162,6 +169,7 @@ int main(void){
 	OS_InitSemaphore(&SemPortC.pin6,0);
 	OS_InitSemaphore(&SemPortC.pin7,0);
 	OS_InitSemaphore(&SerialMonitor,1);
+	OS_InitSemaphore(&GSMModule,1);
 
 	//OS_InitSemaphore(&SemPortF.pin0,0);
 	//OS_InitSemaphore(&SemPortF.pin4,0);

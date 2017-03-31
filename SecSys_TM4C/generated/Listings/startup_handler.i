@@ -2451,7 +2451,10 @@ uint8_t GPIO_SetPin(ports_t port, uint8_t pin, uint8_t status);
 
 #line 19 ".\\drivers\\uart_handler\\uart_handler.h"
 
+
+
  
+
 void UART0_Init(void);
 void UART0_SendChar(uint8_t data);
 void UART0_SendString(uint8_t *pt);
@@ -2464,6 +2467,17 @@ uint32_t UART0_GetUDecimal(void);
 uint32_t UART0_GetUHex(void);
 
 
+void UART2_Init(void);
+void UART2_SendChar(uint8_t data);
+void UART2_SendString(uint8_t *pt);
+void UART2_SendUDecimal(uint32_t n);
+void UART2_SendUHex(uint32_t number);
+void UART2_SendNewLine(void);
+uint8_t UART2_GetChar(void);
+void UART2_GetString(uint8_t *bufPt, uint16_t max);
+uint32_t UART2_GetUDecimal(void);
+uint32_t UART2_GetUHex(void);
+
 
 #line 20 "drivers\\startup_handler\\startup_handler.c"
  
@@ -2474,10 +2488,15 @@ uint32_t UART0_GetUHex(void);
 void InitDrivers(void) {
 	
 	UART0_Init();
+	UART2_Init();
 	GPIO_InitPortOutput(PortF,0x00000004);
+	UART0_SendString("Driver init done...");
+	UART0_SendNewLine();
 }
 
 void InitApplications(void) {
 	
+	UART0_SendString("Applications init done...");
+	UART0_SendNewLine();
 }
 

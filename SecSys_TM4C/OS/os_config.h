@@ -78,7 +78,7 @@
 #define GPIO_PORTF_LOCK_R       (*((volatile uint32_t *)0x40025520))
 #define GPIO_PORTF_CR_R         (*((volatile uint32_t *)0x40025524))
 
-#ifdef PROFILE_DEBUG		
+#if PROFILE_DEBUG		
 	#define Toggle0() (Profile_Toggle0())
 	#define Toggle1() (Profile_Toggle1())
 	#define Toggle2() (Profile_Toggle2())

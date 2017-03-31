@@ -335,7 +335,7 @@
               <MiscControls></MiscControls>
               <Define>rvmdk PART_TM4C123GH6PM TARGET_IS_TM4C123_RA1</Define>
               <Undefine></Undefine>
-              <IncludePath>.\inc;.\OS;.\3rd_party;..\..\TivaWare_C_Series-2.1.1.71;.\modules;.\drivers\uart_handler;.\drivers\gpio_handler;.\drivers\cyclic_activity_handler;.\drivers\startup_handler</IncludePath>
+              <IncludePath>.\inc;.\OS;.\3rd_party;..\..\TivaWare_C_Series-2.1.1.71;.\modules;.\drivers\uart_handler;.\drivers\gpio_handler;.\drivers\cyclic_activity_handler;.\drivers\startup_handler;..\SecSys_TM4C;.\modules\GSM</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -383,6 +383,16 @@
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\main.c</FilePath>
+            </File>
+            <File>
+              <FileName>custom_types.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\custom_types.h</FilePath>
+            </File>
+            <File>
+              <FileName>SecSys_Config.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\SecSys_Config.h</FilePath>
             </File>
           </Files>
         </Group>

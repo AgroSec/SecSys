@@ -25,10 +25,15 @@
 void InitDrivers(void) {
 	//Function calls to init drivers
 	UART0_Init();
+	UART2_Init();
 	GPIO_InitPortOutput(PortF,GPIO_PIN_2);
+	UART0_SendString("Driver init done...");
+	UART0_SendNewLine();
 }
 
 void InitApplications(void) {
 	//Function calls to init applications
+	UART0_SendString("Applications init done...");
+	UART0_SendNewLine();
 }
 //EOF

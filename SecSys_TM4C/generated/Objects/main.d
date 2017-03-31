@@ -19,3 +19,5 @@
 .\generated\objects\main.o: .\drivers\startup_handler\startup_handler.h
 .\generated\objects\main.o: .\drivers\cyclic_activity_handler\cyclic_activity_handler.h
 .\generated\objects\main.o: .\drivers\uart_handler\uart_handler.h
+.\generated\objects\main.o: .\modules\GSM\GSM.h
+.\generated\objects\main.o: ..\SecSys_TM4C\custom_types.h

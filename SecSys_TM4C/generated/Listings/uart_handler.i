@@ -288,7 +288,10 @@ typedef unsigned     long long uintmax_t;
 
 #line 19 "drivers\\uart_handler\\uart_handler.h"
 
+
+
  
+
 void UART0_Init(void);
 void UART0_SendChar(uint8_t data);
 void UART0_SendString(uint8_t *pt);
@@ -301,9 +304,78 @@ uint32_t UART0_GetUDecimal(void);
 uint32_t UART0_GetUHex(void);
 
 
+void UART2_Init(void);
+void UART2_SendChar(uint8_t data);
+void UART2_SendString(uint8_t *pt);
+void UART2_SendUDecimal(uint32_t n);
+void UART2_SendUHex(uint32_t number);
+void UART2_SendNewLine(void);
+uint8_t UART2_GetChar(void);
+void UART2_GetString(uint8_t *bufPt, uint16_t max);
+uint32_t UART2_GetUDecimal(void);
+uint32_t UART2_GetUHex(void);
+
 
 #line 3 "drivers\\uart_handler\\uart_handler.c"
+#line 1 ".\\OS\\os_config.h"
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#line 51 ".\\OS\\os_config.h"
+
+
+
+
+
+
+
+#line 66 ".\\OS\\os_config.h"
+
+
+#line 80 ".\\OS\\os_config.h"
+
+#line 98 ".\\OS\\os_config.h"
+
+
+
+#line 4 "drivers\\uart_handler\\uart_handler.c"
  
 #line 1 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
@@ -1753,6 +1825,8 @@ extern void GPIOADCTriggerDisable(uint32_t ui32Port, uint8_t ui8Pins);
 #line 12 "drivers\\uart_handler\\uart_handler.c"
 
 uint32_t Baud_Rate_Read = 0;
+uint32_t GSM_Baud_Rate_Read = 0;
+
 
 void UART0_Init(void){
 	uint32_t uart_config_read = 0;
@@ -1923,6 +1997,153 @@ char character;
       UART0_SendChar(character);
     }
     character = UART0_GetChar();
+  }
+  return number;
+}
+
+
+void UART2_Init(void){
+	uint32_t uart_config_read = 0;
+	SysCtlPeripheralEnable(0xf0001802);  
+	SysCtlPeripheralEnable(0xf0000803);  
+	while(!SysCtlPeripheralReady(0xf0001802));  
+	while(!SysCtlPeripheralReady(0xf0000803));  
+	(*((volatile uint32_t *)0x40007520)) = 0x4C4F434B; 
+	(*((volatile uint32_t *)0x40007524)) |= 0xFF;  
+		
+	UARTDisable(0x4000E000);  
+	
+	GPIOPinConfigure(0x00031801);
+	GPIOPinConfigure(0x00031C01);
+	GPIOPinTypeUART(0x40007000, 0x00000040 | 0x00000080);
+	UARTClockSourceSet(0x4000E000, 0x00000000);  
+	
+	UARTConfigSetExpClk(0x4000E000, SysCtlClockGet(), (9600), (0x00000060 | 0x00000000 |0x00000000));  
+	UARTParityModeSet(0x4000E000, 0x00000000);
+	
+	UARTFIFOEnable(0x4000E000);  
+	UARTEnable(0x4000E000);  
+	UARTConfigGetExpClk(0x4000E000, SysCtlClockGet(), &GSM_Baud_Rate_Read, &uart_config_read);  
+}
+
+void UART2_SendChar(uint8_t data){
+	UARTCharPut(0x4000E000, data);
+}
+
+void UART2_SendString(uint8_t *pt){
+	while(*pt) { 
+		UART2_SendChar(*pt);  
+		pt++;  
+	}
+}
+
+void UART2_SendUDecimal(uint32_t n){
+	if(n >= 10){
+		UART2_SendUDecimal(n/10);
+		n = n%10;
+  }
+  UART2_SendChar(n+'0');  
+}
+
+void UART2_SendUHex(uint32_t number){
+  if(number >= 0x10){
+    UART2_SendUHex(number/0x10);
+    UART2_SendUHex(number%0x10);
+  }
+  else{
+    if(number < 0xA){
+      UART2_SendChar(number+'0');
+     }
+    else{
+      UART2_SendChar((number-0x0A)+'A');
+    }
+  }
+}
+
+void UART2_SendNewLine(void){
+  UART2_SendChar(0x0D);
+  UART2_SendChar(0x0A);
+}
+
+uint8_t UART2_GetChar(void){
+	return (uint8_t)UARTCharGet(0x4000E000);
+}
+
+void UART2_GetString(uint8_t *bufPt, uint16_t max) {
+int length=0;
+char character;
+  character = UART2_GetChar();
+  while(character != 0x0D){
+    if(character == 0x08){
+      if(length){
+        bufPt--;
+        length--;
+        UART2_SendChar(0x08);
+      }
+    }
+    else if(length < max){
+      *bufPt = character;
+      bufPt++;
+      length++;
+      UART2_SendChar(character);
+    }
+    character = UART2_GetChar();
+  }
+  *bufPt = 0;
+}
+
+uint32_t UART2_GetUDecimal(void){
+uint32_t number=0, length=0;
+char character;
+  character = UART2_GetChar();
+  while(character != 0x0D){ 
+
+
+    if((character>='0') && (character<='9')) {
+      number = 10*number+(character-'0');   
+      length++;
+      UART2_SendChar(character);
+    }
+
+
+    else if((character==0x08) && length){
+      number /= 10;
+      length--;
+      UART2_SendChar(character);
+    }
+    character = UART2_GetChar();
+  }
+  return number;
+}
+
+uint32_t UART2_GetUHex(void){
+uint32_t number=0, digit, length=0;
+char character;
+  character = UART2_GetChar();
+  while(character != 0x0D){
+    digit = 0x10; 
+    if((character>='0') && (character<='9')){
+      digit = character-'0';
+    }
+    else if((character>='A') && (character<='F')){
+      digit = (character-'A')+0xA;
+    }
+    else if((character>='a') && (character<='f')){
+      digit = (character-'a')+0xA;
+    }
+
+    if(digit <= 0xF){
+      number = number*0x10+digit;
+      length++;
+      UART2_SendChar(character);
+    }
+
+    else if((character==0x08) && length){
+      number /= 0x10;
+      length--;
+      UART2_SendChar(character);
+    }
+    character = UART2_GetChar();
   }
   return number;
 }
