@@ -2686,6 +2686,7 @@ uint8_t Profile_Get(void);
 
 
 #line 14 "main.c"
+
  
 #line 1 ".\\drivers\\startup_handler\\startup_handler.h"
 
@@ -2697,7 +2698,7 @@ void InitDrivers(void);
 void InitApplications(void);
 
 
-#line 16 "main.c"
+#line 17 "main.c"
 #line 1 ".\\drivers\\cyclic_activity_handler\\cyclic_activity_handler.h"
 
 
@@ -2711,7 +2712,7 @@ void CYCL_500ms(void);
 void CYCL_1000ms(void);
 
 
-#line 17 "main.c"
+#line 18 "main.c"
 
 #line 1 ".\\drivers\\uart_handler\\uart_handler.h"
 
@@ -2755,7 +2756,9 @@ uint32_t UART2_GetUDecimal(void);
 uint32_t UART2_GetUHex(void);
 
 
-#line 19 "main.c"
+#line 20 "main.c"
+
+ 
 #line 1 ".\\modules\\GSM\\GSM.h"
 
 
@@ -2811,8 +2814,18 @@ void ReadSMS(void);
 
 
 
-#line 20 "main.c"
+#line 23 "main.c"
+#line 1 ".\\modules\\PIR\\PIR.h"
 
+
+void Process_PIR(void);
+void Init_PIR(void);
+
+
+
+#line 24 "main.c"
+
+ 
 uint32_t Count0_PIRA;  
 uint32_t Count1_PIRB;  
 uint32_t Count2_Cyclic10ms;   
@@ -2824,22 +2837,24 @@ uint32_t Count7_Blank;
 uint32_t Count8_Blank; 
 uint32_t CountIdle;    
 
-int32_t Task78Sync;
-int32_t Task87Sync;
+
+
+
 int32_t SerialMonitor; 
 int32_t GSMModule; 
 
-fifo_t FifoA;
-
 extern ptcbType PerTask[10];
 extern PortSema_t SemPortC;
-extern PortSema_t SemPortD;
-extern PortSema_t SemPortF;
 
+
+
+ 
+
+ 
 void Task0_PIRA(void){	
   Count0_PIRA = 0;
   while(1){
-		OS_Wait(&SemPortC.pin6); 
+		OS_Wait(&SemPortC.pin6);  
 		OS_Sleep(50); 
 		if(GPIOPinRead(0x40006000,0x00000040)) {   
 			Count0_PIRA++;
@@ -2860,7 +2875,7 @@ void Task0_PIRA(void){
 void Task1_PIRB(void){	
   Count1_PIRB = 0;
   while(1){
-		OS_Wait(&SemPortC.pin7); 
+		OS_Wait(&SemPortC.pin7);  
 		OS_Sleep(50); 
 		if(GPIOPinRead(0x40006000,0x00000080)) {
 			Count1_PIRB++;
@@ -2880,7 +2895,6 @@ void Task1_PIRB(void){
 }
 void Task2_Cyclic10ms(void){  
   Count2_Cyclic10ms = 0;
-	uint8_t LED_Status = 0;
   while(1){
 		OS_Wait(&PerTask[0].semaphore);
 		CYCL_10ms();
@@ -2965,7 +2979,6 @@ int main(void){
 	OS_InitSemaphore(&SemPortC.pin7,0);
 	OS_InitSemaphore(&SerialMonitor,1);
 	OS_InitSemaphore(&GSMModule,1);
-
 	
 	
 	
@@ -2999,7 +3012,6 @@ int main(void){
   
 	InitDrivers();
 	InitApplications();
-	
 	OS_Launch(SysCtlClockGet()/1000); 
   return 0;  
 }

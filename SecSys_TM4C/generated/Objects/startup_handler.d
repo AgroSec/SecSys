@@ -2,6 +2,9 @@
 .\generated\objects\startup_handler.o: F:\0_Tools\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\generated\objects\startup_handler.o: F:\0_Tools\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\generated\objects\startup_handler.o: drivers\startup_handler\startup_handler.h
+.\generated\objects\startup_handler.o: .\modules\GSM\GSM.h
+.\generated\objects\startup_handler.o: ..\SecSys_TM4C\custom_types.h
+.\generated\objects\startup_handler.o: .\modules\PIR\PIR.h
 .\generated\objects\startup_handler.o: .\drivers\gpio_handler\gpio_handler.h
 .\generated\objects\startup_handler.o: .\OS\os_hw.h
 .\generated\objects\startup_handler.o: .\inc\CortexM.h

@@ -1,18 +1,48 @@
 #line 1 "modules\\GSM\\GSM.c"
-
-
  
-
- 
-
- 
-
- 
-#line 1 "modules\\GSM\\GSM.h"
+#line 1 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
- 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #line 1 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdbool.h"
  
 
@@ -31,7 +61,7 @@
 
 
 
-#line 6 "modules\\GSM\\GSM.h"
+#line 44 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 #line 1 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
  
  
@@ -288,6 +318,295 @@ typedef unsigned     long long uintmax_t;
 
 
  
+#line 45 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#line 143 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+
+
+
+
+
+
+
+
+#line 158 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+
+
+
+
+
+
+
+
+#line 174 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+
+
+
+
+
+
+
+#line 188 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+                                            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#line 217 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+
+
+
+
+
+
+
+#line 388 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+
+
+
+
+
+
+
+#line 465 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#line 489 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+
+
+
+
+
+
+
+
+                                            
+
+                                            
+
+
+
+
+
+
+
+
+
+
+
+#line 519 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+
+
+
+
+
+
+#line 538 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#line 559 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+extern uint32_t SysCtlSRAMSizeGet(void);
+extern uint32_t SysCtlFlashSizeGet(void);
+extern uint32_t SysCtlFlashSectorSizeGet(void);
+extern _Bool SysCtlPeripheralPresent(uint32_t ui32Peripheral);
+extern _Bool SysCtlPeripheralReady(uint32_t ui32Peripheral);
+extern void SysCtlPeripheralPowerOn(uint32_t ui32Peripheral);
+extern void SysCtlPeripheralPowerOff(uint32_t ui32Peripheral);
+extern void SysCtlPeripheralReset(uint32_t ui32Peripheral);
+extern void SysCtlPeripheralEnable(uint32_t ui32Peripheral);
+extern void SysCtlPeripheralDisable(uint32_t ui32Peripheral);
+extern void SysCtlPeripheralSleepEnable(uint32_t ui32Peripheral);
+extern void SysCtlPeripheralSleepDisable(uint32_t ui32Peripheral);
+extern void SysCtlPeripheralDeepSleepEnable(uint32_t ui32Peripheral);
+extern void SysCtlPeripheralDeepSleepDisable(uint32_t ui32Peripheral);
+extern void SysCtlPeripheralClockGating(_Bool bEnable);
+extern void SysCtlIntRegister(void (*pfnHandler)(void));
+extern void SysCtlIntUnregister(void);
+extern void SysCtlIntEnable(uint32_t ui32Ints);
+extern void SysCtlIntDisable(uint32_t ui32Ints);
+extern void SysCtlIntClear(uint32_t ui32Ints);
+extern uint32_t SysCtlIntStatus(_Bool bMasked);
+extern void SysCtlLDOSleepSet(uint32_t ui32Voltage);
+extern uint32_t SysCtlLDOSleepGet(void);
+extern void SysCtlLDODeepSleepSet(uint32_t ui32Voltage);
+extern uint32_t SysCtlLDODeepSleepGet(void);
+extern void SysCtlSleepPowerSet(uint32_t ui32Config);
+extern void SysCtlDeepSleepPowerSet(uint32_t ui32Config);
+extern void SysCtlReset(void);
+extern void SysCtlSleep(void);
+extern void SysCtlDeepSleep(void);
+extern uint32_t SysCtlResetCauseGet(void);
+extern void SysCtlResetCauseClear(uint32_t ui32Causes);
+extern void SysCtlBrownOutConfigSet(uint32_t ui32Config,
+                                    uint32_t ui32Delay);
+extern void SysCtlDelay(uint32_t ui32Count);
+extern void SysCtlMOSCConfigSet(uint32_t ui32Config);
+extern uint32_t SysCtlPIOSCCalibrate(uint32_t ui32Type);
+extern void SysCtlClockSet(uint32_t ui32Config);
+extern uint32_t SysCtlClockGet(void);
+extern void SysCtlDeepSleepClockSet(uint32_t ui32Config);
+extern void SysCtlDeepSleepClockConfigSet(uint32_t ui32Div,
+                                          uint32_t ui32Config);
+extern void SysCtlPWMClockSet(uint32_t ui32Config);
+extern uint32_t SysCtlPWMClockGet(void);
+extern void SysCtlIOSCVerificationSet(_Bool bEnable);
+extern void SysCtlMOSCVerificationSet(_Bool bEnable);
+extern void SysCtlPLLVerificationSet(_Bool bEnable);
+extern void SysCtlClkVerificationClear(void);
+extern void SysCtlGPIOAHBEnable(uint32_t ui32GPIOPeripheral);
+extern void SysCtlGPIOAHBDisable(uint32_t ui32GPIOPeripheral);
+extern void SysCtlUSBPLLEnable(void);
+extern void SysCtlUSBPLLDisable(void);
+extern uint32_t SysCtlClockFreqSet(uint32_t ui32Config,
+                                   uint32_t ui32SysClock);
+extern void SysCtlResetBehaviorSet(uint32_t ui32Behavior);
+extern uint32_t SysCtlResetBehaviorGet(void);
+extern void SysCtlClockOutConfig(uint32_t ui32Config, uint32_t ui32Div);
+extern void SysCtlAltClkConfig(uint32_t ui32Config);
+extern uint32_t SysCtlNMIStatus(void);
+extern void SysCtlNMIClear(uint32_t ui32Status);
+extern void SysCtlVoltageEventConfig(uint32_t ui32Config);
+extern uint32_t SysCtlVoltageEventStatus(void);
+extern void SysCtlVoltageEventClear(uint32_t ui32Status);
+
+
+
+
+
+
+
+
+
+
+#line 3 "modules\\GSM\\GSM.c"
+ 
+#line 1 "..\\SecSys_TM4C\\SecSys_Config.h"
+
+
+
+
+
+
+
+
+
+
+#line 17 "..\\SecSys_TM4C\\SecSys_Config.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#line 5 "modules\\GSM\\GSM.c"
+ 
+#line 1 "modules\\GSM\\GSM.h"
+
+
+
+ 
+#line 6 "modules\\GSM\\GSM.h"
 #line 7 "modules\\GSM\\GSM.h"
 #line 1 "..\\SecSys_TM4C\\custom_types.h"
 
@@ -337,7 +656,7 @@ void ReadSMS(void);
 
 
 
-#line 11 "modules\\GSM\\GSM.c"
+#line 7 "modules\\GSM\\GSM.c"
  
 #line 1 ".\\drivers\\gpio_handler\\gpio_handler.h"
 
@@ -1819,301 +2138,6 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 #line 39 ".\\OS\\os_hw.h"
-#line 1 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#line 44 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
-#line 45 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#line 143 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
-
-
-
-
-
-
-
-
-#line 158 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
-
-
-
-
-
-
-
-
-#line 174 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
-
-
-
-
-
-
-
-#line 188 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
-                                            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#line 217 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
-
-
-
-
-
-
-
-#line 388 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
-
-
-
-
-
-
-
-#line 465 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#line 489 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
-
-
-
-
-
-
-
-
-                                            
-
-                                            
-
-
-
-
-
-
-
-
-
-
-
-#line 519 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
-
-
-
-
-
-
-#line 538 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#line 559 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-extern uint32_t SysCtlSRAMSizeGet(void);
-extern uint32_t SysCtlFlashSizeGet(void);
-extern uint32_t SysCtlFlashSectorSizeGet(void);
-extern _Bool SysCtlPeripheralPresent(uint32_t ui32Peripheral);
-extern _Bool SysCtlPeripheralReady(uint32_t ui32Peripheral);
-extern void SysCtlPeripheralPowerOn(uint32_t ui32Peripheral);
-extern void SysCtlPeripheralPowerOff(uint32_t ui32Peripheral);
-extern void SysCtlPeripheralReset(uint32_t ui32Peripheral);
-extern void SysCtlPeripheralEnable(uint32_t ui32Peripheral);
-extern void SysCtlPeripheralDisable(uint32_t ui32Peripheral);
-extern void SysCtlPeripheralSleepEnable(uint32_t ui32Peripheral);
-extern void SysCtlPeripheralSleepDisable(uint32_t ui32Peripheral);
-extern void SysCtlPeripheralDeepSleepEnable(uint32_t ui32Peripheral);
-extern void SysCtlPeripheralDeepSleepDisable(uint32_t ui32Peripheral);
-extern void SysCtlPeripheralClockGating(_Bool bEnable);
-extern void SysCtlIntRegister(void (*pfnHandler)(void));
-extern void SysCtlIntUnregister(void);
-extern void SysCtlIntEnable(uint32_t ui32Ints);
-extern void SysCtlIntDisable(uint32_t ui32Ints);
-extern void SysCtlIntClear(uint32_t ui32Ints);
-extern uint32_t SysCtlIntStatus(_Bool bMasked);
-extern void SysCtlLDOSleepSet(uint32_t ui32Voltage);
-extern uint32_t SysCtlLDOSleepGet(void);
-extern void SysCtlLDODeepSleepSet(uint32_t ui32Voltage);
-extern uint32_t SysCtlLDODeepSleepGet(void);
-extern void SysCtlSleepPowerSet(uint32_t ui32Config);
-extern void SysCtlDeepSleepPowerSet(uint32_t ui32Config);
-extern void SysCtlReset(void);
-extern void SysCtlSleep(void);
-extern void SysCtlDeepSleep(void);
-extern uint32_t SysCtlResetCauseGet(void);
-extern void SysCtlResetCauseClear(uint32_t ui32Causes);
-extern void SysCtlBrownOutConfigSet(uint32_t ui32Config,
-                                    uint32_t ui32Delay);
-extern void SysCtlDelay(uint32_t ui32Count);
-extern void SysCtlMOSCConfigSet(uint32_t ui32Config);
-extern uint32_t SysCtlPIOSCCalibrate(uint32_t ui32Type);
-extern void SysCtlClockSet(uint32_t ui32Config);
-extern uint32_t SysCtlClockGet(void);
-extern void SysCtlDeepSleepClockSet(uint32_t ui32Config);
-extern void SysCtlDeepSleepClockConfigSet(uint32_t ui32Div,
-                                          uint32_t ui32Config);
-extern void SysCtlPWMClockSet(uint32_t ui32Config);
-extern uint32_t SysCtlPWMClockGet(void);
-extern void SysCtlIOSCVerificationSet(_Bool bEnable);
-extern void SysCtlMOSCVerificationSet(_Bool bEnable);
-extern void SysCtlPLLVerificationSet(_Bool bEnable);
-extern void SysCtlClkVerificationClear(void);
-extern void SysCtlGPIOAHBEnable(uint32_t ui32GPIOPeripheral);
-extern void SysCtlGPIOAHBDisable(uint32_t ui32GPIOPeripheral);
-extern void SysCtlUSBPLLEnable(void);
-extern void SysCtlUSBPLLDisable(void);
-extern uint32_t SysCtlClockFreqSet(uint32_t ui32Config,
-                                   uint32_t ui32SysClock);
-extern void SysCtlResetBehaviorSet(uint32_t ui32Behavior);
-extern uint32_t SysCtlResetBehaviorGet(void);
-extern void SysCtlClockOutConfig(uint32_t ui32Config, uint32_t ui32Div);
-extern void SysCtlAltClkConfig(uint32_t ui32Config);
-extern uint32_t SysCtlNMIStatus(void);
-extern void SysCtlNMIClear(uint32_t ui32Status);
-extern void SysCtlVoltageEventConfig(uint32_t ui32Config);
-extern uint32_t SysCtlVoltageEventStatus(void);
-extern void SysCtlVoltageEventClear(uint32_t ui32Status);
-
-
-
-
-
-
-
-
-
-
 #line 40 ".\\OS\\os_hw.h"
 #line 1 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/timer.h"
 
@@ -2475,7 +2499,7 @@ uint8_t GPIO_SetPin(ports_t port, uint8_t pin, uint8_t status);
 
 
 
-#line 13 "modules\\GSM\\GSM.c"
+#line 9 "modules\\GSM\\GSM.c"
 #line 1 ".\\drivers\\uart_handler\\uart_handler.h"
 
 
@@ -2518,7 +2542,8 @@ uint32_t UART2_GetUDecimal(void);
 uint32_t UART2_GetUHex(void);
 
 
-#line 14 "modules\\GSM\\GSM.c"
+#line 10 "modules\\GSM\\GSM.c"
+
  
 extern uint32_t Count0_PIRA;  
 extern uint32_t Count1_PIRB;  
@@ -2527,8 +2552,8 @@ extern uint32_t Count8_Blank;
  
 
  
-
 void PowerOnGSM(void){
+
 
 
 
@@ -2536,12 +2561,11 @@ void PowerOnGSM(void){
 }
 
 void SendSMS(SMS_Message_en message){
-	uint8_t message_id = 0;
 	UART2_SendString("AT+CMGS=\"0751538300\"");  
 	
 	UART2_SendChar(0x0D);
 	
-	SysCtlDelay(7999900);  
+	SysCtlDelay((((SysCtlClockGet() / 1000) * (100)) - 1)); 
   switch (message) {
 		case PIR_A:
 			UART2_SendString("PIR A Triggered ");  
@@ -2596,8 +2620,7 @@ void SendSMS(SMS_Message_en message){
 	UART2_SendChar(0x1A);  
 	UART0_SendNewLine();
 	UART0_SendString("SMS sent with message ID: ");
-	message_id = (uint8_t)message+0x30;
-	UART0_SendChar(message_id);
+	UART0_SendChar((uint8_t)message+'0');
 	UART0_SendNewLine();	
 	
 }
@@ -2658,6 +2681,7 @@ unsigned char ReceiveSMS(void){
 
 
 
+	return 0;
 }
 
 void ReadSMS(void){

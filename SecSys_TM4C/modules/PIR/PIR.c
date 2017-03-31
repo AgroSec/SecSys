@@ -1,49 +1,42 @@
+/*---------------------OS Includes--------------------*/
+//#include "os_hw.h"
+#include "os_core.h"
+
+/*-------------------Driver Includes-----------------*/
+#include "driverlib/sysctl.h"
+
+/*-------------------Configuration Includes-----------*/
+#include "SecSys_Config.h"
+
+/*------Export interface---Self header Includes------*/
 #include "PIR.h"
 
-void Process_PIR(){  //function to read and process PIR state
-  unsigned char PIR_A_Value = 0;  //variable to hold PIR A input pin value
-  unsigned char PIR_B_Value = 0;  //variable to hold PIR B input pin value
-  static unsigned char PIR_A_State = 0;  //initial state of PIR A
-  static unsigned char PIR_B_State = 0;  //initial state of PIR B
-  unsigned long currentMillis = millis();
-  static unsigned long previousMillisA = 0;
-  static unsigned long previousMillisB = 0;
-  
-  if(currentMillis - previousMillisA >= PIR_READ_DELAY){
-    previousMillisA = currentMillis;  // Remember the time  
-    //Read pin walues
-    PIR_A_Value = digitalRead(PIR_A_INPUT);  //read input value from PIR
-    PIR_B_Value = digitalRead(PIR_B_INPUT);
-      
-    //Process PIR A data
-    if ((PIR_A_Value == HIGH)&&(PIR_A_State == LOW)){  //Input was High and current state LOW
-      //Trigger conditions met on PIR A
-      PIR_A_State = HIGH;  //set current state high
-      Serial.println("PIR A Triggered");
-      SendSMS(PIR_A);
-      delay(ULTRA_SHORT_DELAY);
-    }
-    else if (PIR_A_State == HIGH) {
-      PIR_A_State = LOW;
-      Serial.println("PIR A Re-Armed");
-      delay(ULTRA_SHORT_DELAY);
-    }
-  }
+/*-------------------Service Includes-----------------*/
+#include "uart_handler.h"
 
-  if(currentMillis - previousMillisB >= PIR_READ_DELAY){
-    previousMillisB = currentMillis;  // Remember the time    
-    //Process PIR B data
-    if ((PIR_B_Value == HIGH)&&(PIR_B_State == LOW)){  //Input was High and current state LOW
-      //Trigger conditions met on PIR B
-      PIR_B_State = HIGH;  //set current state high
-      Serial.println("PIR B Triggered");
-      SendSMS(PIR_B);
-      delay(ULTRA_SHORT_DELAY);
-    }
-    else if (PIR_B_State == HIGH) {
-      PIR_B_State = LOW;
-      Serial.println("PIR B Re-Armed");
-      delay(ULTRA_SHORT_DELAY);
-    }
-  }
+/*-----------------Application Includes---------------*/
+#include "GSM.h"
+
+/*-------------Global Variable Definitions------------*/
+uint8_t PIR_Trigger_Source = 0;
+
+/*-------------Local Variable Definitions-------------*/
+
+/*-------------------Function Definitions-------------*/
+void Process_PIR(void){  //function to read and process PIR state
+	static uint32_t PIR_A_TriggerNr = 0;
+	static uint32_t PIR_B_TriggerNr = 0;
+	if(PIR_Trigger_Source == 'A'){
+		PIR_A_TriggerNr++;
+		//TODO
+	}
+	else if(PIR_Trigger_Source == 'B'){
+		PIR_B_TriggerNr++;
+		//TODO
+	}
 }
+
+void Init_PIR(void){ 
+	SysCtlDelay(Millis2Ticks(PIR_STARTUP_DELAY*1000));  //delay to stabilize PIR at power on
+}
+//EOF

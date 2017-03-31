@@ -11,13 +11,18 @@
 #include "os_core.h"
 #include "os_config.h"
 #include "profile.h"
+
 /*-------------------Service Includes-----------------*/
 #include "startup_handler.h"
 #include "cyclic_activity_handler.h"
 //#include "gpio_handler.h"
 #include "uart_handler.h"
-#include "GSM.h"
 
+/*-----------------Application Includes---------------*/
+#include "GSM.h"
+#include "PIR.h"
+
+/*-------------Global Variable Definitions------------*/
 uint32_t Count0_PIRA;  // number of times Task0 loops
 uint32_t Count1_PIRB;  // number of times Task1 loops
 uint32_t Count2_Cyclic10ms;   // number of times Task2 loops
@@ -29,22 +34,24 @@ uint32_t Count7_Blank; // number of times Task7 loops
 uint32_t Count8_Blank; // number of times Task8 loops
 uint32_t CountIdle;    // number of times Idle_Task loops
 
-int32_t Task78Sync;
-int32_t Task87Sync;
+//int32_t Task78Sync;
+//int32_t Task87Sync;
+//fifo_t FifoA;
 int32_t SerialMonitor; //Semaphore to block serial monitor
 int32_t GSMModule; //Semaphore to block GSM module
 
-fifo_t FifoA;
-
 extern ptcbType PerTask[NUMPERIODIC];
 extern PortSema_t SemPortC;
-extern PortSema_t SemPortD;
-extern PortSema_t SemPortF;
+//extern PortSema_t SemPortD;
+//extern PortSema_t SemPortF;
 
+/*-------------Local Variable Definitions-------------*/
+
+/*-------------------Function Definitions-------------*/
 void Task0_PIRA(void){	//Edge triggered task
   Count0_PIRA = 0;
   while(1){
-		OS_Wait(&SemPortC.pin6); // signaled in OS on button touch
+		OS_Wait(&SemPortC.pin6);  // signaled in ISR
 		OS_Sleep(50); //sleep to debounce switch		
 		if(GPIOPinRead(GPIO_PORTC_BASE,GPIO_INT_PIN_6)) {   
 			Count0_PIRA++;
@@ -65,7 +72,7 @@ void Task0_PIRA(void){	//Edge triggered task
 void Task1_PIRB(void){	//Edge triggered task
   Count1_PIRB = 0;
   while(1){
-		OS_Wait(&SemPortC.pin7); // signaled in OS on button touch
+		OS_Wait(&SemPortC.pin7);  // signaled in ISR
 		OS_Sleep(50); //sleep to debounce switch		
 		if(GPIOPinRead(GPIO_PORTC_BASE,GPIO_INT_PIN_7)) {
 			Count1_PIRB++;
@@ -85,7 +92,6 @@ void Task1_PIRB(void){	//Edge triggered task
 }
 void Task2_Cyclic10ms(void){  //Periodic task 10ms
   Count2_Cyclic10ms = 0;
-	uint8_t LED_Status = 0;
   while(1){
 		OS_Wait(&PerTask[0].semaphore);
 		CYCL_10ms();
@@ -170,7 +176,6 @@ int main(void){
 	OS_InitSemaphore(&SemPortC.pin7,0);
 	OS_InitSemaphore(&SerialMonitor,1);
 	OS_InitSemaphore(&GSMModule,1);
-
 	//OS_InitSemaphore(&SemPortF.pin0,0);
 	//OS_InitSemaphore(&SemPortF.pin4,0);
 	
@@ -204,7 +209,6 @@ int main(void){
   //9
 	InitDrivers();
 	InitApplications();
-	
 	OS_Launch(SysCtlClockGet()/THREADFREQ); // doesn't return, interrupts enabled in here
   return 0;  // this never executes
 }

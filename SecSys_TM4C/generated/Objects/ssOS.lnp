@@ -4,6 +4,7 @@
 ".\generated\objects\osasm.o"
 ".\generated\objects\os_hw.o"
 ".\generated\objects\gsm.o"
+".\generated\objects\pir.o"
 ".\generated\objects\uart_handler.o"
 ".\generated\objects\gpio_handler.o"
 ".\generated\objects\cyclic_activity_handler.o"

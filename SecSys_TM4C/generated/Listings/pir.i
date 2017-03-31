@@ -1,10 +1,61 @@
-#line 1 "drivers\\startup_handler\\startup_handler.c"
+#line 1 "modules\\PIR\\PIR.c"
+ 
+
+#line 1 ".\\OS\\os_core.h"
+
+
+
+
+
 
 
 
  
+#line 1 ".\\inc\\CortexM.h"
 
- 
+
+
+
+
+#line 18 ".\\inc\\CortexM.h"
+
+
+
+
+
+
+
+void DisableInterrupts(void); 
+
+
+
+
+
+void EnableInterrupts(void);  
+
+
+
+
+
+
+long StartCritical(void);    
+
+
+
+
+
+
+void EndCritical(long sr);    
+
+
+
+
+
+
+
+void WaitForInterrupt(void);  
+
+#line 11 ".\\OS\\os_core.h"
 #line 1 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdbool.h"
  
 
@@ -23,7 +74,7 @@
 
 
 
-#line 8 "drivers\\startup_handler\\startup_handler.c"
+#line 12 ".\\OS\\os_core.h"
 #line 1 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
  
  
@@ -280,97 +331,7 @@ typedef unsigned     long long uintmax_t;
 
 
  
-#line 9 "drivers\\startup_handler\\startup_handler.c"
-
- 
-
- 
-
- 
-#line 1 "drivers\\startup_handler\\startup_handler.h"
-
-
-
-
- 
-void InitDrivers(void);
-void InitApplications(void);
-
-
-#line 16 "drivers\\startup_handler\\startup_handler.c"
- 
-#line 1 ".\\modules\\GSM\\GSM.h"
-
-
-
- 
-#line 6 ".\\modules\\GSM\\GSM.h"
-#line 7 ".\\modules\\GSM\\GSM.h"
-#line 1 "..\\SecSys_TM4C\\custom_types.h"
-
-
-
-
- 
-
-
-
-
-
- 
-#line 18 "..\\SecSys_TM4C\\custom_types.h"
-
- 
-typedef struct Xyz
-{
-	char z;
-	char y;
-	char x;
-} Xyz_st;
-
-typedef enum SMS_Message
-{
-	PIR_A = 0,
-	PIR_B,
-	Wire_1_Pull,
-	Wire_1_Cut,
-	Wire_2_Pull,
-	Wire_2_Cut,
-	Wire_3_Pull,
-	Wire_3_Cut,
-	Status,
-	Wrong_Command
-} SMS_Message_en;
-
-
-
-
-#line 8 ".\\modules\\GSM\\GSM.h"
-
-void PowerOnGSM(void);
-void SendSMS(SMS_Message_en message);
-unsigned char ReceiveSMS(void);
-void ReadSMS(void);
-
-
-
-#line 18 "drivers\\startup_handler\\startup_handler.c"
-#line 1 ".\\modules\\PIR\\PIR.h"
-
-
-void Process_PIR(void);
-void Init_PIR(void);
-
-
-
-#line 19 "drivers\\startup_handler\\startup_handler.c"
- 
-#line 1 ".\\drivers\\gpio_handler\\gpio_handler.h"
-
-
-
-
- 
+#line 13 ".\\OS\\os_core.h"
 #line 1 ".\\OS\\os_hw.h"
 
 
@@ -434,67 +395,9 @@ void WaitForInterrupt(void);
 
 
 
+#line 158 ".\\OS\\os_core.h"
 
-
-
- 
-#line 1 ".\\inc\\CortexM.h"
-
-
-
-
-
-#line 18 ".\\inc\\CortexM.h"
-
-
-
-
-
-
-
-void DisableInterrupts(void); 
-
-
-
-
-
-void EnableInterrupts(void);  
-
-
-
-
-
-
-long StartCritical(void);    
-
-
-
-
-
-
-void EndCritical(long sr);    
-
-
-
-
-
-
-
-void WaitForInterrupt(void);  
-
-#line 11 ".\\OS\\os_core.h"
-#line 12 ".\\OS\\os_core.h"
-#line 13 ".\\OS\\os_core.h"
-#line 1 ".\\OS\\os_hw.h"
-
-
-
-
-
-#line 91 ".\\OS\\os_hw.h"
-
-
-#line 14 ".\\OS\\os_core.h"
+#line 14 ".\\OS\\os_hw.h"
 #line 1 ".\\OS\\os_config.h"
 
 
@@ -553,152 +456,6 @@ void WaitForInterrupt(void);
 
 
 
-#line 15 ".\\OS\\os_core.h"
-
-
-
-
-struct tcb{  
-  int32_t *sp;  
-  struct tcb *next;  
-	int32_t *blocked;  
-	int32_t sleep;  
-  uint8_t priority;  
-};
-typedef struct tcb tcbType;
-
-struct ptcb{	
-	int32_t semaphore;
-	uint32_t period;
-	uint32_t counter;
-};
-typedef struct ptcb ptcbType;
-
-struct fifo_st{
-	uint32_t Fifo[10];
-	uint32_t LostData;	
-	int32_t CurrentSize;
-	int32_t Mutex;
-	uint8_t PutI;
-	uint8_t GetI;
-};
-typedef struct fifo_st fifo_t;
-
-
-
-
-
-
-
-
-
-
-
-void OS_Init(uint8_t clock_Mhz);
-
-
-
-
-
-
-
-int OS_AddThreads(void(*thread0)(void), uint32_t p0,
-                  void(*thread1)(void), uint32_t p1,
-									void(*thread2)(void), uint32_t p2,
-									void(*thread3)(void), uint32_t p3,
-                  void(*thread4)(void), uint32_t p4,
-                  void(*thread5)(void), uint32_t p5,
-                  void(*thread6)(void), uint32_t p6,
-									void(*thread7)(void), uint32_t p7,
-                  void(*thread8)(void), uint32_t p8,
-                  void(*thread9)(void), uint32_t p9);
-
-
-
-
-
-
-
-
-
-
-
-
-int OS_AddPeriodicEventThread(int32_t *semaPt, uint32_t period);
-
-
-
-
-
-
-
-void OS_Launch(uint32_t theTimeSlice);
-
-
-
-
-
-
-void OS_Suspend(void);
-
-
-
-
-
-
-void OS_Sleep(uint32_t sleepTime);
-
-
-
-
-
-
-void OS_InitSemaphore(int32_t *semaPt, int32_t value);
-
-
-
-
-
-
-
-void OS_Wait(int32_t *semaPt);
-
-
-
-
-
-
-
-void OS_Signal(int32_t *semaPt);
-
-
-
-
-
-
-void OS_FIFO_Init(fifo_t *fifo);
-
-
-
-
-
-
-
-int OS_FIFO_Put(fifo_t *fifo,uint32_t data);
-
-
-
-
-
-
-
-uint32_t OS_FIFO_Get(fifo_t *fifo);
-
-
-
-
-
-#line 14 ".\\OS\\os_hw.h"
 #line 15 ".\\OS\\os_hw.h"
 
 
@@ -2493,15 +2250,200 @@ void OS_SysTick_Init(uint32_t time);
 
 
 
-#line 7 ".\\drivers\\gpio_handler\\gpio_handler.h"
+#line 14 ".\\OS\\os_core.h"
+#line 15 ".\\OS\\os_core.h"
+
+
+
+
+struct tcb{  
+  int32_t *sp;  
+  struct tcb *next;  
+	int32_t *blocked;  
+	int32_t sleep;  
+  uint8_t priority;  
+};
+typedef struct tcb tcbType;
+
+struct ptcb{	
+	int32_t semaphore;
+	uint32_t period;
+	uint32_t counter;
+};
+typedef struct ptcb ptcbType;
+
+struct fifo_st{
+	uint32_t Fifo[10];
+	uint32_t LostData;	
+	int32_t CurrentSize;
+	int32_t Mutex;
+	uint8_t PutI;
+	uint8_t GetI;
+};
+typedef struct fifo_st fifo_t;
+
+
+
+
+
+
+
+
+
+
+
+void OS_Init(uint8_t clock_Mhz);
+
+
+
+
+
+
+
+int OS_AddThreads(void(*thread0)(void), uint32_t p0,
+                  void(*thread1)(void), uint32_t p1,
+									void(*thread2)(void), uint32_t p2,
+									void(*thread3)(void), uint32_t p3,
+                  void(*thread4)(void), uint32_t p4,
+                  void(*thread5)(void), uint32_t p5,
+                  void(*thread6)(void), uint32_t p6,
+									void(*thread7)(void), uint32_t p7,
+                  void(*thread8)(void), uint32_t p8,
+                  void(*thread9)(void), uint32_t p9);
+
+
+
+
+
+
+
+
+
+
+
+
+int OS_AddPeriodicEventThread(int32_t *semaPt, uint32_t period);
+
+
+
+
+
+
+
+void OS_Launch(uint32_t theTimeSlice);
+
+
+
+
+
+
+void OS_Suspend(void);
+
+
+
+
+
+
+void OS_Sleep(uint32_t sleepTime);
+
+
+
+
+
+
+void OS_InitSemaphore(int32_t *semaPt, int32_t value);
+
+
+
+
+
+
+
+void OS_Wait(int32_t *semaPt);
+
+
+
+
+
+
+
+void OS_Signal(int32_t *semaPt);
+
+
+
+
+
+
+void OS_FIFO_Init(fifo_t *fifo);
+
+
+
+
+
+
+
+int OS_FIFO_Put(fifo_t *fifo,uint32_t data);
+
+
+
+
+
+
+
+uint32_t OS_FIFO_Get(fifo_t *fifo);
+
+
+
+
+
+#line 4 "modules\\PIR\\PIR.c"
 
  
-uint8_t GPIO_InitPortOutput(ports_t port, uint8_t pin);
-uint8_t GPIO_SetPin(ports_t port, uint8_t pin, uint8_t status);
+#line 7 "modules\\PIR\\PIR.c"
+
+ 
+#line 1 "..\\SecSys_TM4C\\SecSys_Config.h"
 
 
 
-#line 21 "drivers\\startup_handler\\startup_handler.c"
+
+
+
+
+
+
+
+#line 17 "..\\SecSys_TM4C\\SecSys_Config.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#line 10 "modules\\PIR\\PIR.c"
+
+ 
+#line 1 "modules\\PIR\\PIR.h"
+
+
+void Process_PIR(void);
+void Init_PIR(void);
+
+
+
+#line 13 "modules\\PIR\\PIR.c"
+
+ 
 #line 1 ".\\drivers\\uart_handler\\uart_handler.h"
 
 
@@ -2544,28 +2486,86 @@ uint32_t UART2_GetUDecimal(void);
 uint32_t UART2_GetUHex(void);
 
 
-#line 22 "drivers\\startup_handler\\startup_handler.c"
+#line 16 "modules\\PIR\\PIR.c"
+
  
+#line 1 ".\\modules\\GSM\\GSM.h"
+
+
+
+ 
+#line 6 ".\\modules\\GSM\\GSM.h"
+#line 7 ".\\modules\\GSM\\GSM.h"
+#line 1 "..\\SecSys_TM4C\\custom_types.h"
+
+
+
+
+ 
+
+
+
+
+
+ 
+#line 18 "..\\SecSys_TM4C\\custom_types.h"
+
+ 
+typedef struct Xyz
+{
+	char z;
+	char y;
+	char x;
+} Xyz_st;
+
+typedef enum SMS_Message
+{
+	PIR_A = 0,
+	PIR_B,
+	Wire_1_Pull,
+	Wire_1_Cut,
+	Wire_2_Pull,
+	Wire_2_Cut,
+	Wire_3_Pull,
+	Wire_3_Cut,
+	Status,
+	Wrong_Command
+} SMS_Message_en;
+
+
+
+
+#line 8 ".\\modules\\GSM\\GSM.h"
+
+void PowerOnGSM(void);
+void SendSMS(SMS_Message_en message);
+unsigned char ReceiveSMS(void);
+void ReadSMS(void);
+
+
+
+#line 19 "modules\\PIR\\PIR.c"
+
+ 
+uint8_t PIR_Trigger_Source = 0;
 
  
 
  
-void InitDrivers(void) {
-	
-	UART0_Init();
-	UART2_Init();
-	GPIO_InitPortOutput(PortF,0x00000004);
-	
-	UART0_SendString("Driver init done...");
-	UART0_SendNewLine();
+void Process_PIR(void){  
+	static uint32_t PIR_A_TriggerNr = 0;
+	static uint32_t PIR_B_TriggerNr = 0;
+	if(PIR_Trigger_Source == 'A'){
+		PIR_A_TriggerNr++;
+		
+	}
+	else if(PIR_Trigger_Source == 'B'){
+		PIR_B_TriggerNr++;
+		
+	}
 }
 
-void InitApplications(void) {
-	
-	PowerOnGSM();
-	Init_PIR();
-	
-	UART0_SendString("Applications init done...");
-	UART0_SendNewLine();
+void Init_PIR(void){ 
+	SysCtlDelay((((SysCtlClockGet() / 1000) * ((5)*1000)) - 1));  
 }
 

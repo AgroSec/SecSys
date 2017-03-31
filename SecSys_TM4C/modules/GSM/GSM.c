@@ -1,16 +1,13 @@
-
-
-/*-------------------Configuration Includes-----------*/
-
-/*-------------------HW define Includes--------------*/
-
 /*-------------------Driver Includes-----------------*/
-
+#include "driverlib/sysctl.h"
+/*-------------------Configuration Includes-----------*/
+#include "SecSys_Config.h"
 /*------Export interface---Self header Includes------*/
 #include "GSM.h"
 /*-------------------Service Includes-----------------*/
 #include "gpio_handler.h"
 #include "uart_handler.h"
+
 /*-------------Global Variable Definitions------------*/
 extern uint32_t Count0_PIRA;  // number of times Task0 loops
 extern uint32_t Count1_PIRB;  // number of times Task1 loops
@@ -19,8 +16,8 @@ extern uint32_t Count8_Blank; //increments every minute
 /*-------------Local Variable Definitions-------------*/
 
 /*-------------------Function Definitions-------------*/
-
 void PowerOnGSM(void){
+//  TODO
 //  digitalWrite(GSM_Power_Pin, HIGH);
 //  delay(1000);
 //  digitalWrite(GSM_Power_Pin, LOW);
@@ -28,12 +25,11 @@ void PowerOnGSM(void){
 }
 
 void SendSMS(SMS_Message_en message){
-	uint8_t message_id = 0;
 	UART2_SendString("AT+CMGS=\"0751538300\"");  //set the mobile number to send the SMS
 	//UART2_SendNewLine();
 	UART2_SendChar(CR);
 	//UART2_SendChar(LF);
-	SysCtlDelay(7999900);  //At 80MHz aprox 1 ms, Interrupts are NOT disabled and OS is NOT stoped during delay!
+	SysCtlDelay(Millis2Ticks(100)); //Interrupts are NOT disabled and OS is NOT stoped during delay!
   switch (message) {
 		case PIR_A:
 			UART2_SendString("PIR A Triggered ");  //The SMS text you want to send
@@ -149,6 +145,7 @@ unsigned char ReceiveSMS(void){
 //    //Serial.write("The sender number is");
 //    //Serial.write(sender_number[1]);
 //  //}
+	return 0;
 }
 
 void ReadSMS(void){
