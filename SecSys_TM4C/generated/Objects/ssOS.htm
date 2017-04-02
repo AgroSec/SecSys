@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\generated\Objects\ssOS.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\generated\Objects\ssOS.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060300: Last Updated: Fri Mar 31 16:42:01 2017
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060300: Last Updated: Sun Apr 02 23:00:27 2017
 <BR><P>
 <H3>Maximum Stack Usage =        132 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -327,9 +327,8 @@ Global Symbols
 <P><STRONG><a name="[a3]"></a>SysCtlDelay</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, sysctl.o(.emb_text))
 <BR><BR>[Calls]<UL><LI><a href="#[a3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysCtlDelay
 </UL>
-<BR>[Called By]<UL><LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Init_PIR
-<LI><a href="#[a3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysCtlDelay
-<LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysCtlClockSet
+<BR>[Called By]<UL><LI><a href="#[a3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysCtlDelay
+<LI><a href="#[c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysCtlClockSet
 <LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SendSMS
 </UL>
 
@@ -740,12 +739,12 @@ Global Symbols
 
 <P><STRONG><a name="[8e]"></a>StartCritical</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, startup_tm4c123.o(.text))
 <BR><BR>[Called By]<UL><LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Timer_Init
-<LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_AddThreads
+<LI><a href="#[c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_AddThreads
 </UL>
 
 <P><STRONG><a name="[8f]"></a>EndCritical</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, startup_tm4c123.o(.text))
 <BR><BR>[Called By]<UL><LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Timer_Init
-<LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_AddThreads
+<LI><a href="#[c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_AddThreads
 </UL>
 
 <P><STRONG><a name="[90]"></a>WaitForInterrupt</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, startup_tm4c123.o(.text), UNUSED, KEPT)
@@ -910,7 +909,7 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_InitPortOutput
 </UL>
 
-<P><STRONG><a name="[e]"></a>GPIOPortC_Handler</STRONG> (Thumb, 256 bytes, Stack size 8 bytes, os_hw.o(i.GPIOPortC_Handler))
+<P><STRONG><a name="[e]"></a>GPIOPortC_Handler</STRONG> (Thumb, 266 bytes, Stack size 8 bytes, os_hw.o(i.GPIOPortC_Handler))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24 + Unknown Stack Size
 <LI>Call Chain = GPIOPortC_Handler &rArr; OS_Signal
 </UL>
@@ -963,7 +962,7 @@ Global Symbols
 <BR>[Address Reference Count : 1]<UL><LI> main.o(i.main)
 </UL>
 <P><STRONG><a name="[b8]"></a>InitApplications</STRONG> (Thumb, 22 bytes, Stack size 8 bytes, startup_handler.o(i.InitApplications))
-<BR><BR>[Stack]<UL><LI>Max Depth = 28<LI>Call Chain = InitApplications &rArr; Init_PIR &rArr; SysCtlClockGet
+<BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = InitApplications &rArr; UART0_SendString &rArr; UART0_SendChar
 </UL>
 <BR>[Calls]<UL><LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Init_PIR
 <LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PowerOnGSM
@@ -985,13 +984,8 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[ba]"></a>Init_PIR</STRONG> (Thumb, 34 bytes, Stack size 8 bytes, pir.o(i.Init_PIR))
-<BR><BR>[Stack]<UL><LI>Max Depth = 20<LI>Call Chain = Init_PIR &rArr; SysCtlClockGet
-</UL>
-<BR>[Calls]<UL><LI><a href="#[a3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysCtlDelay
-<LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysCtlClockGet
-</UL>
-<BR>[Called By]<UL><LI><a href="#[b8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InitApplications
+<P><STRONG><a name="[ba]"></a>Init_PIR</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, pir.o(i.Init_PIR))
+<BR><BR>[Called By]<UL><LI><a href="#[b8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InitApplications
 </UL>
 
 <P><STRONG><a name="[c6]"></a>IntDisable</STRONG> (Thumb, 92 bytes, Stack size 0 bytes, interrupt.o(i.IntDisable))
@@ -1010,35 +1004,35 @@ Global Symbols
 <LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_EdgeTrigger_Init
 </UL>
 
-<P><STRONG><a name="[bf]"></a>OS_AddPeriodicEventThread</STRONG> (Thumb, 76 bytes, Stack size 8 bytes, os_core.o(i.OS_AddPeriodicEventThread))
+<P><STRONG><a name="[be]"></a>OS_AddPeriodicEventThread</STRONG> (Thumb, 76 bytes, Stack size 8 bytes, os_core.o(i.OS_AddPeriodicEventThread))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = OS_AddPeriodicEventThread
 </UL>
-<BR>[Calls]<UL><LI><a href="#[c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_InitSemaphore
+<BR>[Calls]<UL><LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_InitSemaphore
 </UL>
 <BR>[Called By]<UL><LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[c1]"></a>OS_AddThreads</STRONG> (Thumb, 354 bytes, Stack size 40 bytes, os_core.o(i.OS_AddThreads))
+<P><STRONG><a name="[c0]"></a>OS_AddThreads</STRONG> (Thumb, 354 bytes, Stack size 40 bytes, os_core.o(i.OS_AddThreads))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40 + Unknown Stack Size
 <LI>Call Chain = OS_AddThreads
 </UL>
 <BR>[Calls]<UL><LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;StartCritical
 <LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;EndCritical
-<LI><a href="#[c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetInitialStack
+<LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetInitialStack
 </UL>
 <BR>[Called By]<UL><LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[c3]"></a>OS_Clock_Init</STRONG> (Thumb, 150 bytes, Stack size 16 bytes, os_hw.o(i.OS_Clock_Init))
+<P><STRONG><a name="[c2]"></a>OS_Clock_Init</STRONG> (Thumb, 150 bytes, Stack size 16 bytes, os_hw.o(i.OS_Clock_Init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 28<LI>Call Chain = OS_Clock_Init &rArr; SysCtlClockGet
 </UL>
-<BR>[Calls]<UL><LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysCtlClockSet
-<LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysCtlClockGet
+<BR>[Calls]<UL><LI><a href="#[c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysCtlClockSet
+<LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysCtlClockGet
 </UL>
 <BR>[Called By]<UL><LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Init
 </UL>
 
-<P><STRONG><a name="[c5]"></a>OS_EdgeTrigger_Init</STRONG> (Thumb, 454 bytes, Stack size 24 bytes, os_hw.o(i.OS_EdgeTrigger_Init))
+<P><STRONG><a name="[c5]"></a>OS_EdgeTrigger_Init</STRONG> (Thumb, 446 bytes, Stack size 24 bytes, os_hw.o(i.OS_EdgeTrigger_Init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 60<LI>Call Chain = OS_EdgeTrigger_Init &rArr; GPIOPinTypeGPIOInput &rArr; GPIOPadConfigSet
 </UL>
 <BR>[Calls]<UL><LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysCtlPeripheralReady
@@ -1071,14 +1065,14 @@ Global Symbols
 <LI>Call Chain = OS_Init &rArr; OS_Timer_Init &rArr; SysCtlClockGet
 </UL>
 <BR>[Calls]<UL><LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Timer_Init
-<LI><a href="#[c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Clock_Init
+<LI><a href="#[c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Clock_Init
 <LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DisableInterrupts
 </UL>
 <BR>[Called By]<UL><LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[c0]"></a>OS_InitSemaphore</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, os_core.o(i.OS_InitSemaphore))
-<BR><BR>[Called By]<UL><LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_AddPeriodicEventThread
+<P><STRONG><a name="[bf]"></a>OS_InitSemaphore</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, os_core.o(i.OS_InitSemaphore))
+<BR><BR>[Called By]<UL><LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_AddPeriodicEventThread
 <LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
@@ -1143,7 +1137,7 @@ Global Symbols
 <LI><a href="#[c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;IntDisable
 <LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;StartCritical
 <LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;EndCritical
-<LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysCtlClockGet
+<LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysCtlClockGet
 </UL>
 <BR>[Called By]<UL><LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Init
 </UL>
@@ -1177,7 +1171,7 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysTick_Handler
 </UL>
 
-<P><STRONG><a name="[d9]"></a>SendSMS</STRONG> (Thumb, 252 bytes, Stack size 16 bytes, gsm.o(i.SendSMS))
+<P><STRONG><a name="[d9]"></a>SendSMS</STRONG> (Thumb, 258 bytes, Stack size 16 bytes, gsm.o(i.SendSMS))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = SendSMS &rArr; UART2_SendUDecimal &rArr;  UART2_SendUDecimal (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART2_SendUDecimal
@@ -1188,35 +1182,34 @@ Global Symbols
 <LI><a href="#[a3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysCtlDelay
 <LI><a href="#[a8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART0_SendString
 <LI><a href="#[a9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART0_SendNewLine
-<LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysCtlClockGet
+<LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysCtlClockGet
 </UL>
 <BR>[Called By]<UL><LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task8_BlankTask
 <LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task1_PIRB
 <LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task0_PIRA
 </UL>
 
-<P><STRONG><a name="[c2]"></a>SetInitialStack</STRONG> (Thumb, 328 bytes, Stack size 0 bytes, os_core.o(i.SetInitialStack))
-<BR><BR>[Called By]<UL><LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_AddThreads
+<P><STRONG><a name="[c1]"></a>SetInitialStack</STRONG> (Thumb, 328 bytes, Stack size 0 bytes, os_core.o(i.SetInitialStack))
+<BR><BR>[Called By]<UL><LI><a href="#[c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_AddThreads
 </UL>
 
-<P><STRONG><a name="[be]"></a>SysCtlClockGet</STRONG> (Thumb, 304 bytes, Stack size 12 bytes, sysctl.o(i.SysCtlClockGet))
+<P><STRONG><a name="[c4]"></a>SysCtlClockGet</STRONG> (Thumb, 304 bytes, Stack size 12 bytes, sysctl.o(i.SysCtlClockGet))
 <BR><BR>[Stack]<UL><LI>Max Depth = 12<LI>Call Chain = SysCtlClockGet
 </UL>
 <BR>[Called By]<UL><LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART2_Init
 <LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART0_Init
-<LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Init_PIR
 <LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Timer_Init
-<LI><a href="#[c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Clock_Init
+<LI><a href="#[c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Clock_Init
 <LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SendSMS
 <LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[c4]"></a>SysCtlClockSet</STRONG> (Thumb, 270 bytes, Stack size 8 bytes, sysctl.o(i.SysCtlClockSet))
+<P><STRONG><a name="[c3]"></a>SysCtlClockSet</STRONG> (Thumb, 270 bytes, Stack size 8 bytes, sysctl.o(i.SysCtlClockSet))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = SysCtlClockSet
 </UL>
 <BR>[Calls]<UL><LI><a href="#[a3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysCtlDelay
 </UL>
-<BR>[Called By]<UL><LI><a href="#[c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Clock_Init
+<BR>[Called By]<UL><LI><a href="#[c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Clock_Init
 </UL>
 
 <P><STRONG><a name="[b5]"></a>SysCtlPeripheralEnable</STRONG> (Thumb, 36 bytes, Stack size 0 bytes, sysctl.o(i.SysCtlPeripheralEnable))
@@ -1317,7 +1310,7 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> main.o(i.main)
 </UL>
-<P><STRONG><a name="[81]"></a>Task8_BlankTask</STRONG> (Thumb, 34 bytes, Stack size 0 bytes, main.o(i.Task8_BlankTask))
+<P><STRONG><a name="[81]"></a>Task8_BlankTask</STRONG> (Thumb, 32 bytes, Stack size 0 bytes, main.o(i.Task8_BlankTask))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = Task8_BlankTask &rArr; SendSMS &rArr; UART2_SendUDecimal &rArr;  UART2_SendUDecimal (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SendSMS
@@ -1378,7 +1371,7 @@ Global Symbols
 <LI><a href="#[ae]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIOPinTypeUART
 <LI><a href="#[e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIOPinConfigure
 <LI><a href="#[b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysCtlPeripheralEnable
-<LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysCtlClockGet
+<LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysCtlClockGet
 </UL>
 <BR>[Called By]<UL><LI><a href="#[bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InitDrivers
 </UL>
@@ -1446,7 +1439,7 @@ Global Symbols
 <LI><a href="#[e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIOPinConfigure
 <LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysCtlPeripheralReady
 <LI><a href="#[b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysCtlPeripheralEnable
-<LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysCtlClockGet
+<LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysCtlClockGet
 </UL>
 <BR>[Called By]<UL><LI><a href="#[bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InitDrivers
 </UL>
@@ -1557,14 +1550,14 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 132 + Unknown Stack Size
 <LI>Call Chain = main &rArr; OS_EdgeTrigger_Init &rArr; GPIOPinTypeGPIOInput &rArr; GPIOPadConfigSet
 </UL>
-<BR>[Calls]<UL><LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysCtlClockGet
+<BR>[Calls]<UL><LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysCtlClockGet
 <LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Profile_Init
 <LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Launch
-<LI><a href="#[c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_InitSemaphore
+<LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_InitSemaphore
 <LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Init
 <LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_EdgeTrigger_Init
-<LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_AddThreads
-<LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_AddPeriodicEventThread
+<LI><a href="#[c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_AddThreads
+<LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_AddPeriodicEventThread
 <LI><a href="#[bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InitDrivers
 <LI><a href="#[b8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InitApplications
 </UL>

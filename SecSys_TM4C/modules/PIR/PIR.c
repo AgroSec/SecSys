@@ -37,6 +37,6 @@ void Process_PIR(void){  //function to read and process PIR state
 }
 
 void Init_PIR(void){ 
-	SysCtlDelay(Millis2Ticks(PIR_STARTUP_DELAY*1000));  //delay to stabilize PIR at power on
+	//SysCtlDelay(Millis2Ticks(PIR_STARTUP_DELAY*1000));  //delay to stabilize PIR at power on
 }
 //EOF

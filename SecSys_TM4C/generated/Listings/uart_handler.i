@@ -2009,7 +2009,7 @@ void UART2_Init(void){
 	while(!SysCtlPeripheralReady(0xf0001802));  
 	while(!SysCtlPeripheralReady(0xf0000803));  
 	(*((volatile uint32_t *)0x40007520)) = 0x4C4F434B; 
-	(*((volatile uint32_t *)0x40007524)) |= 0xFF;  
+	(*((volatile uint32_t *)0x40007524)) |= 0xC0;  
 		
 	UARTDisable(0x4000E000);  
 	

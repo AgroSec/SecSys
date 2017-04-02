@@ -2566,6 +2566,6 @@ void Process_PIR(void){
 }
 
 void Init_PIR(void){ 
-	SysCtlDelay((((SysCtlClockGet() / 1000) * ((5)*1000)) - 1));  
+	
 }
 

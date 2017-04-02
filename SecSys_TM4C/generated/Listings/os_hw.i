@@ -2430,20 +2430,32 @@ void GPIOPortC_Handler(void){
   
   
 	uint8_t status;	
-	status = GPIOIntStatus(0x40006000, 1);
-	if(status & 0x00000001) {
+	status = GPIOIntStatus(0x40006000,0 );
+	switch (status){
+		case 0x00000001:
+	
 		GPIOIntClear(0x40006000,0x00000001); 
 		OS_Signal(&SemPortC.pin0);  
 		GPIOIntDisable(0x40006000, 0x00000001);  
+		break;
+		
+	
+		case 0x00000002: GPIOIntClear(0x40006000,0x00000002); OS_Signal(&SemPortC.pin1); GPIOIntDisable(0x40006000, 0x00000002); break;
+	
+		case 0x00000004: GPIOIntClear(0x40006000,0x00000004); OS_Signal(&SemPortC.pin2); GPIOIntDisable(0x40006000, 0x00000004); break;
+	
+		case 0x00000008: GPIOIntClear(0x40006000,0x00000008); OS_Signal(&SemPortC.pin3); GPIOIntDisable(0x40006000, 0x00000008); break;
+	
+		case 0x00000010: GPIOIntClear(0x40006000,0x00000010); OS_Signal(&SemPortC.pin4); GPIOIntDisable(0x40006000, 0x00000010); break;
+	
+		case 0x00000020: GPIOIntClear(0x40006000,0x00000020); OS_Signal(&SemPortC.pin5); GPIOIntDisable(0x40006000, 0x00000020); break;
+	
+		case 0x00000040: GPIOIntClear(0x40006000,0x00000040); OS_Signal(&SemPortC.pin6); GPIOIntDisable(0x40006000, 0x00000040); break;
+	
+		case 0x00000080: GPIOIntClear(0x40006000,0x00000080); OS_Signal(&SemPortC.pin7); GPIOIntDisable(0x40006000, 0x00000080); break;
+		default: break;
 	}
-	if(status & 0x00000002) { GPIOIntClear(0x40006000,0x00000002); OS_Signal(&SemPortC.pin1); GPIOIntDisable(0x40006000, 0x00000002);}
-	if(status & 0x00000004) { GPIOIntClear(0x40006000,0x00000004); OS_Signal(&SemPortC.pin2); GPIOIntDisable(0x40006000, 0x00000004);}
-	if(status & 0x00000008) {	GPIOIntClear(0x40006000,0x00000008); OS_Signal(&SemPortC.pin3); GPIOIntDisable(0x40006000, 0x00000008);}
-	if(status & 0x00000010) { GPIOIntClear(0x40006000,0x00000010); OS_Signal(&SemPortC.pin4); GPIOIntDisable(0x40006000, 0x00000010);}
-	if(status & 0x00000020) {	GPIOIntClear(0x40006000,0x00000020); OS_Signal(&SemPortC.pin5); GPIOIntDisable(0x40006000, 0x00000020);}
-	if(status & 0x00000040) { GPIOIntClear(0x40006000,0x00000040); OS_Signal(&SemPortC.pin6); GPIOIntDisable(0x40006000, 0x00000040);}
-	if(status & 0x00000080) {	GPIOIntClear(0x40006000,0x00000080); OS_Signal(&SemPortC.pin7); GPIOIntDisable(0x40006000, 0x00000080);}
-  OS_Suspend();
+	OS_Suspend();
 }
 
 
@@ -2492,7 +2504,7 @@ uint8_t OS_EdgeTrigger_Init(ports_t port, uint8_t pin, uint8_t priority, uint8_t
 		case PortA:  
 			
 			(*((volatile uint32_t *)0x40004520)) = 0x4C4F434B;  
-			(*((volatile uint32_t *)0x40004524)) |= 0xFF;  
+			(*((volatile uint32_t *)0x40004524)) |= pin;  
 			break;
 		case PortB:  
 			
@@ -2504,7 +2516,7 @@ uint8_t OS_EdgeTrigger_Init(ports_t port, uint8_t pin, uint8_t priority, uint8_t
 			if(pin & (0x00000001|0x00000002|0x00000004|0x00000008)){
 				(*((volatile uint32_t *)0x40006520)) = 0x4C4F434B; 
 			}
-			(*((volatile uint32_t *)0x40006524)) |= 0xFF;  
+			(*((volatile uint32_t *)0x40006524)) |= pin;  
 			IntDisable(18);
 			GPIOIntDisable(0x40006000,pin);
 			GPIOPinTypeGPIOInput(0x40006000, pin);
@@ -2519,7 +2531,7 @@ uint8_t OS_EdgeTrigger_Init(ports_t port, uint8_t pin, uint8_t priority, uint8_t
 			SysCtlPeripheralEnable(0xf0000803);
 			while(!SysCtlPeripheralReady(0xf0000803));
 			if(pin & 0x00000080) { (*((volatile uint32_t *)0x40007520)) = 0x4C4F434B; } 
-			(*((volatile uint32_t *)0x40007524)) |= 0xFF;  
+			(*((volatile uint32_t *)0x40007524)) |= pin;  
 			IntDisable(19);
 			GPIOIntDisable(0x40007000,pin);
 			GPIOPinTypeGPIOInput(0x40007000, pin);
@@ -2536,7 +2548,7 @@ uint8_t OS_EdgeTrigger_Init(ports_t port, uint8_t pin, uint8_t priority, uint8_t
 			SysCtlPeripheralEnable(0xf0000805);	
 			while(!SysCtlPeripheralReady(0xf0000805));
 			if(pin && 0x00000001) { (*((volatile uint32_t *)0x40025520)) = 0x4C4F434B; } 
-			(*((volatile uint32_t *)0x40025524)) |= 0x1F;  
+			(*((volatile uint32_t *)0x40025524)) |= pin;  
 			
 			IntDisable(46);  
 			GPIOIntDisable(0x40025000,pin);  

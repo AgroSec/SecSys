@@ -2602,7 +2602,7 @@ void SendSMS(SMS_Message_en message){
 			UART2_SendUDecimal(Count7_Blank);
 			UART2_SendString(" seconds");
 			UART2_SendNewLine();
-			UART2_SendUDecimal(Count8_Blank);
+			UART2_SendUDecimal(Count8_Blank*10);
 			UART2_SendString(" minutes");
 			
 			
@@ -2618,6 +2618,7 @@ void SendSMS(SMS_Message_en message){
 			UART2_SendString("Something misterious happened");
 	}
 	UART2_SendChar(0x1A);  
+  
 	UART0_SendNewLine();
 	UART0_SendString("SMS sent with message ID: ");
 	UART0_SendChar((uint8_t)message+'0');

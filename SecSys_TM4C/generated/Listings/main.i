@@ -2855,8 +2855,10 @@ void Task0_PIRA(void){
   Count0_PIRA = 0;
   while(1){
 		OS_Wait(&SemPortC.pin6);  
+		
 		OS_Sleep(50); 
 		if(GPIOPinRead(0x40006000,0x00000040)) {   
+		
 			Count0_PIRA++;
 			;
 			OS_Wait(&SerialMonitor);
@@ -2870,6 +2872,7 @@ void Task0_PIRA(void){
 			OS_Signal(&GSMModule);
 		}
 		OS_EdgeTrigger_Restart(PortC,0x00000040);
+		
   }
 }
 void Task1_PIRB(void){	
@@ -2956,7 +2959,7 @@ Count8_Blank = 0;
 	while(1){
 		Count8_Blank++;
 		;
-		OS_Sleep(60000);
+		OS_Sleep(60000*10);
 		SendSMS(Status);
 	}
 }
@@ -2977,10 +2980,13 @@ int main(void){
 	
 	OS_InitSemaphore(&SemPortC.pin6,0);
 	OS_InitSemaphore(&SemPortC.pin7,0);
+	
+	
+	
+	
 	OS_InitSemaphore(&SerialMonitor,1);
 	OS_InitSemaphore(&GSMModule,1);
-	
-	
+
 	
 	
 	OS_EdgeTrigger_Init(PortC,0x00000040|0x00000080,(0),0x00000004,0x0000000C);

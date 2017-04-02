@@ -33,20 +33,32 @@ void GPIOPortC_Handler(void){	 //PortC GPIO interrupt handler
   // step 2 signal semaphore (no need to run scheduler)
   // step 3 disarm interrupt to prevent bouncing to create multiple signals
 	uint8_t status;	
-	status = GPIOIntStatus(GPIO_PORTC_BASE,/*false*/true);
-	if(status & GPIO_INT_PIN_0) {
+	status = GPIOIntStatus(GPIO_PORTC_BASE,false/*true*/);
+	switch (status){
+		case GPIO_INT_PIN_0:
+	//if(status & GPIO_INT_PIN_0) {
 		GPIOIntClear(GPIO_PORTC_BASE,GPIO_INT_PIN_0); //acknowledge by clearing flag
 		OS_Signal(&SemPortC.pin0);  //signal semaphore
 		GPIOIntDisable(GPIO_PORTC_BASE, GPIO_INT_PIN_0);  //disarm interrupt to prevent bouncing to create multiple signals
+		break;
+		//}
+	//if(status & GPIO_INT_PIN_1) { GPIOIntClear(GPIO_PORTC_BASE,GPIO_INT_PIN_1); OS_Signal(&SemPortC.pin1); GPIOIntDisable(GPIO_PORTC_BASE, GPIO_INT_PIN_1);}
+		case GPIO_INT_PIN_1: GPIOIntClear(GPIO_PORTC_BASE,GPIO_INT_PIN_1); OS_Signal(&SemPortC.pin1); GPIOIntDisable(GPIO_PORTC_BASE, GPIO_INT_PIN_1); break;
+	//else if(status & GPIO_INT_PIN_2) { GPIOIntClear(GPIO_PORTC_BASE,GPIO_INT_PIN_2); OS_Signal(&SemPortC.pin2); GPIOIntDisable(GPIO_PORTC_BASE, GPIO_INT_PIN_2);}
+		case GPIO_INT_PIN_2: GPIOIntClear(GPIO_PORTC_BASE,GPIO_INT_PIN_2); OS_Signal(&SemPortC.pin2); GPIOIntDisable(GPIO_PORTC_BASE, GPIO_INT_PIN_2); break;
+	//else if(status & GPIO_INT_PIN_3) { GPIOIntClear(GPIO_PORTC_BASE,GPIO_INT_PIN_3); OS_Signal(&SemPortC.pin3); GPIOIntDisable(GPIO_PORTC_BASE, GPIO_INT_PIN_3);}
+		case GPIO_INT_PIN_3: GPIOIntClear(GPIO_PORTC_BASE,GPIO_INT_PIN_3); OS_Signal(&SemPortC.pin3); GPIOIntDisable(GPIO_PORTC_BASE, GPIO_INT_PIN_3); break;
+	//else if(status & GPIO_INT_PIN_4) { GPIOIntClear(GPIO_PORTC_BASE,GPIO_INT_PIN_4); OS_Signal(&SemPortC.pin4); GPIOIntDisable(GPIO_PORTC_BASE, GPIO_INT_PIN_4);}
+		case GPIO_INT_PIN_4: GPIOIntClear(GPIO_PORTC_BASE,GPIO_INT_PIN_4); OS_Signal(&SemPortC.pin4); GPIOIntDisable(GPIO_PORTC_BASE, GPIO_INT_PIN_4); break;
+	//else if(status & GPIO_INT_PIN_5) { GPIOIntClear(GPIO_PORTC_BASE,GPIO_INT_PIN_5); OS_Signal(&SemPortC.pin5); GPIOIntDisable(GPIO_PORTC_BASE, GPIO_INT_PIN_5);}
+		case GPIO_INT_PIN_5: GPIOIntClear(GPIO_PORTC_BASE,GPIO_INT_PIN_5); OS_Signal(&SemPortC.pin5); GPIOIntDisable(GPIO_PORTC_BASE, GPIO_INT_PIN_5); break;
+	//else if(status & GPIO_INT_PIN_6) { GPIOIntClear(GPIO_PORTC_BASE,GPIO_INT_PIN_6); OS_Signal(&SemPortC.pin6); GPIOIntDisable(GPIO_PORTC_BASE, GPIO_INT_PIN_6);}
+		case GPIO_INT_PIN_6: GPIOIntClear(GPIO_PORTC_BASE,GPIO_INT_PIN_6); OS_Signal(&SemPortC.pin6); GPIOIntDisable(GPIO_PORTC_BASE, GPIO_INT_PIN_6); break;
+	//else if(status & GPIO_INT_PIN_7) { GPIOIntClear(GPIO_PORTC_BASE,GPIO_INT_PIN_7); OS_Signal(&SemPortC.pin7); GPIOIntDisable(GPIO_PORTC_BASE, GPIO_INT_PIN_7);}
+		case GPIO_INT_PIN_7: GPIOIntClear(GPIO_PORTC_BASE,GPIO_INT_PIN_7); OS_Signal(&SemPortC.pin7); GPIOIntDisable(GPIO_PORTC_BASE, GPIO_INT_PIN_7); break;
+		default: break;
 	}
-	if(status & GPIO_INT_PIN_1) { GPIOIntClear(GPIO_PORTC_BASE,GPIO_INT_PIN_1); OS_Signal(&SemPortC.pin1); GPIOIntDisable(GPIO_PORTC_BASE, GPIO_INT_PIN_1);}
-	if(status & GPIO_INT_PIN_2) { GPIOIntClear(GPIO_PORTC_BASE,GPIO_INT_PIN_2); OS_Signal(&SemPortC.pin2); GPIOIntDisable(GPIO_PORTC_BASE, GPIO_INT_PIN_2);}
-	if(status & GPIO_INT_PIN_3) {	GPIOIntClear(GPIO_PORTC_BASE,GPIO_INT_PIN_3); OS_Signal(&SemPortC.pin3); GPIOIntDisable(GPIO_PORTC_BASE, GPIO_INT_PIN_3);}
-	if(status & GPIO_INT_PIN_4) { GPIOIntClear(GPIO_PORTC_BASE,GPIO_INT_PIN_4); OS_Signal(&SemPortC.pin4); GPIOIntDisable(GPIO_PORTC_BASE, GPIO_INT_PIN_4);}
-	if(status & GPIO_INT_PIN_5) {	GPIOIntClear(GPIO_PORTC_BASE,GPIO_INT_PIN_5); OS_Signal(&SemPortC.pin5); GPIOIntDisable(GPIO_PORTC_BASE, GPIO_INT_PIN_5);}
-	if(status & GPIO_INT_PIN_6) { GPIOIntClear(GPIO_PORTC_BASE,GPIO_INT_PIN_6); OS_Signal(&SemPortC.pin6); GPIOIntDisable(GPIO_PORTC_BASE, GPIO_INT_PIN_6);}
-	if(status & GPIO_INT_PIN_7) {	GPIOIntClear(GPIO_PORTC_BASE,GPIO_INT_PIN_7); OS_Signal(&SemPortC.pin7); GPIOIntDisable(GPIO_PORTC_BASE, GPIO_INT_PIN_7);}
-  OS_Suspend();
+	OS_Suspend();
 }
 
 
@@ -95,7 +107,7 @@ uint8_t OS_EdgeTrigger_Init(ports_t port, uint8_t pin, uint8_t priority, uint8_t
 		case PortA:  //PortA 
 			//Need to unlock
 			GPIO_PORTA_LOCK_R = 0x4C4F434B;  //Unlock GPIO Port D
-			GPIO_PORTA_CR_R |= 0xFF;  //Allow changes to PD7-0
+			GPIO_PORTA_CR_R |= pin;  //Allow changes to PD7-0
 			break;
 		case PortB:  //PortB
 			//Need to unlock
@@ -107,7 +119,7 @@ uint8_t OS_EdgeTrigger_Init(ports_t port, uint8_t pin, uint8_t priority, uint8_t
 			if(pin & (GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3)){
 				GPIO_PORTC_LOCK_R = 0x4C4F434B; //Unlock GPIO PC0-3 if necessary
 			}
-			GPIO_PORTC_CR_R |= 0xFF;  //Allow changes to PC7-0
+			GPIO_PORTC_CR_R |= pin;  //Allow changes to selected pis
 			IntDisable(INT_GPIOC);
 			GPIOIntDisable(GPIO_PORTC_BASE,pin);
 			GPIOPinTypeGPIOInput(GPIO_PORTC_BASE, pin);
@@ -122,7 +134,7 @@ uint8_t OS_EdgeTrigger_Init(ports_t port, uint8_t pin, uint8_t priority, uint8_t
 			SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
 			while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOD));
 			if(pin & GPIO_PIN_7) { GPIO_PORTD_LOCK_R = 0x4C4F434B; } //Unlock GPIO PD7 if necessary
-			GPIO_PORTD_CR_R |= 0xFF;  //Allow changes to PD7-0
+			GPIO_PORTD_CR_R |= pin;  //Allow changes to pin
 			IntDisable(INT_GPIOD);
 			GPIOIntDisable(GPIO_PORTD_BASE,pin);
 			GPIOPinTypeGPIOInput(GPIO_PORTD_BASE, pin);
@@ -139,7 +151,7 @@ uint8_t OS_EdgeTrigger_Init(ports_t port, uint8_t pin, uint8_t priority, uint8_t
 			SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);	//Enable clock on port F
 			while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOF));
 			if(pin && GPIO_PIN_0) { GPIO_PORTF_LOCK_R = 0x4C4F434B; } //Unlock GPIO PF0 if necessary
-			GPIO_PORTF_CR_R |= 0x1F;  //Allow changes to PF4-0
+			GPIO_PORTF_CR_R |= pin;  //Allow changes to PF4-0
 			
 			IntDisable(INT_GPIOF);  //GPIO Port F disable of interrupts
 			GPIOIntDisable(GPIO_PORTF_BASE,pin);  //Disable GPIO pin interrupt

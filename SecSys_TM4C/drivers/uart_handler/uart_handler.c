@@ -195,7 +195,7 @@ void UART2_Init(void){
 	while(!SysCtlPeripheralReady(SYSCTL_PERIPH_UART2));  //wait for UART2 to initialize
 	while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOD));  //wait for PortD to initialize
 	GPIO_PORTD_LOCK_R = 0x4C4F434B; //Unlock GPIO PD7
-	GPIO_PORTD_CR_R |= 0xFF;  //Allow changes to PD7-0
+	GPIO_PORTD_CR_R |= 0xC0;  //Allow changes to PD6,7
 		
 	UARTDisable(UART2_BASE);  //Disable UART2 while configuration
 	
