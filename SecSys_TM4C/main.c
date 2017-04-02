@@ -52,8 +52,10 @@ void Task0_PIRA(void){	//Edge triggered task
   Count0_PIRA = 0;
   while(1){
 		OS_Wait(&SemPortC.pin6);  // signaled in ISR
+		//OS_Wait(&SemPortF.pin2);  // signaled in ISR
 		OS_Sleep(50); //sleep to debounce switch		
 		if(GPIOPinRead(GPIO_PORTC_BASE,GPIO_INT_PIN_6)) {   
+		//if(GPIOPinRead(GPIO_PORTF_BASE,GPIO_INT_PIN_2)) { 
 			Count0_PIRA++;
 			Toggle0();
 			OS_Wait(&SerialMonitor);
@@ -67,6 +69,7 @@ void Task0_PIRA(void){	//Edge triggered task
 			OS_Signal(&GSMModule);
 		}
 		OS_EdgeTrigger_Restart(PortC,GPIO_PIN_6);
+		//OS_EdgeTrigger_Restart(PortF,GPIO_PIN_2);
   }
 }
 void Task1_PIRB(void){	//Edge triggered task
@@ -153,7 +156,7 @@ Count8_Blank = 0;
 	while(1){
 		Count8_Blank++;
 		Toggle1();
-		OS_Sleep(60000);
+		OS_Sleep(60000*10);
 		SendSMS(Status);
 	}
 }
@@ -174,14 +177,17 @@ int main(void){
 	//3
 	OS_InitSemaphore(&SemPortC.pin6,0);
 	OS_InitSemaphore(&SemPortC.pin7,0);
-	OS_InitSemaphore(&SerialMonitor,1);
-	OS_InitSemaphore(&GSMModule,1);
+	
 	//OS_InitSemaphore(&SemPortF.pin0,0);
 	//OS_InitSemaphore(&SemPortF.pin4,0);
 	
+	OS_InitSemaphore(&SerialMonitor,1);
+	OS_InitSemaphore(&GSMModule,1);
+
+	
 	//4	
 	OS_EdgeTrigger_Init(PortC,GPIO_PIN_6|GPIO_PIN_7,INT_PRIO_PIN,GPIO_RISING_EDGE,GPIO_PIN_TYPE_STD_WPD);
-	//OS_EdgeTrigger_Init(PortF,GPIO_PIN_0|GPIO_PIN_4,INT_PRIO_PIN,GPIO_FALLING_EDGE,GPIO_PIN_TYPE_STD_WPU);
+	//OS_EdgeTrigger_Init(PortF,GPIO_PIN_0|GPIO_PIN_4,INT_PRIO_PIN,GPIO_RISING_EDGE,GPIO_PIN_TYPE_STD_WPD);
 	
 	//5
 	OS_AddPeriodicEventThread(&PerTask[0].semaphore, 10);
