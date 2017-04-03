@@ -2569,13 +2569,13 @@ void SendSMS(SMS_Message_en message){
   switch (message) {
 		case PIR_A:
 			UART2_SendString("PIR A Triggered ");  
-			UART2_SendUDecimal(Count0_PIRA);
-			UART2_SendString(" times!!!");
+			
+			
 			break;
 		case PIR_B:
 			UART2_SendString("PIR B Triggered ");
-			UART2_SendUDecimal(Count1_PIRB);
-			UART2_SendString(" times!!!");
+			
+			
 			break;
 		case Wire_1_Pull:
 			UART2_SendString("Wire 1 Pulled");

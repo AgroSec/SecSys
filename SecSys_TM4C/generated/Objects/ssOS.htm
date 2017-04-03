@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\generated\Objects\ssOS.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\generated\Objects\ssOS.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060300: Last Updated: Sun Apr 02 23:00:27 2017
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060300: Last Updated: Mon Apr 03 20:12:43 2017
 <BR><P>
 <H3>Maximum Stack Usage =        132 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -37,7 +37,7 @@ Mutually Recursive functions
  <LI><a href="#[1a]">ADC0Seq0_Handler</a>&nbsp;&nbsp;&nbsp;&rArr;&nbsp;&nbsp;&nbsp;<a href="#[1a]">ADC0Seq0_Handler</a><BR>
  <LI><a href="#[ec]">UARTCharPut</a>&nbsp;&nbsp;&nbsp;&rArr;&nbsp;&nbsp;&nbsp;<a href="#[ec]">UARTCharPut</a><BR>
  <LI><a href="#[e0]">UART0_SendUDecimal</a>&nbsp;&nbsp;&nbsp;&rArr;&nbsp;&nbsp;&nbsp;<a href="#[e0]">UART0_SendUDecimal</a><BR>
- <LI><a href="#[dc]">UART2_SendUDecimal</a>&nbsp;&nbsp;&nbsp;&rArr;&nbsp;&nbsp;&nbsp;<a href="#[dc]">UART2_SendUDecimal</a><BR>
+ <LI><a href="#[dd]">UART2_SendUDecimal</a>&nbsp;&nbsp;&nbsp;&rArr;&nbsp;&nbsp;&nbsp;<a href="#[dd]">UART2_SendUDecimal</a><BR>
  <LI><a href="#[a3]">SysCtlDelay</a>&nbsp;&nbsp;&nbsp;&rArr;&nbsp;&nbsp;&nbsp;<a href="#[a3]">SysCtlDelay</a><BR>
  <LI><a href="#[e5]">UARTDisable</a>&nbsp;&nbsp;&nbsp;&rArr;&nbsp;&nbsp;&nbsp;<a href="#[e5]">UARTDisable</a><BR>
  <LI><a href="#[e8]">UARTConfigSetExpClk</a>&nbsp;&nbsp;&nbsp;&rArr;&nbsp;&nbsp;&nbsp;<a href="#[e8]">UARTConfigSetExpClk</a><BR>
@@ -1056,8 +1056,7 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;IntEnable
 <LI><a href="#[c8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIOIntEnable
 </UL>
-<BR>[Called By]<UL><LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task1_PIRB
-<LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task0_PIRA
+<BR>[Called By]<UL><LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task7_BlankTask
 </UL>
 
 <P><STRONG><a name="[cc]"></a>OS_Init</STRONG> (Thumb, 52 bytes, Stack size 8 bytes, os_core.o(i.OS_Init))
@@ -1096,6 +1095,7 @@ Global Symbols
 <LI><a href="#[f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIOPortD_Handler
 <LI><a href="#[e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIOPortC_Handler
 <LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runperiodicevents
+<LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task7_BlankTask
 <LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task1_PIRB
 <LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task0_PIRA
 </UL>
@@ -1150,7 +1150,8 @@ Global Symbols
 <LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DisableInterrupts
 <LI><a href="#[b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Suspend
 </UL>
-<BR>[Called By]<UL><LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task6_Cyclic1000ms
+<BR>[Called By]<UL><LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task7_BlankTask
+<LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task6_Cyclic1000ms
 <LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task5_Cyclic500ms
 <LI><a href="#[85]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task4_Cyclic100ms
 <LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task3_Cyclic50ms
@@ -1171,12 +1172,12 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysTick_Handler
 </UL>
 
-<P><STRONG><a name="[d9]"></a>SendSMS</STRONG> (Thumb, 258 bytes, Stack size 16 bytes, gsm.o(i.SendSMS))
+<P><STRONG><a name="[d9]"></a>SendSMS</STRONG> (Thumb, 230 bytes, Stack size 16 bytes, gsm.o(i.SendSMS))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = SendSMS &rArr; UART2_SendUDecimal &rArr;  UART2_SendUDecimal (Cycle)
 </UL>
-<BR>[Calls]<UL><LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART2_SendUDecimal
+<BR>[Calls]<UL><LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART2_SendUDecimal
 <LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART2_SendString
-<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART2_SendNewLine
+<LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART2_SendNewLine
 <LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART2_SendChar
 <LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART0_SendChar
 <LI><a href="#[a3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysCtlDelay
@@ -1226,7 +1227,7 @@ Global Symbols
 <LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_EdgeTrigger_Init
 </UL>
 
-<P><STRONG><a name="[89]"></a>Task0_PIRA</STRONG> (Thumb, 104 bytes, Stack size 0 bytes, main.o(i.Task0_PIRA))
+<P><STRONG><a name="[89]"></a>Task0_PIRA</STRONG> (Thumb, 96 bytes, Stack size 0 bytes, main.o(i.Task0_PIRA))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40 + Unknown Stack Size
 <LI>Call Chain = Task0_PIRA &rArr; SendSMS &rArr; UART2_SendUDecimal &rArr;  UART2_SendUDecimal (Cycle)
 </UL>
@@ -1237,12 +1238,11 @@ Global Symbols
 <LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Wait
 <LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Sleep
 <LI><a href="#[b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Signal
-<LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_EdgeTrigger_Restart
 <LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIOPinRead
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> main.o(i.main)
 </UL>
-<P><STRONG><a name="[88]"></a>Task1_PIRB</STRONG> (Thumb, 104 bytes, Stack size 0 bytes, main.o(i.Task1_PIRB))
+<P><STRONG><a name="[88]"></a>Task1_PIRB</STRONG> (Thumb, 96 bytes, Stack size 0 bytes, main.o(i.Task1_PIRB))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40 + Unknown Stack Size
 <LI>Call Chain = Task1_PIRB &rArr; SendSMS &rArr; UART2_SendUDecimal &rArr;  UART2_SendUDecimal (Cycle)
 </UL>
@@ -1253,7 +1253,6 @@ Global Symbols
 <LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Wait
 <LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Sleep
 <LI><a href="#[b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Signal
-<LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_EdgeTrigger_Restart
 <LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIOPinRead
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> main.o(i.main)
@@ -1303,10 +1302,14 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> main.o(i.main)
 </UL>
-<P><STRONG><a name="[82]"></a>Task7_BlankTask</STRONG> (Thumb, 28 bytes, Stack size 0 bytes, main.o(i.Task7_BlankTask))
-<BR><BR>[Stack]<UL><LI>Max Depth = 4<LI>Call Chain = Task7_BlankTask &rArr; OS_Sleep
+<P><STRONG><a name="[82]"></a>Task7_BlankTask</STRONG> (Thumb, 56 bytes, Stack size 0 bytes, main.o(i.Task7_BlankTask))
+<BR><BR>[Stack]<UL><LI>Max Depth = 16 + Unknown Stack Size
+<LI>Call Chain = Task7_BlankTask &rArr; OS_Signal
 </UL>
-<BR>[Calls]<UL><LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Sleep
+<BR>[Calls]<UL><LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Wait
+<LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Sleep
+<LI><a href="#[b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_Signal
+<LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OS_EdgeTrigger_Restart
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> main.o(i.main)
 </UL>
@@ -1449,13 +1452,13 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UARTCharPut
 </UL>
-<BR>[Called By]<UL><LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART2_SendUDecimal
+<BR>[Called By]<UL><LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART2_SendUDecimal
 <LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART2_SendString
-<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART2_SendNewLine
+<LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART2_SendNewLine
 <LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SendSMS
 </UL>
 
-<P><STRONG><a name="[dd]"></a>UART2_SendNewLine</STRONG> (Thumb, 16 bytes, Stack size 8 bytes, uart_handler.o(i.UART2_SendNewLine))
+<P><STRONG><a name="[dc]"></a>UART2_SendNewLine</STRONG> (Thumb, 16 bytes, Stack size 8 bytes, uart_handler.o(i.UART2_SendNewLine))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = UART2_SendNewLine &rArr; UART2_SendChar
 </UL>
 <BR>[Calls]<UL><LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART2_SendChar
@@ -1471,14 +1474,14 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SendSMS
 </UL>
 
-<P><STRONG><a name="[dc]"></a>UART2_SendUDecimal</STRONG> (Thumb, 42 bytes, Stack size 16 bytes, uart_handler.o(i.UART2_SendUDecimal))
+<P><STRONG><a name="[dd]"></a>UART2_SendUDecimal</STRONG> (Thumb, 42 bytes, Stack size 16 bytes, uart_handler.o(i.UART2_SendUDecimal))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24 + In Cycle
 <LI>Call Chain = UART2_SendUDecimal &rArr;  UART2_SendUDecimal (Cycle)
 </UL>
-<BR>[Calls]<UL><LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART2_SendUDecimal
+<BR>[Calls]<UL><LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART2_SendUDecimal
 <LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART2_SendChar
 </UL>
-<BR>[Called By]<UL><LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART2_SendUDecimal
+<BR>[Called By]<UL><LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART2_SendUDecimal
 <LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SendSMS
 </UL>
 
@@ -1546,7 +1549,7 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_tm4c123.o(RESET)
 </UL>
-<P><STRONG><a name="[9d]"></a>main</STRONG> (Thumb, 224 bytes, Stack size 72 bytes, main.o(i.main))
+<P><STRONG><a name="[9d]"></a>main</STRONG> (Thumb, 232 bytes, Stack size 72 bytes, main.o(i.main))
 <BR><BR>[Stack]<UL><LI>Max Depth = 132 + Unknown Stack Size
 <LI>Call Chain = main &rArr; OS_EdgeTrigger_Init &rArr; GPIOPinTypeGPIOInput &rArr; GPIOPadConfigSet
 </UL>

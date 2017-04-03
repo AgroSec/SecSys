@@ -2837,7 +2837,7 @@ uint32_t Count7_Blank;
 uint32_t Count8_Blank; 
 uint32_t CountIdle;    
 
-
+int32_t Task7Sync;
 
 
 int32_t SerialMonitor; 
@@ -2869,10 +2869,11 @@ void Task0_PIRA(void){
 			OS_Signal(&SerialMonitor);
 			OS_Wait(&GSMModule);
 			SendSMS(PIR_A);
-			OS_Signal(&GSMModule);
+			
 		}
-		OS_EdgeTrigger_Restart(PortC,0x00000040);
 		
+		
+		OS_Signal(&Task7Sync);
   }
 }
 void Task1_PIRB(void){	
@@ -2891,9 +2892,11 @@ void Task1_PIRB(void){
 			OS_Signal(&SerialMonitor);
 			OS_Wait(&GSMModule);
 			SendSMS(PIR_B);
-			OS_Signal(&GSMModule);
+			
+
 		}
-		OS_EdgeTrigger_Restart(PortC,0x00000080);
+		OS_Signal(&Task7Sync);
+		
   }
 }
 void Task2_Cyclic10ms(void){  
@@ -2948,9 +2951,14 @@ void Task6_Cyclic1000ms(void){
 void Task7_BlankTask(void){
 	Count7_Blank = 0;
 	while(1){
+		OS_Wait(&Task7Sync);
+		OS_Sleep(5000);
+
 		Count7_Blank++;
 		;
-		OS_Sleep(1000);
+		OS_Signal(&GSMModule);
+		OS_EdgeTrigger_Restart(PortC,0x00000040);
+		OS_EdgeTrigger_Restart(PortC,0x00000080);
 	}
 }
 
@@ -3012,9 +3020,9 @@ int main(void){
 	              &Idle_Task,(254));	
 	
 	
-
-
- 
+	
+	OS_InitSemaphore(&Task7Sync,0);
+	
   
 	InitDrivers();
 	InitApplications();

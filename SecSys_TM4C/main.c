@@ -34,7 +34,7 @@ uint32_t Count7_Blank; // number of times Task7 loops
 uint32_t Count8_Blank; // number of times Task8 loops
 uint32_t CountIdle;    // number of times Idle_Task loops
 
-//int32_t Task78Sync;
+int32_t Task7Sync;
 //int32_t Task87Sync;
 //fifo_t FifoA;
 int32_t SerialMonitor; //Semaphore to block serial monitor
@@ -66,10 +66,11 @@ void Task0_PIRA(void){	//Edge triggered task
 			OS_Signal(&SerialMonitor);
 			OS_Wait(&GSMModule);
 			SendSMS(PIR_A);
-			OS_Signal(&GSMModule);
+			//OS_Signal(&GSMModule);
 		}
-		OS_EdgeTrigger_Restart(PortC,GPIO_PIN_6);
+		//OS_EdgeTrigger_Restart(PortC,GPIO_PIN_6);
 		//OS_EdgeTrigger_Restart(PortF,GPIO_PIN_2);
+		OS_Signal(&Task7Sync);
   }
 }
 void Task1_PIRB(void){	//Edge triggered task
@@ -88,9 +89,11 @@ void Task1_PIRB(void){	//Edge triggered task
 			OS_Signal(&SerialMonitor);
 			OS_Wait(&GSMModule);
 			SendSMS(PIR_B);
-			OS_Signal(&GSMModule);
+			//OS_Signal(&GSMModule);
+
 		}
-		OS_EdgeTrigger_Restart(PortC,GPIO_PIN_7);
+		OS_Signal(&Task7Sync);
+		//OS_EdgeTrigger_Restart(PortC,GPIO_PIN_7);
   }
 }
 void Task2_Cyclic10ms(void){  //Periodic task 10ms
@@ -145,9 +148,14 @@ void Task6_Cyclic1000ms(void){
 void Task7_BlankTask(void){
 	Count7_Blank = 0;
 	while(1){
+		OS_Wait(&Task7Sync);
+		OS_Sleep(5000);
+
 		Count7_Blank++;
 		Toggle0();
-		OS_Sleep(1000);
+		OS_Signal(&GSMModule);
+		OS_EdgeTrigger_Restart(PortC,GPIO_PIN_6);
+		OS_EdgeTrigger_Restart(PortC,GPIO_PIN_7);
 	}
 }
 
@@ -208,10 +216,10 @@ int main(void){
                 &Task8_BlankTask,BLANK_TASK_PRIO,
 	              &Idle_Task,IDLE_TASK_PRIO);	//Idle task is lowest priority
 	//7
-	/*OS_FIFO_Init(&FifoA);
+	//OS_FIFO_Init(&FifoA);
 	//8
-	OS_InitSemaphore(&Task78Sync,0);
-	OS_InitSemaphore(&Task87Sync,0);*/
+	OS_InitSemaphore(&Task7Sync,0);
+	//OS_InitSemaphore(&Task87Sync,0);
   //9
 	InitDrivers();
 	InitApplications();
