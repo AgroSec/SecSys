@@ -28,8 +28,12 @@ void InitDrivers(void) {
 	//Function calls to init drivers
 	UART0_Init();
 	UART2_Init();
-	GPIO_InitPortOutput(PortF,GPIO_PIN_2);
 	
+	GPIO_InitPortInput(PortE, GPIO_PIN_2, GPIO_PIN_TYPE_STD_WPU);	// input init for port PE2
+	
+	GPIO_InitPortOutput(PortE, GPIO_PIN_3);	// output init for port PE3 - SLK_HX711
+	GPIO_InitPortOutput(PortF, GPIO_PIN_2);
+		
 	UART0_SendString("Driver init done...");
 	UART0_SendNewLine();
 }

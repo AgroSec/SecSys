@@ -64,8 +64,8 @@ void Task0_PIRA(void){	//Edge triggered task
 			UART0_SendString(" times.");
 			UART0_SendNewLine();
 			OS_Signal(&SerialMonitor);
-			OS_Wait(&GSMModule);
-			SendSMS(PIR_A);
+			//OS_Wait(&GSMModule);
+			//SendSMS(PIR_A);
 			//OS_Signal(&GSMModule);
 		}
 		//OS_EdgeTrigger_Restart(PortC,GPIO_PIN_6);
@@ -87,8 +87,8 @@ void Task1_PIRB(void){	//Edge triggered task
 			UART0_SendString(" times.");
 			UART0_SendNewLine();
 			OS_Signal(&SerialMonitor);
-			OS_Wait(&GSMModule);
-			SendSMS(PIR_B);
+			//OS_Wait(&GSMModule);
+			//SendSMS(PIR_B);
 			//OS_Signal(&GSMModule);
 
 		}
@@ -154,8 +154,8 @@ void Task7_BlankTask(void){
 		Count7_Blank++;
 		Toggle0();
 		OS_Signal(&GSMModule);
-		OS_EdgeTrigger_Restart(PortC,GPIO_PIN_6);
-		OS_EdgeTrigger_Restart(PortC,GPIO_PIN_7);
+		//OS_EdgeTrigger_Restart(PortC,GPIO_PIN_6);
+		//OS_EdgeTrigger_Restart(PortC,GPIO_PIN_7);
 	}
 }
 
@@ -165,7 +165,7 @@ Count8_Blank = 0;
 		Count8_Blank++;
 		Toggle1();
 		OS_Sleep(60000*10);
-		SendSMS(Status);
+		//SendSMS(Status);
 	}
 }
 
@@ -183,8 +183,8 @@ int main(void){
 	Profile_Init();  // enable digital I/O on profile pins
 	
 	//3
-	OS_InitSemaphore(&SemPortC.pin6,0);
-	OS_InitSemaphore(&SemPortC.pin7,0);
+	//OS_InitSemaphore(&SemPortC.pin6,0);
+	//OS_InitSemaphore(&SemPortC.pin7,0);
 	
 	//OS_InitSemaphore(&SemPortF.pin0,0);
 	//OS_InitSemaphore(&SemPortF.pin4,0);
@@ -194,7 +194,7 @@ int main(void){
 
 	
 	//4	
-	OS_EdgeTrigger_Init(PortC,GPIO_PIN_6|GPIO_PIN_7,INT_PRIO_PIN,GPIO_RISING_EDGE,GPIO_PIN_TYPE_STD_WPD);
+	//OS_EdgeTrigger_Init(PortC,GPIO_PIN_6|GPIO_PIN_7,INT_PRIO_PIN,GPIO_RISING_EDGE,GPIO_PIN_TYPE_STD_WPD);
 	//OS_EdgeTrigger_Init(PortF,GPIO_PIN_0|GPIO_PIN_4,INT_PRIO_PIN,GPIO_RISING_EDGE,GPIO_PIN_TYPE_STD_WPD);
 	
 	//5

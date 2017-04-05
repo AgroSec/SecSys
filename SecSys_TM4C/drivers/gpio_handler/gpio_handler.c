@@ -71,7 +71,8 @@ uint8_t GPIO_InitPortOutput(ports_t port, uint8_t pin){
 		case PortE:  //PortE
 			SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);  //Enable clock on port E
 			while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOE));
-			//TODO unlock
+			if(pin && GPIO_PIN_0) { GPIO_PORTE_LOCK_R = 0x4C4F434B; } //Unlock GPIO PE0 if necessary
+			GPIO_PORTE_CR_R |= pin;  //Allow changes to PE4-0
 			
 			GPIOPinTypeGPIOOutput(GPIO_PORTE_BASE, pin);
 			GPIODirModeSet(GPIO_PORTE_BASE, pin, GPIO_DIR_MODE_OUT);  //Set direction Output
@@ -123,4 +124,41 @@ uint8_t GPIO_SetPin(ports_t port, uint8_t pin, uint8_t status){
 	}
 	return 1;  //OK
 }
+
+uint8_t GPIO_InitPortInput(ports_t port, uint8_t pin, uint8_t resistor)
+{
+			
+			switch (port) {
+		//TODO: Check if port is initialized and pin is set for output
+		case PortA:  //PortA 
+			
+			break;
+		case PortB:  //PortB
+			
+			break;
+		case PortC:  //PortC
+			
+			break;
+		case PortD:  //PortD	
+			
+			break;
+		case PortE:  //PortE
+			SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);	//Enable clock on port E
+			while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOE));
+			if(pin && GPIO_PIN_0) { GPIO_PORTE_LOCK_R = 0x4C4F434B; } //Unlock GPIO PF0 if necessary
+			GPIO_PORTE_CR_R |= pin;  //Allow changes to PF4-0
+			
+			GPIOPinTypeGPIOInput(GPIO_PORTE_BASE, pin);  //Set GPIO Input
+			GPIODirModeSet(GPIO_PORTE_BASE, pin, GPIO_DIR_MODE_IN);  //Set direction input
+			GPIOPadConfigSet(GPIO_PORTE_BASE, pin, GPIO_STRENGTH_2MA,resistor); //Configure PUR
+			break;
+		case PortF:  //PortF
+			
+			break;		
+		default:
+			return 0;  //error
+	}
+	return 1;  //OK
+}
+
 //EOF
