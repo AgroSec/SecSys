@@ -1,10 +1,11 @@
---cpu Cortex-M4
+--cpu=Cortex-M4.fp
 ".\generated\objects\main.o"
 ".\generated\objects\os_core.o"
 ".\generated\objects\osasm.o"
 ".\generated\objects\os_hw.o"
 ".\generated\objects\gsm.o"
 ".\generated\objects\pir.o"
+".\generated\objects\hx711.o"
 ".\generated\objects\uart_handler.o"
 ".\generated\objects\gpio_handler.o"
 ".\generated\objects\cyclic_activity_handler.o"

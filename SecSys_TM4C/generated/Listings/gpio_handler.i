@@ -4,7 +4,7 @@
  
 
  
-#line 1 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdbool.h"
+#line 1 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdbool.h"
  
 
 
@@ -18,12 +18,12 @@
 
 
 
-#line 25 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdbool.h"
+#line 25 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdbool.h"
 
 
 
 #line 7 "drivers\\gpio_handler\\gpio_handler.c"
-#line 1 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
+#line 1 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
  
  
 
@@ -42,7 +42,7 @@
 
 
      
-#line 27 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
+#line 27 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
      
 
 
@@ -55,7 +55,7 @@
 
 
 
-#line 46 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
+#line 46 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
 
 
 
@@ -219,7 +219,7 @@ typedef unsigned     long long uintmax_t;
      
 
      
-#line 216 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
+#line 216 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
 
      
 
@@ -238,7 +238,7 @@ typedef unsigned     long long uintmax_t;
 
 
 
-#line 241 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
+#line 241 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
 
      
 
@@ -271,7 +271,7 @@ typedef unsigned     long long uintmax_t;
 
 
 
-#line 305 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
+#line 305 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
 
 
 
@@ -1411,6 +1411,8 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 #line 17 "drivers\\gpio_handler\\gpio_handler.c"
 #line 1 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+#line 2 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+#line 3 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1453,8 +1455,6 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 44 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
-#line 45 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1475,8 +1475,8 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
+#line 142 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
-#line 143 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1484,8 +1484,8 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
+#line 157 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
-#line 158 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1493,16 +1493,15 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
+#line 173 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
-#line 174 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
 
 
 
-
-#line 188 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+#line 187 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
                                             
 
 
@@ -1525,7 +1524,7 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 217 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+#line 216 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1533,7 +1532,7 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 388 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+#line 387 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1541,15 +1540,7 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 465 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
-
-
-
-
-
-
-
-
+#line 464 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1559,7 +1550,15 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 489 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+
+
+
+
+
+
+
+
+#line 488 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1582,21 +1581,14 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 519 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+#line 518 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
 
 
 
-#line 538 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
-
-
-
-
-
-
-
+#line 537 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1605,7 +1597,14 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 559 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+
+
+
+
+
+
+
+#line 558 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -2067,6 +2066,48 @@ typedef struct port_sema PortSema_t;
 #line 37 ".\\OS\\os_hw.h"
 #line 38 ".\\OS\\os_hw.h"
 #line 39 ".\\OS\\os_hw.h"
+#line 1 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+#line 2 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+#line 3 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #line 40 ".\\OS\\os_hw.h"
 #line 1 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/timer.h"
 
@@ -2425,6 +2466,7 @@ void OS_SysTick_Init(uint32_t time);
  
 uint8_t GPIO_InitPortOutput(ports_t port, uint8_t pin);
 uint8_t GPIO_SetPin(ports_t port, uint8_t pin, uint8_t status);
+uint8_t GPIO_InitPortInput(ports_t port, uint8_t pin, uint8_t resistor);
 
 
 
@@ -2482,7 +2524,8 @@ uint8_t GPIO_InitPortOutput(ports_t port, uint8_t pin){
 		case PortE:  
 			SysCtlPeripheralEnable(0xf0000804);  
 			while(!SysCtlPeripheralReady(0xf0000804));
-			
+			if(pin && 0x00000001) { (*((volatile uint32_t *)0x40024520)) = 0x4C4F434B; } 
+			(*((volatile uint32_t *)0x40024524)) |= pin;  
 			
 			GPIOPinTypeGPIOOutput(0x40024000, pin);
 			GPIODirModeSet(0x40024000, pin, 0x00000001);  
@@ -2534,4 +2577,41 @@ uint8_t GPIO_SetPin(ports_t port, uint8_t pin, uint8_t status){
 	}
 	return 1;  
 }
+
+uint8_t GPIO_InitPortInput(ports_t port, uint8_t pin, uint8_t resistor)
+{
+			
+			switch (port) {
+		
+		case PortA:  
+			
+			break;
+		case PortB:  
+			
+			break;
+		case PortC:  
+			
+			break;
+		case PortD:  
+			
+			break;
+		case PortE:  
+			SysCtlPeripheralEnable(0xf0000804);	
+			while(!SysCtlPeripheralReady(0xf0000804));
+			if(pin && 0x00000001) { (*((volatile uint32_t *)0x40024520)) = 0x4C4F434B; } 
+			(*((volatile uint32_t *)0x40024524)) |= pin;  
+			
+			GPIOPinTypeGPIOInput(0x40024000, pin);  
+			GPIODirModeSet(0x40024000, pin, 0x00000000);  
+			GPIOPadConfigSet(0x40024000, pin, 0x00000001,resistor); 
+			break;
+		case PortF:  
+			
+			break;		
+		default:
+			return 0;  
+	}
+	return 1;  
+}
+
 

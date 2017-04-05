@@ -1,6 +1,6 @@
 .\generated\objects\startup_handler.o: drivers\startup_handler\startup_handler.c
-.\generated\objects\startup_handler.o: F:\0_Tools\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
-.\generated\objects\startup_handler.o: F:\0_Tools\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\generated\objects\startup_handler.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\generated\objects\startup_handler.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\generated\objects\startup_handler.o: drivers\startup_handler\startup_handler.h
 .\generated\objects\startup_handler.o: .\modules\GSM\GSM.h
 .\generated\objects\startup_handler.o: ..\SecSys_TM4C\custom_types.h

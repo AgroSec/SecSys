@@ -10,7 +10,7 @@
 
  
 
-#line 1 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
+#line 1 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
  
  
 
@@ -29,7 +29,7 @@
 
 
      
-#line 27 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
+#line 27 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
      
 
 
@@ -42,7 +42,7 @@
 
 
 
-#line 46 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
+#line 46 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
 
 
 
@@ -206,7 +206,7 @@ typedef unsigned     long long uintmax_t;
      
 
      
-#line 216 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
+#line 216 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
 
      
 
@@ -225,7 +225,7 @@ typedef unsigned     long long uintmax_t;
 
 
 
-#line 241 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
+#line 241 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
 
      
 
@@ -258,7 +258,7 @@ typedef unsigned     long long uintmax_t;
 
 
 
-#line 305 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
+#line 305 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
 
 
 
@@ -267,7 +267,7 @@ typedef unsigned     long long uintmax_t;
 
  
 #line 13 "RTE\\Device\\TM4C123GH6PM\\system_TM4C123.c"
-#line 1 "F:\\0_Tools\\Keil_v5\\ARM\\PACK\\Keil\\TM4C_DFP\\1.1.0\\Device\\Include\\TM4C123\\TM4C123.h"
+#line 1 "C:\\Keil_v5\\ARM\\PACK\\Keil\\TM4C_DFP\\1.1.0\\Device\\Include\\TM4C123\\TM4C123.h"
  
 
 
@@ -282,7 +282,7 @@ typedef unsigned     long long uintmax_t;
 
 
 
-#line 1 "F:\\0_Tools\\Keil_v5\\ARM\\PACK\\Keil\\TM4C_DFP\\1.1.0\\Device\\Include\\TM4C123\\TM4C123GH6PM.h"
+#line 1 "C:\\Keil_v5\\ARM\\PACK\\Keil\\TM4C_DFP\\1.1.0\\Device\\Include\\TM4C123\\TM4C123GH6PM.h"
 
  
 
@@ -449,7 +449,7 @@ typedef enum {
 
    
 
-#line 1 "F:\\0_Tools\\Keil_v5\\ARM\\PACK\\ARM\\CMSIS\\5.0.0-Beta12\\CMSIS\\Include\\core_cm4.h"
+#line 1 "C:\\Keil_v5\\ARM\\PACK\\ARM\\CMSIS\\5.0.0\\CMSIS\\Include\\core_cm4.h"
  
 
 
@@ -483,7 +483,7 @@ typedef enum {
 
 
 
-#line 35 "F:\\0_Tools\\Keil_v5\\ARM\\PACK\\ARM\\CMSIS\\5.0.0-Beta12\\CMSIS\\Include\\core_cm4.h"
+#line 35 "C:\\Keil_v5\\ARM\\PACK\\ARM\\CMSIS\\5.0.0\\CMSIS\\Include\\core_cm4.h"
 
 
 
@@ -523,11 +523,11 @@ typedef enum {
 
 
  
-#line 85 "F:\\0_Tools\\Keil_v5\\ARM\\PACK\\ARM\\CMSIS\\5.0.0-Beta12\\CMSIS\\Include\\core_cm4.h"
+#line 85 "C:\\Keil_v5\\ARM\\PACK\\ARM\\CMSIS\\5.0.0\\CMSIS\\Include\\core_cm4.h"
 
-#line 159 "F:\\0_Tools\\Keil_v5\\ARM\\PACK\\ARM\\CMSIS\\5.0.0-Beta12\\CMSIS\\Include\\core_cm4.h"
+#line 159 "C:\\Keil_v5\\ARM\\PACK\\ARM\\CMSIS\\5.0.0\\CMSIS\\Include\\core_cm4.h"
 
-#line 1 "F:\\0_Tools\\Keil_v5\\ARM\\PACK\\ARM\\CMSIS\\5.0.0-Beta12\\CMSIS\\Include\\cmsis_compiler.h"
+#line 1 "C:\\Keil_v5\\ARM\\PACK\\ARM\\CMSIS\\5.0.0\\CMSIS\\Include\\cmsis_compiler.h"
  
 
 
@@ -555,12 +555,12 @@ typedef enum {
 
 
 
-#line 29 "F:\\0_Tools\\Keil_v5\\ARM\\PACK\\ARM\\CMSIS\\5.0.0-Beta12\\CMSIS\\Include\\cmsis_compiler.h"
+#line 29 "C:\\Keil_v5\\ARM\\PACK\\ARM\\CMSIS\\5.0.0\\CMSIS\\Include\\cmsis_compiler.h"
 
 
 
  
-#line 1 "F:\\0_Tools\\Keil_v5\\ARM\\PACK\\ARM\\CMSIS\\5.0.0-Beta12\\CMSIS\\Include\\cmsis_armcc.h"
+#line 1 "C:\\Keil_v5\\ARM\\PACK\\ARM\\CMSIS\\5.0.0\\CMSIS\\Include\\cmsis_armcc.h"
  
 
 
@@ -611,7 +611,7 @@ typedef enum {
 
 
  
-#line 78 "F:\\0_Tools\\Keil_v5\\ARM\\PACK\\ARM\\CMSIS\\5.0.0-Beta12\\CMSIS\\Include\\cmsis_armcc.h"
+#line 78 "C:\\Keil_v5\\ARM\\PACK\\ARM\\CMSIS\\5.0.0\\CMSIS\\Include\\cmsis_armcc.h"
 
 
  
@@ -861,10 +861,10 @@ static __inline uint32_t __get_FPSCR(void)
 {
 
 
+  register uint32_t __regfpscr         __asm("fpscr");
+  return(__regfpscr);
 
 
-
-   return(0U);
 
 }
 
@@ -878,8 +878,8 @@ static __inline void __set_FPSCR(uint32_t fpscr)
 {
 
 
-
-
+  register uint32_t __regfpscr         __asm("fpscr");
+  __regfpscr = (fpscr);
 
 }
 
@@ -1024,7 +1024,7 @@ __attribute__((section(".revsh_text"))) static __inline __asm int32_t __REVSH(in
 
 
  
-#line 510 "F:\\0_Tools\\Keil_v5\\ARM\\PACK\\ARM\\CMSIS\\5.0.0-Beta12\\CMSIS\\Include\\cmsis_armcc.h"
+#line 510 "C:\\Keil_v5\\ARM\\PACK\\ARM\\CMSIS\\5.0.0\\CMSIS\\Include\\cmsis_armcc.h"
 
 
 
@@ -1233,7 +1233,7 @@ __attribute__((section(".rrx_text"))) static __inline __asm uint32_t __RRX(uint3
 
 
 
-#line 777 "F:\\0_Tools\\Keil_v5\\ARM\\PACK\\ARM\\CMSIS\\5.0.0-Beta12\\CMSIS\\Include\\cmsis_armcc.h"
+#line 777 "C:\\Keil_v5\\ARM\\PACK\\ARM\\CMSIS\\5.0.0\\CMSIS\\Include\\cmsis_armcc.h"
 
 
 
@@ -1248,23 +1248,18 @@ __attribute__((section(".rrx_text"))) static __inline __asm uint32_t __RRX(uint3
  
 
 
-#line 35 "F:\\0_Tools\\Keil_v5\\ARM\\PACK\\ARM\\CMSIS\\5.0.0-Beta12\\CMSIS\\Include\\cmsis_compiler.h"
+#line 35 "C:\\Keil_v5\\ARM\\PACK\\ARM\\CMSIS\\5.0.0\\CMSIS\\Include\\cmsis_compiler.h"
 
 
 
 
  
-#line 208 "F:\\0_Tools\\Keil_v5\\ARM\\PACK\\ARM\\CMSIS\\5.0.0-Beta12\\CMSIS\\Include\\cmsis_compiler.h"
+#line 208 "C:\\Keil_v5\\ARM\\PACK\\ARM\\CMSIS\\5.0.0\\CMSIS\\Include\\cmsis_compiler.h"
 
 
 
 
-#line 161 "F:\\0_Tools\\Keil_v5\\ARM\\PACK\\ARM\\CMSIS\\5.0.0-Beta12\\CMSIS\\Include\\core_cm4.h"
-
-
-
-
-
+#line 161 "C:\\Keil_v5\\ARM\\PACK\\ARM\\CMSIS\\5.0.0\\CMSIS\\Include\\core_cm4.h"
 
 
 
@@ -1276,11 +1271,6 @@ __attribute__((section(".rrx_text"))) static __inline __asm uint32_t __RRX(uint3
 
 
 
-
- 
-#line 205 "F:\\0_Tools\\Keil_v5\\ARM\\PACK\\ARM\\CMSIS\\5.0.0-Beta12\\CMSIS\\Include\\core_cm4.h"
-
- 
 
 
 
@@ -1288,7 +1278,17 @@ __attribute__((section(".rrx_text"))) static __inline __asm uint32_t __RRX(uint3
 
 
  
-#line 221 "F:\\0_Tools\\Keil_v5\\ARM\\PACK\\ARM\\CMSIS\\5.0.0-Beta12\\CMSIS\\Include\\core_cm4.h"
+#line 205 "C:\\Keil_v5\\ARM\\PACK\\ARM\\CMSIS\\5.0.0\\CMSIS\\Include\\core_cm4.h"
+
+ 
+
+
+
+
+
+
+ 
+#line 221 "C:\\Keil_v5\\ARM\\PACK\\ARM\\CMSIS\\5.0.0\\CMSIS\\Include\\core_cm4.h"
 
  
 
@@ -2612,20 +2612,9 @@ typedef struct
  
 
  
-#line 1552 "F:\\0_Tools\\Keil_v5\\ARM\\PACK\\ARM\\CMSIS\\5.0.0-Beta12\\CMSIS\\Include\\core_cm4.h"
+#line 1552 "C:\\Keil_v5\\ARM\\PACK\\ARM\\CMSIS\\5.0.0\\CMSIS\\Include\\core_cm4.h"
 
-#line 1561 "F:\\0_Tools\\Keil_v5\\ARM\\PACK\\ARM\\CMSIS\\5.0.0-Beta12\\CMSIS\\Include\\core_cm4.h"
-
-
-
-
-
-
-
-
-
- 
-
+#line 1561 "C:\\Keil_v5\\ARM\\PACK\\ARM\\CMSIS\\5.0.0\\CMSIS\\Include\\core_cm4.h"
 
 
 
@@ -2638,6 +2627,17 @@ typedef struct
  
 
 
+
+
+
+
+
+
+
+
+ 
+
+
  
 
 
@@ -2650,7 +2650,7 @@ typedef struct
 
  
 
-#line 1609 "F:\\0_Tools\\Keil_v5\\ARM\\PACK\\ARM\\CMSIS\\5.0.0-Beta12\\CMSIS\\Include\\core_cm4.h"
+#line 1609 "C:\\Keil_v5\\ARM\\PACK\\ARM\\CMSIS\\5.0.0\\CMSIS\\Include\\core_cm4.h"
 
 
 
@@ -3132,8 +3132,8 @@ static __inline int32_t ITM_CheckChar (void)
 
 
 
-#line 168 "F:\\0_Tools\\Keil_v5\\ARM\\PACK\\Keil\\TM4C_DFP\\1.1.0\\Device\\Include\\TM4C123\\TM4C123GH6PM.h"
-#line 1 "F:\\0_Tools\\Keil_v5\\ARM\\PACK\\Keil\\TM4C_DFP\\1.1.0\\Device\\Include\\TM4C123\\system_TM4C123.h"
+#line 168 "C:\\Keil_v5\\ARM\\PACK\\Keil\\TM4C_DFP\\1.1.0\\Device\\Include\\TM4C123\\TM4C123GH6PM.h"
+#line 1 "C:\\Keil_v5\\ARM\\PACK\\Keil\\TM4C_DFP\\1.1.0\\Device\\Include\\TM4C123\\system_TM4C123.h"
  
 
 
@@ -3166,7 +3166,7 @@ static __inline int32_t ITM_CheckChar (void)
 
 
 
-#line 34 "F:\\0_Tools\\Keil_v5\\ARM\\PACK\\Keil\\TM4C_DFP\\1.1.0\\Device\\Include\\TM4C123\\system_TM4C123.h"
+#line 34 "C:\\Keil_v5\\ARM\\PACK\\Keil\\TM4C_DFP\\1.1.0\\Device\\Include\\TM4C123\\system_TM4C123.h"
 
 extern uint32_t SystemCoreClock;      
 
@@ -3197,7 +3197,7 @@ extern void SystemCoreClockUpdate (void);
 
 
 
-#line 169 "F:\\0_Tools\\Keil_v5\\ARM\\PACK\\Keil\\TM4C_DFP\\1.1.0\\Device\\Include\\TM4C123\\TM4C123GH6PM.h"
+#line 169 "C:\\Keil_v5\\ARM\\PACK\\Keil\\TM4C_DFP\\1.1.0\\Device\\Include\\TM4C123\\TM4C123GH6PM.h"
 
 
  
@@ -3214,7 +3214,7 @@ extern void SystemCoreClockUpdate (void);
 
   #pragma push
   #pragma anon_unions
-#line 196 "F:\\0_Tools\\Keil_v5\\ARM\\PACK\\Keil\\TM4C_DFP\\1.1.0\\Device\\Include\\TM4C123\\TM4C123GH6PM.h"
+#line 196 "C:\\Keil_v5\\ARM\\PACK\\Keil\\TM4C_DFP\\1.1.0\\Device\\Include\\TM4C123\\TM4C123GH6PM.h"
 
 
 
@@ -4543,7 +4543,7 @@ typedef struct {
  
 
   #pragma pop
-#line 1535 "F:\\0_Tools\\Keil_v5\\ARM\\PACK\\Keil\\TM4C_DFP\\1.1.0\\Device\\Include\\TM4C123\\TM4C123GH6PM.h"
+#line 1535 "C:\\Keil_v5\\ARM\\PACK\\Keil\\TM4C_DFP\\1.1.0\\Device\\Include\\TM4C123\\TM4C123GH6PM.h"
 
 
 
@@ -4552,14 +4552,14 @@ typedef struct {
  
  
 
-#line 1601 "F:\\0_Tools\\Keil_v5\\ARM\\PACK\\Keil\\TM4C_DFP\\1.1.0\\Device\\Include\\TM4C123\\TM4C123GH6PM.h"
+#line 1601 "C:\\Keil_v5\\ARM\\PACK\\Keil\\TM4C_DFP\\1.1.0\\Device\\Include\\TM4C123\\TM4C123GH6PM.h"
 
 
  
  
  
 
-#line 1665 "F:\\0_Tools\\Keil_v5\\ARM\\PACK\\Keil\\TM4C_DFP\\1.1.0\\Device\\Include\\TM4C123\\TM4C123GH6PM.h"
+#line 1665 "C:\\Keil_v5\\ARM\\PACK\\Keil\\TM4C_DFP\\1.1.0\\Device\\Include\\TM4C123\\TM4C123GH6PM.h"
 
 
    
@@ -4573,8 +4573,8 @@ typedef struct {
 
 
 
-#line 99 "F:\\0_Tools\\Keil_v5\\ARM\\PACK\\Keil\\TM4C_DFP\\1.1.0\\Device\\Include\\TM4C123\\TM4C123.h"
-#line 120 "F:\\0_Tools\\Keil_v5\\ARM\\PACK\\Keil\\TM4C_DFP\\1.1.0\\Device\\Include\\TM4C123\\TM4C123.h"
+#line 99 "C:\\Keil_v5\\ARM\\PACK\\Keil\\TM4C_DFP\\1.1.0\\Device\\Include\\TM4C123\\TM4C123.h"
+#line 120 "C:\\Keil_v5\\ARM\\PACK\\Keil\\TM4C_DFP\\1.1.0\\Device\\Include\\TM4C123\\TM4C123.h"
 
 #line 14 "RTE\\Device\\TM4C123GH6PM\\system_TM4C123.c"
 
@@ -4838,7 +4838,7 @@ uint32_t SystemCoreClock = ((400000000UL) / (((( ((4 - 1) << 23) | (1 << 22) | (
 
  
 __inline static uint32_t getOscClk (uint32_t xtal, uint32_t oscSrc) {
-  uint32_t oscClk = (12000000UL);
+  uint32_t oscClk = (16000000UL);
 
   switch (oscSrc) {                       
     case 0:                               
@@ -4915,10 +4915,10 @@ __inline static uint32_t getOscClk (uint32_t xtal, uint32_t oscSrc) {
        }
       break;
     case 1:                          
-      oscClk = (12000000UL);
+      oscClk = (16000000UL);
       break;
     case 2:                          
-      oscClk = (12000000UL)/4;
+      oscClk = (16000000UL)/4;
       break;
     case 3:                          
       oscClk = ( 30000UL);
@@ -4988,8 +4988,8 @@ void SystemInit (void)
 
    
 
-
-
+    ((SCB_Type *) ((0xE000E000UL) + 0x0D00UL) )->CPACR |= ((3UL << 10*2) |                  
+                   (3UL << 11*2)  );                
 
 
 

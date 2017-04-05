@@ -63,7 +63,7 @@ void EndCritical(long sr);
 void WaitForInterrupt(void);  
 
 #line 11 ".\\OS\\os_hw.h"
-#line 1 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdbool.h"
+#line 1 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdbool.h"
  
 
 
@@ -77,12 +77,12 @@ void WaitForInterrupt(void);
 
 
 
-#line 25 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdbool.h"
+#line 25 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdbool.h"
 
 
 
 #line 12 ".\\OS\\os_hw.h"
-#line 1 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
+#line 1 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
  
  
 
@@ -101,7 +101,7 @@ void WaitForInterrupt(void);
 
 
      
-#line 27 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
+#line 27 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
      
 
 
@@ -114,7 +114,7 @@ void WaitForInterrupt(void);
 
 
 
-#line 46 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
+#line 46 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
 
 
 
@@ -278,7 +278,7 @@ typedef unsigned     long long uintmax_t;
      
 
      
-#line 216 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
+#line 216 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
 
      
 
@@ -297,7 +297,7 @@ typedef unsigned     long long uintmax_t;
 
 
 
-#line 241 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
+#line 241 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
 
      
 
@@ -330,7 +330,7 @@ typedef unsigned     long long uintmax_t;
 
 
 
-#line 305 "F:\\0_Tools\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
+#line 305 "C:\\Keil_v5\\ARM\\ARMCC\\Bin\\..\\include\\stdint.h"
 
 
 
@@ -1757,6 +1757,8 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 #line 39 ".\\OS\\os_hw.h"
 #line 1 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+#line 2 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+#line 3 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1799,8 +1801,6 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 44 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
-#line 45 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1821,8 +1821,8 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
+#line 142 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
-#line 143 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1830,8 +1830,8 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
+#line 157 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
-#line 158 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1839,16 +1839,15 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
+#line 173 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
-#line 174 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
 
 
 
-
-#line 188 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+#line 187 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
                                             
 
 
@@ -1871,7 +1870,7 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 217 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+#line 216 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1879,7 +1878,7 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 388 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+#line 387 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1887,15 +1886,7 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 465 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
-
-
-
-
-
-
-
-
+#line 464 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1905,7 +1896,15 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 489 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+
+
+
+
+
+
+
+
+#line 488 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1928,21 +1927,14 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 519 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+#line 518 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
 
 
 
-#line 538 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
-
-
-
-
-
-
-
+#line 537 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -1951,7 +1943,14 @@ extern void IntTrigger(uint32_t ui32Interrupt);
 
 
 
-#line 559 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
+
+
+
+
+
+
+
+#line 558 "..\\..\\TivaWare_C_Series-2.1.1.71\\driverlib/sysctl.h"
 
 
 
@@ -2867,8 +2866,8 @@ void Task0_PIRA(void){
 			UART0_SendString(" times.");
 			UART0_SendNewLine();
 			OS_Signal(&SerialMonitor);
-			OS_Wait(&GSMModule);
-			SendSMS(PIR_A);
+			
+			
 			
 		}
 		
@@ -2890,8 +2889,8 @@ void Task1_PIRB(void){
 			UART0_SendString(" times.");
 			UART0_SendNewLine();
 			OS_Signal(&SerialMonitor);
-			OS_Wait(&GSMModule);
-			SendSMS(PIR_B);
+			
+			
 			
 
 		}
@@ -2957,8 +2956,8 @@ void Task7_BlankTask(void){
 		Count7_Blank++;
 		;
 		OS_Signal(&GSMModule);
-		OS_EdgeTrigger_Restart(PortC,0x00000040);
-		OS_EdgeTrigger_Restart(PortC,0x00000080);
+		
+		
 	}
 }
 
@@ -2968,7 +2967,7 @@ Count8_Blank = 0;
 		Count8_Blank++;
 		;
 		OS_Sleep(60000*10);
-		SendSMS(Status);
+		
 	}
 }
 
@@ -2986,8 +2985,8 @@ int main(void){
 	Profile_Init();  
 	
 	
-	OS_InitSemaphore(&SemPortC.pin6,0);
-	OS_InitSemaphore(&SemPortC.pin7,0);
+	
+	
 	
 	
 	
@@ -2997,7 +2996,7 @@ int main(void){
 
 	
 	
-	OS_EdgeTrigger_Init(PortC,0x00000040|0x00000080,(0),0x00000004,0x0000000C);
+	
 	
 	
 	

@@ -1050,14 +1050,14 @@ ARM Macro Assembler    Page 17
               00000000 
               00000200 
               00000000 
-Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4 --apcs=interw
-ork --depend=.\generated\objects\startup_tm4c123.d -o.\generated\objects\startu
-p_tm4c123.o -IF:\1_Projects\SecSys\SecSys_TM4C\RTE -IF:\0_Tools\Keil_v5\ARM\PAC
-K\ARM\CMSIS\5.0.0-Beta12\CMSIS\Include -IF:\0_Tools\Keil_v5\ARM\PACK\Keil\TM4C_
-DFP\1.1.0\Device\Include\TM4C123 --predefine="__EVAL SETA 1" --predefine="__UVI
-SION_VERSION SETA 521" --predefine="_RTE_ SETA 1" --predefine="TM4C123GH6PM SET
-A 1" --list=.\generated\listings\startup_tm4c123.lst RTE\Device\TM4C123GH6PM\st
-artup_TM4C123.s
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp --apcs=int
+erwork --depend=.\generated\objects\startup_tm4c123.d -o.\generated\objects\sta
+rtup_tm4c123.o -IC:\Users\mihai.suteu\Documents\GIT_repos\SecSys\SecSys_TM4C\RT
+E\_SecSysTM4C -IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\Include -IC:\Keil_v5\
+ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C123 --predefine="__EVAL SETA 1"
+ --predefine="__UVISION_VERSION SETA 522" --predefine="_RTE_ SETA 1" --predefin
+e="TM4C123GH6PM SETA 1" --list=.\generated\listings\startup_tm4c123.lst RTE\Dev
+ice\TM4C123GH6PM\startup_TM4C123.s
 
 
 
@@ -2526,4 +2526,4 @@ Symbol: __use_two_region_memory
       None
 Comment: __use_two_region_memory unused
 2 symbols
-485 symbols in table
+486 symbols in table

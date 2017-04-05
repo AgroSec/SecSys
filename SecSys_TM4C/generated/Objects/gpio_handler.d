@@ -1,6 +1,6 @@
 .\generated\objects\gpio_handler.o: drivers\gpio_handler\gpio_handler.c
-.\generated\objects\gpio_handler.o: F:\0_Tools\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
-.\generated\objects\gpio_handler.o: F:\0_Tools\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\generated\objects\gpio_handler.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\generated\objects\gpio_handler.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\generated\objects\gpio_handler.o: ..\..\TivaWare_C_Series-2.1.1.71\inc/hw_memmap.h
 .\generated\objects\gpio_handler.o: ..\..\TivaWare_C_Series-2.1.1.71\inc/hw_ints.h
 .\generated\objects\gpio_handler.o: ..\..\TivaWare_C_Series-2.1.1.71\driverlib/gpio.h
@@ -14,5 +14,6 @@
 .\generated\objects\gpio_handler.o: .\inc\CortexM.h
 .\generated\objects\gpio_handler.o: .\OS\os_hw.h
 .\generated\objects\gpio_handler.o: .\OS\os_config.h
+.\generated\objects\gpio_handler.o: ..\..\TivaWare_C_Series-2.1.1.71\driverlib/sysctl.h
 .\generated\objects\gpio_handler.o: ..\..\TivaWare_C_Series-2.1.1.71\driverlib/timer.h
 .\generated\objects\gpio_handler.o: ..\..\TivaWare_C_Series-2.1.1.71\driverlib/systick.h

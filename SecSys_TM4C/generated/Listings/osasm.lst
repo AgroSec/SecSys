@@ -87,13 +87,13 @@ ARM Macro Assembler    Page 2
    44 00000044                 ALIGN
    45 00000044                 END
               00000000 
-Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4 --apcs=interw
-ork --depend=.\generated\objects\osasm.d -o.\generated\objects\osasm.o -IF:\1_P
-rojects\SecSys\SecSys_TM4C\RTE -IF:\0_Tools\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0-Be
-ta12\CMSIS\Include -IF:\0_Tools\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Inc
-lude\TM4C123 --predefine="__EVAL SETA 1" --predefine="__UVISION_VERSION SETA 52
-1" --predefine="_RTE_ SETA 1" --predefine="TM4C123GH6PM SETA 1" --list=.\genera
-ted\listings\osasm.lst OS\osasm.s
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp --apcs=int
+erwork --depend=.\generated\objects\osasm.d -o.\generated\objects\osasm.o -IC:\
+Users\mihai.suteu\Documents\GIT_repos\SecSys\SecSys_TM4C\RTE\_SecSysTM4C -IC:\K
+eil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\Include -IC:\Keil_v5\ARM\PACK\Keil\TM4C_D
+FP\1.1.0\Device\Include\TM4C123 --predefine="__EVAL SETA 1" --predefine="__UVIS
+ION_VERSION SETA 522" --predefine="_RTE_ SETA 1" --predefine="TM4C123GH6PM SETA
+ 1" --list=.\generated\listings\osasm.lst OS\osasm.s
 
 
 
@@ -149,4 +149,4 @@ Symbol: Scheduler
       At line 24 in file OS\osasm.s
 Comment: Scheduler used once
 2 symbols
-341 symbols in table
+342 symbols in table

@@ -1,7 +1,7 @@
 .\generated\objects\gsm.o: modules\GSM\GSM.c
 .\generated\objects\gsm.o: ..\..\TivaWare_C_Series-2.1.1.71\driverlib/sysctl.h
-.\generated\objects\gsm.o: F:\0_Tools\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
-.\generated\objects\gsm.o: F:\0_Tools\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\generated\objects\gsm.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\generated\objects\gsm.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\generated\objects\gsm.o: ..\SecSys_TM4C\SecSys_Config.h
 .\generated\objects\gsm.o: modules\GSM\GSM.h
 .\generated\objects\gsm.o: ..\SecSys_TM4C\custom_types.h
@@ -17,6 +17,7 @@
 .\generated\objects\gsm.o: ..\..\TivaWare_C_Series-2.1.1.71\driverlib/gpio.h
 .\generated\objects\gsm.o: ..\..\TivaWare_C_Series-2.1.1.71\driverlib/pin_map.h
 .\generated\objects\gsm.o: ..\..\TivaWare_C_Series-2.1.1.71\driverlib/interrupt.h
+.\generated\objects\gsm.o: ..\..\TivaWare_C_Series-2.1.1.71\driverlib/sysctl.h
 .\generated\objects\gsm.o: ..\..\TivaWare_C_Series-2.1.1.71\driverlib/timer.h
 .\generated\objects\gsm.o: ..\..\TivaWare_C_Series-2.1.1.71\driverlib/systick.h
 .\generated\objects\gsm.o: .\drivers\uart_handler\uart_handler.h

@@ -15,7 +15,10 @@
 #include "cyclic_activity_handler.h"
 
 /*-------------------Service Includes-----------------*/
+#include "gpio_handler.h"
 #include "uart_handler.h"
+/*-----------------Application Includes---------------*/
+#include "HX711.h"
 /*-------------Global Variable Definitions------------*/
 
 /*-------------Local Variable Definitions-------------*/
@@ -31,6 +34,8 @@ void CYCL_50ms(void) {
 
 void CYCL_100ms(void) {
 	//Function calls that runs only every 100 ms
+	
+	
 }
 
 void CYCL_500ms(void) {
@@ -39,6 +44,13 @@ void CYCL_500ms(void) {
 
 void CYCL_1000ms(void) {
 	//Function calls that runs only every 1000 ms
+	
+	UART0_SendUDecimal(ReadCount());
+	UART0_SendNewLine();
+	
+	GPIO_SetPin(PortE, 1<<3, 1<<3);		// set SLK pin to HIGH for powersave	
+	
+	
 	UART0_SendString("1 second passed...");
 	UART0_SendNewLine();
 }

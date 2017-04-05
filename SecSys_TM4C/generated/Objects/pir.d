@@ -1,8 +1,8 @@
 .\generated\objects\pir.o: modules\PIR\PIR.c
 .\generated\objects\pir.o: .\OS\os_core.h
 .\generated\objects\pir.o: .\inc\CortexM.h
-.\generated\objects\pir.o: F:\0_Tools\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
-.\generated\objects\pir.o: F:\0_Tools\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\generated\objects\pir.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\generated\objects\pir.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\generated\objects\pir.o: .\OS\os_hw.h
 .\generated\objects\pir.o: .\inc\CortexM.h
 .\generated\objects\pir.o: .\OS\os_core.h
@@ -15,6 +15,7 @@
 .\generated\objects\pir.o: ..\..\TivaWare_C_Series-2.1.1.71\driverlib/sysctl.h
 .\generated\objects\pir.o: ..\..\TivaWare_C_Series-2.1.1.71\driverlib/timer.h
 .\generated\objects\pir.o: ..\..\TivaWare_C_Series-2.1.1.71\driverlib/systick.h
+.\generated\objects\pir.o: ..\..\TivaWare_C_Series-2.1.1.71\driverlib/sysctl.h
 .\generated\objects\pir.o: ..\SecSys_TM4C\SecSys_Config.h
 .\generated\objects\pir.o: modules\PIR\PIR.h
 .\generated\objects\pir.o: .\drivers\uart_handler\uart_handler.h

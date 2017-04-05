@@ -1,8 +1,8 @@
 .\generated\objects\os_hw.o: OS\os_hw.c
 .\generated\objects\os_hw.o: OS\os_hw.h
 .\generated\objects\os_hw.o: .\inc\CortexM.h
-.\generated\objects\os_hw.o: F:\0_Tools\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
-.\generated\objects\os_hw.o: F:\0_Tools\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\generated\objects\os_hw.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\generated\objects\os_hw.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\generated\objects\os_hw.o: OS\os_core.h
 .\generated\objects\os_hw.o: .\inc\CortexM.h
 .\generated\objects\os_hw.o: OS\os_hw.h
