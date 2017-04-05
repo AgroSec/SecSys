@@ -1,4 +1,7 @@
 SET PATH=C:\Keil_v5\ARM\ARMCC\Bin;C:\ProgramData\Oracle\Java\javapath;C:\Program Files (x86)\Integrity\IntegrityClient10.8\bin;C:\Tool\Common\CTC\v6.5.5;C:\Tool\Common\Perl_5.12.4\site\bin;C:\Tool\Common\Perl_5.12.4\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\OpenVPN\bin;C:\Program Files (x86)\Skype\Phone\;C:\Program Files\Git\cmd;C:\Program Files (x86)\Windows Kits\8.1\Windows Performance Toolkit\;C:\Program Files\Microsoft SQL Server\110\Tools\Binn\;C:\Program Files (x86)\Microsoft SDKs\TypeScript\1.0\;C:\Tool\Common\TDM-GCC-64\bin;C:\Program Files\Microsoft SQL Server\120\Tools\Binn\
+SET ARMCC5_ASMOPT=--diag_suppress=9931
+SET ARMCC5_CCOPT=--diag_suppress=9931
+SET ARMCC5_LINKOPT=--diag_suppress=9931
 SET CPU_TYPE=TM4C123GH6PM
 SET CPU_VENDOR=Texas Instruments
 SET UV2_TARGET=SecSysTM4C

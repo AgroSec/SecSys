@@ -31,3 +31,9 @@
 # Debug files
 *.dSYM/
 *.su
+
+# Generated items
+/SecSys_TM4C/generated/*.*
+/SecSys_TM4C/SecSysTM4c.uvguix.alexandru.gaal
+/SecSys_TM4C/SecSysTM4c.uvguix.mihai.suteu
+/SecSys_TM4C/SecSysTM4c.uvguix.Ninja
