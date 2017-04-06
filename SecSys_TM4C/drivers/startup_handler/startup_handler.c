@@ -2,7 +2,7 @@
 //Service layer
 
 /*-------------------Configuration Includes-----------*/
-
+#include "SecSys_Config.h"
 /*-------------------Type Includes-------------------*/
 #include "stdbool.h"
 #include "stdint.h"

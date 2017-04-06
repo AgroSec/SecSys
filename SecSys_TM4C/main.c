@@ -5,6 +5,7 @@
 // For copyright, configuration and usage read readme.txt
 
 //#include "../inc/tm4c123gh6pm.h"  //AleGaa not needed at the moment
+/*-------------------Configuration Includes-----------*/
 #include "SecSys_Config.h"
 /*---------------------OS Includes--------------------*/
 #include "os_hw.h"

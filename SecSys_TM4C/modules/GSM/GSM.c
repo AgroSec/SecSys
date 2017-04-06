@@ -33,13 +33,13 @@ void SendSMS(SMS_Message_en message){
   switch (message) {
 		case PIR_A:
 			UART2_SendString("PIR A Triggered ");  //The SMS text you want to send
-			//UART2_SendUDecimal(Count0_PIRA);
-			//UART2_SendString(" times!!!");
+			UART2_SendUDecimal(Count0_PIRA);
+			UART2_SendString(" times!!!");
 			break;
 		case PIR_B:
 			UART2_SendString("PIR B Triggered ");
-			//UART2_SendUDecimal(Count1_PIRB);
-			//UART2_SendString(" times!!!");
+			UART2_SendUDecimal(Count1_PIRB);
+			UART2_SendString(" times!!!");
 			break;
 		case Wire_1_Pull:
 			UART2_SendString("Wire 1 Pulled");
@@ -63,11 +63,15 @@ void SendSMS(SMS_Message_en message){
 			//Send security system status
 			UART2_SendString("Status:");
 			UART2_SendNewLine();
-			UART2_SendUDecimal(Count7_Blank);
-			UART2_SendString(" seconds");
-			UART2_SendNewLine();
 			UART2_SendUDecimal(Count8_Blank*10);
 			UART2_SendString(" minutes");
+			UART2_SendNewLine();
+			UART2_SendString("PIR A ");
+			UART2_SendUDecimal(Count0_PIRA);
+			UART2_SendNewLine();
+			UART2_SendString("PIR B ");
+			UART2_SendUDecimal(Count1_PIRB);
+			UART2_SendNewLine();
 			//TODO
 			//Active_System
 			//Active_Alarm
