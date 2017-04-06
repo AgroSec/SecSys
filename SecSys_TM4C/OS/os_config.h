@@ -25,7 +25,7 @@
 // J2.18/PE0 Profile 4
 // J4.36/PC5 Profile 5
 // J4.34/PC7 Profile 6
-#define PROFILE_DEBUG (1)
+#define PROFILE_DEBUG (0)
 
 //Define the frequency of the scheduler, in version 1.2 only 1000 Hz is supported
 #define THREADFREQ 1000   // frequency in Hz
