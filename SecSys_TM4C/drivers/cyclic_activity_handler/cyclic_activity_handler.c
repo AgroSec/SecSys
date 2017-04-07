@@ -35,10 +35,11 @@ void CYCL_50ms(void) {
 void CYCL_100ms(void) {
 	//Function calls that runs only every 100 ms
 	
-	UART0_SendUDecimal(ReadCount()/2456);
+#if HX711_AVAILABLE
+	UART0_SendUDecimal(ReadCount());
 	UART0_SendNewLine();
-	
-	//GPIO_SetPin(PortE, 1<<3, 1<<3);		// set SLK pin to HIGH for powersave	
+	GPIO_SetPin(PortE, 1<<3, 1<<3);		// set SLK pin to HIGH for powersave	
+#endif
 	
 }
 
@@ -48,8 +49,13 @@ void CYCL_500ms(void) {
 
 void CYCL_1000ms(void) {
 	//Function calls that runs only every 1000 ms
-		
+	
+
+
 	UART0_SendString("1 second passed...");
 	UART0_SendNewLine();
+
 }
+
 //EOF
+

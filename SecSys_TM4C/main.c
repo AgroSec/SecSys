@@ -5,7 +5,8 @@
 // For copyright, configuration and usage read readme.txt
 
 //#include "../inc/tm4c123gh6pm.h"  //AleGaa not needed at the moment
-
+/*-------------------Configuration Includes-----------*/
+#include "SecSys_Config.h"
 /*---------------------OS Includes--------------------*/
 #include "os_hw.h"
 #include "os_core.h"
@@ -64,13 +65,13 @@ void Task0_PIRA(void){	//Edge triggered task
 			UART0_SendString(" times.");
 			UART0_SendNewLine();
 			OS_Signal(&SerialMonitor);
-			//OS_Wait(&GSMModule);
-			//SendSMS(PIR_A);
-			//OS_Signal(&GSMModule);
+			OS_Wait(&GSMModule);
+			SendSMS(PIR_A);
+			OS_Signal(&GSMModule);
 		}
-		//OS_EdgeTrigger_Restart(PortC,GPIO_PIN_6);
+		OS_EdgeTrigger_Restart(PortC,GPIO_PIN_6);
 		//OS_EdgeTrigger_Restart(PortF,GPIO_PIN_2);
-		OS_Signal(&Task7Sync);
+		//OS_Signal(&Task7Sync);
   }
 }
 void Task1_PIRB(void){	//Edge triggered task
@@ -87,13 +88,13 @@ void Task1_PIRB(void){	//Edge triggered task
 			UART0_SendString(" times.");
 			UART0_SendNewLine();
 			OS_Signal(&SerialMonitor);
-			//OS_Wait(&GSMModule);
-			//SendSMS(PIR_B);
-			//OS_Signal(&GSMModule);
+			OS_Wait(&GSMModule);
+			SendSMS(PIR_B);
+			OS_Signal(&GSMModule);
 
 		}
-		OS_Signal(&Task7Sync);
-		//OS_EdgeTrigger_Restart(PortC,GPIO_PIN_7);
+		//OS_Signal(&Task7Sync);
+		OS_EdgeTrigger_Restart(PortC,GPIO_PIN_7);
   }
 }
 void Task2_Cyclic10ms(void){  //Periodic task 10ms
@@ -148,12 +149,11 @@ void Task6_Cyclic1000ms(void){
 void Task7_BlankTask(void){
 	Count7_Blank = 0;
 	while(1){
-		OS_Wait(&Task7Sync);
+		//OS_Wait(&Task7Sync);
 		OS_Sleep(5000);
-
 		Count7_Blank++;
 		Toggle0();
-		OS_Signal(&GSMModule);
+		//OS_Signal(&GSMModule);
 		//OS_EdgeTrigger_Restart(PortC,GPIO_PIN_6);
 		//OS_EdgeTrigger_Restart(PortC,GPIO_PIN_7);
 	}
@@ -165,7 +165,7 @@ Count8_Blank = 0;
 		Count8_Blank++;
 		Toggle1();
 		OS_Sleep(60000*10);
-		//SendSMS(Status);
+		SendSMS(Status);
 	}
 }
 
@@ -183,20 +183,23 @@ int main(void){
 	Profile_Init();  // enable digital I/O on profile pins
 	
 	//3
-	//OS_InitSemaphore(&SemPortC.pin6,0);
-	//OS_InitSemaphore(&SemPortC.pin7,0);
-	
 	//OS_InitSemaphore(&SemPortF.pin0,0);
 	//OS_InitSemaphore(&SemPortF.pin4,0);
-	
 	OS_InitSemaphore(&SerialMonitor,1);
+	
+#if GSM_AVAILABLE	
 	OS_InitSemaphore(&GSMModule,1);
-
+#endif
 	
 	//4	
-	//OS_EdgeTrigger_Init(PortC,GPIO_PIN_6|GPIO_PIN_7,INT_PRIO_PIN,GPIO_RISING_EDGE,GPIO_PIN_TYPE_STD_WPD);
+#if PIR_AVAILABLE
+	OS_InitSemaphore(&SemPortC.pin6,0);
+	OS_InitSemaphore(&SemPortC.pin7,0);
+	OS_EdgeTrigger_Init(PortC,GPIO_PIN_6|GPIO_PIN_7,INT_PRIO_PIN,GPIO_RISING_EDGE,GPIO_PIN_TYPE_STD_WPD);
+	//OS_InitSemaphore(&Task7Sync,0);
+#endif
+
 	//OS_EdgeTrigger_Init(PortF,GPIO_PIN_0|GPIO_PIN_4,INT_PRIO_PIN,GPIO_RISING_EDGE,GPIO_PIN_TYPE_STD_WPD);
-	
 	//5
 	OS_AddPeriodicEventThread(&PerTask[0].semaphore, 10);
 	OS_AddPeriodicEventThread(&PerTask[1].semaphore, 50);
@@ -218,7 +221,6 @@ int main(void){
 	//7
 	//OS_FIFO_Init(&FifoA);
 	//8
-	OS_InitSemaphore(&Task7Sync,0);
 	//OS_InitSemaphore(&Task87Sync,0);
   //9
 	InitDrivers();
