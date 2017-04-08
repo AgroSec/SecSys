@@ -4,6 +4,9 @@
 #include "SecSys_Config.h"
 /*------Export interface---Self header Includes------*/
 #include "GSM.h"
+/*-----------------Application Includes---------------*/
+#include "pc_display.h"
+
 /*-------------------Service Includes-----------------*/
 #include "gpio_handler.h"
 #include "uart_handler.h"
@@ -11,8 +14,9 @@
 /*-------------Global Variable Definitions------------*/
 extern uint32_t Count0_PIRA;  // number of times Task0 loops
 extern uint32_t Count1_PIRB;  // number of times Task1 loops
-extern uint32_t Count7_Blank; //increments every second
 extern uint32_t Count8_Blank; //increments every minute
+extern uint32_t PIR_A_Alarm_Nr;
+extern uint32_t PIR_B_Alarm_Nr;
 /*-------------Local Variable Definitions-------------*/
 
 /*-------------------Function Definitions-------------*/
@@ -32,14 +36,18 @@ void SendSMS(SMS_Message_en message){
 	SysCtlDelay(Millis2Ticks(100)); //Interrupts are NOT disabled and OS is NOT stoped during delay!
   switch (message) {
 		case PIR_A:
-			UART2_SendString("PIR A Triggered ");  //The SMS text you want to send
+			UART2_SendString("PIR A Trigger Nr: ");  //The SMS text you want to send
 			UART2_SendUDecimal(Count0_PIRA);
-			UART2_SendString(" times!!!");
+			UART2_SendNewLine();
+			UART2_SendString("PIR A Alarm Nr: ");
+			UART2_SendUDecimal(PIR_A_Alarm_Nr);
 			break;
 		case PIR_B:
-			UART2_SendString("PIR B Triggered ");
+			UART2_SendString("PIR B Trigger Nr: ");
 			UART2_SendUDecimal(Count1_PIRB);
-			UART2_SendString(" times!!!");
+			UART2_SendNewLine();
+			UART2_SendString("PIR B Alarm Nr: ");
+			UART2_SendUDecimal(PIR_B_Alarm_Nr);
 			break;
 		case Wire_1_Pull:
 			UART2_SendString("Wire 1 Pulled");
@@ -63,8 +71,8 @@ void SendSMS(SMS_Message_en message){
 			//Send security system status
 			UART2_SendString("Status:");
 			UART2_SendNewLine();
-			UART2_SendUDecimal(Count8_Blank*10);
-			UART2_SendString(" minutes");
+			UART2_SendUDecimal(0);
+			UART2_SendString("TODO minutes");
 			UART2_SendNewLine();
 			UART2_SendString("PIR A ");
 			UART2_SendUDecimal(Count0_PIRA);
@@ -78,6 +86,10 @@ void SendSMS(SMS_Message_en message){
 			//Wire Guard State
 			//PIR State
 			break;
+		case System_Ready:
+			//System startup delay completed
+			UART2_SendString("System setup ready...");
+			break;
 		case Wrong_Command:
 			//Wrong SMS command received
 			UART2_SendString("Wrong Command. (1)Deactivate Security. (2)Deactivate Alarm. (3)Trigger Alarm. (4)Get Status");
@@ -86,12 +98,7 @@ void SendSMS(SMS_Message_en message){
 			UART2_SendString("Something misterious happened");
 	}
 	UART2_SendChar(SUB);  //ASCII code of CTRL+Z indicating end of message
-  //SysCtlDelay(Millis2Ticks(5000)); //Interrupts are NOT disabled and OS is NOT stoped during delay!
-	UART0_SendNewLine();
-	UART0_SendString("SMS sent with message ID: ");
-	UART0_SendChar((uint8_t)message+'0');
-	UART0_SendNewLine();	
-	
+	PC_Display_Message("SMS sent with message ID: ",(uint8_t)message," ->");
 }
 
 

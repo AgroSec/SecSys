@@ -35,6 +35,7 @@ typedef enum SMS_Message
 	Wire_3_Pull,
 	Wire_3_Cut,
 	Status,
+	System_Ready,
 	Wrong_Command
 } SMS_Message_en;
 

@@ -2,11 +2,10 @@
 //Service layer
 
 /*-------------------Configuration Includes-----------*/
-
+#include "SecSys_Config.h"
 /*-------------------Type Includes-------------------*/
 #include "stdbool.h"
 #include "stdint.h"
-
 /*-------------------HW define Includes--------------*/
 
 /*-------------------Driver Includes-----------------*/
@@ -19,8 +18,11 @@
 #include "uart_handler.h"
 /*-----------------Application Includes---------------*/
 #include "HX711.h"
+#include "PIR.h"
+#include "GSM.h"
+#include "pc_display.h"
 /*-------------Global Variable Definitions------------*/
-
+extern int32_t GSMModule;
 /*-------------Local Variable Definitions-------------*/
 
 /*-------------------Function Definitions-------------*/
@@ -43,15 +45,30 @@ void CYCL_500ms(void) {
 }
 
 void CYCL_1000ms(void) {
+	static uint32_t counter = 0;
 	//Function calls that runs only every 1000 ms
+	PC_Display_Message("Second passed: ",counter," ");
 #if HX711_AVAILABLE
-	UART0_SendUDecimal(ReadCount());
-	UART0_SendNewLine();
+	PC_Display_Message("Load cell read: ",ReadCount()," units");
 	GPIO_SetPin(PortE, 1<<3, 1<<3);		// set SLK pin to HIGH for powersave	
 #endif
-
-	UART0_SendString("1 second passed...");
-	UART0_SendNewLine();
-
+	if(!counter%2) {
+		//Every 2 second code
+	}
+	if(!counter%3) {
+		//Every 3 second code
+	}
+#if PIR_AVAILABLE
+	if(!counter%PIR_TRIGGERS_TIMEFRAME) {  //this case is 5 seconds
+		//Every PIR_TRIGGERS_TIMEFRAME nr of second code
+		Process_PIR();
+	}
+#endif
+	if(!counter%600){  //every 10 minutes
+		OS_Wait(&GSMModule);
+		SendSMS(Status);
+		OS_Signal(&GSMModule);
+	}
+	counter++;
 }
 //EOF
