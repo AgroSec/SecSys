@@ -12,7 +12,7 @@
 
 /*-------------------Function Definitions-------------*/
 void PC_Display_Message(uint8_t *string1, uint32_t value, uint8_t *string2){
-#if GSM_SERIAL_DEBUG_ACTIVE
+#if SERIAL_DEBUG_ACTIVE
 	UART0_SendString(string1);
 	UART0_SendUDecimal(value);
 	UART0_SendString(string2);

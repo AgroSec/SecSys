@@ -6,9 +6,10 @@
 #include "driverlib/uart.h"
 #include "driverlib/pin_map.h"
 #include "driverlib/gpio.h"
-
+#include "driverlib/interrupts.h"
 /*-------------------HW define Includes--------------*/
 #include "inc/hw_memmap.h"
+#include "inc/hw_ints.h"
 
 uint32_t Baud_Rate_Read = 0;
 uint32_t GSM_Baud_Rate_Read = 0;
@@ -186,7 +187,10 @@ char character;
   }
   return number;
 }
+/*
+UARTIntDisable(UART2_BASE,UART_INT_TX|UART_INT_RX)
 
+*/
 //UART2 functions
 void UART2_Init(void){
 	uint32_t uart_config_read = 0;
@@ -196,7 +200,9 @@ void UART2_Init(void){
 	while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOD));  //wait for PortD to initialize
 	GPIO_PORTD_LOCK_R = 0x4C4F434B; //Unlock GPIO PD7
 	GPIO_PORTD_CR_R |= 0xC0;  //Allow changes to PD6,7
-		
+	
+	IntDisable(INT_UART2);
+	UARTIntDisable(UART2_BASE,UART_INT_TX|UART_INT_RX);  //Disable UART2 Interrupts
 	UARTDisable(UART2_BASE);  //Disable UART2 while configuration
 	
 	GPIOPinConfigure(GPIO_PD6_U2RX);
@@ -210,6 +216,9 @@ void UART2_Init(void){
 	UARTFIFOEnable(UART2_BASE);  //Enable the UART FIFO
 	UARTEnable(UART2_BASE);  //Enable UART2
 	UARTConfigGetExpClk(UART2_BASE, SysCtlClockGet(), &GSM_Baud_Rate_Read, &uart_config_read);  //Get the Baud Rate
+	UARTIntEnable(UART2_BASE,UART_INT_RX);
+	IntPrioritySet(INT_UART2,(UART2_INT_PRIO<<5));
+	IntEnable(INT_UART2);
 }
 
 void UART2_SendChar(uint8_t data){
@@ -333,4 +342,13 @@ char character;
   }
   return number;
 }
+
+void UART0_Handler(void) {
+	//TODO
+}
+
+void UART2_Handler(void) {
+	//TODO
+}
+
 //EOF

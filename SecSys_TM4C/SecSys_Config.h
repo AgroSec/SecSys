@@ -3,7 +3,7 @@
 #ifndef CONFIG
 #define CONFIG
 
-#define PIR_AVAILABLE		(1)
+#define PIR_AVAILABLE		(0)
 #define GSM_AVAILABLE		(1)
 #define HX711_AVAILABLE	(0)
 #define RFID_AVAILABLE	(0)
@@ -14,7 +14,7 @@
 #define ORANGE_CLAUDIU_1 0751538300
 #define ORANGE_CLAUDIU_2 0749256822
 
-#define GSM_SERIAL_DEBUG_ACTIVE (1)  //Set Serial Debug active or inactive (for serial monitor)
+#define SERIAL_DEBUG_ACTIVE (1)  //Set Serial Debug active or inactive (for serial monitor)
 
 #define Millis2Ticks(x) (((SysCtlClockGet()*(x))/1000) - 1)	
 //Returns the clock cycles required for the requested time in mili seconds
@@ -29,6 +29,8 @@
 #define SMS_NUMBER_END_INDEX  (18)
 #define SMS_DATA_START_INDEX  (48)
 #define SMS_PASSWORD (1234)  //mandatory content of every SMS command
+
+#define GSM_MESSAGE_SIZE (300)
 
 #endif
 //EOF

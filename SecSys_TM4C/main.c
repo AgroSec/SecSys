@@ -64,7 +64,7 @@ void Task0_PIRA(void){	//Edge triggered task
 			Count0_PIRA++;
 			Toggle0();
 			OS_Wait(&SerialMonitor);
-				PC_Display_Message("PIR A Triggered a number of: ",Count0_PIRA," times.");
+			PC_Display_Message("PIR A Triggered a number of: ",Count0_PIRA," times.");
 			OS_Signal(&SerialMonitor);
 			PIR_A_Trigger_Nr++;	
 			if(PIR_A_Trigger_Nr == 1) OS_Signal(&Task7Sync); //1st trigger in PIR process timeperiod
