@@ -6,6 +6,7 @@
 /*-------------------Type Includes-------------------*/
 #include "stdbool.h"
 #include "stdint.h"
+#include <math.h>
 /*-------------------HW define Includes--------------*/
 
 /*-------------------Driver Includes-----------------*/
@@ -23,6 +24,7 @@
 #include "pc_display.h"
 /*-------------Global Variable Definitions------------*/
 extern int32_t GSMModule;
+extern uint32_t HX711_CalibVal;
 /*-------------Local Variable Definitions-------------*/
 
 /*-------------------Function Definitions-------------*/
@@ -37,6 +39,28 @@ void CYCL_50ms(void) {
 void CYCL_100ms(void) {
 	//Function calls that runs only every 100 ms
 	
+#if HX711_AVAILABLE
+	uint32_t currentRead = HX711_ReadCount();
+	int8_t check = HX711_Check(currentRead);
+	int32_t currentValue;
+	
+	if (check ==  1) 
+	{ // positive value, above sensitivity limit
+		PC_Display_Message("...............Tripped!!", 0, "");
+	}
+	if (check ==  -1) 
+	{ // negative value, above sensitivity limit
+		PC_Display_Message("...............Cut!!", 0, "");
+	}
+	if (check ==  0) 
+	{ // nil value, between upper and lower sensitivity limits
+		PC_Display_Message("...............All good.", 0, "");
+	}
+	
+	currentValue = (int32_t)(100.0*((int64_t)currentRead - (int64_t)HX711_CalibVal) / conversionFactor);
+	PC_Display_Message("", currentValue, "");
+	//GPIO_SetPin(PortE, 1<<3, 1<<3);		// set SLK pin to HIGH for powersave	
+#endif
 	
 }
 
@@ -47,11 +71,8 @@ void CYCL_500ms(void) {
 void CYCL_1000ms(void) {
 	static uint32_t counter = 0;
 	//Function calls that runs only every 1000 ms
-	PC_Display_Message("Second passed: ",counter," ");
-#if HX711_AVAILABLE
-	PC_Display_Message("Load cell read: ",ReadCount()," units");
-	GPIO_SetPin(PortE, 1<<3, 1<<3);		// set SLK pin to HIGH for powersave	
-#endif
+	PC_Display_Message("Second passed: ", counter, " ");
+
 	if(!counter%2) {
 		//Every 2 second code
 	}

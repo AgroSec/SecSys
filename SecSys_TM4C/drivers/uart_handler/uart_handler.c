@@ -44,13 +44,61 @@ void UART0_SendString(uint8_t *pt){
 }
 
 void UART0_SendUDecimal(uint32_t n){
-// This function uses recursion to convert decimal number
+// This function uses recursion to convert an unsigned decimal number
 //   of unspecified length as an ASCII string
 	if(n >= 10){
 		UART0_SendUDecimal(n/10);
 		n = n%10;
   }
   UART0_SendChar(n+'0'); /* n is between 0 and 9 */
+}
+
+void UART0_SendDecimal(int32_t n){
+// This function extends the functionality of UART0_SendUDecimal
+//   to convert a signed decimal number
+//   of unspecified length as an ASCII string
+	if (n < 0) 
+	{
+		UART0_SendChar('-');
+		UART0_SendUDecimal(-n);
+	}
+	else UART0_SendUDecimal(n);
+}
+
+void UART0_SendFloat2(int32_t n){
+// call this function with the float parameter cast to (int32_t) and multiplied by 100.
+// it will print the number with 2 decimal places.
+	if (n < 0) 
+	{
+		UART0_SendChar('-');
+		UART0_SendDecimal((-n)/100);
+		UART0_SendChar('.');
+		UART0_SendDecimal((-n)%100);
+	}
+	else 
+	{
+		UART0_SendDecimal(n/100);
+		UART0_SendChar('.');
+		UART0_SendDecimal(n%100);
+	}
+}
+
+void UART0_SendFloat3(int32_t n){
+// call this function with the float parameter cast to (int32_t) and multiplied by 1000.
+// it will print the number with 3 decimal places.
+	if (n < 0) 
+	{
+		UART0_SendChar('-');
+		UART0_SendUDecimal((-n)/1000);
+		UART0_SendChar('.');
+		UART0_SendUDecimal((-n)%1000);
+	}
+	else 
+	{
+		UART0_SendUDecimal(n/1000);
+		UART0_SendChar('.');
+		UART0_SendUDecimal(n%1000);
+	}
 }
 
 void UART0_SendUHex(uint32_t number){
@@ -238,6 +286,19 @@ void UART2_SendUDecimal(uint32_t n){
 		n = n%10;
   }
   UART2_SendChar(n+'0'); /* n is between 0 and 9 */
+}
+
+void UART2_SendDecimal(int32_t n){
+// This function extends the functionality of UART2_SendUDecimal
+//   to convert a signed decimal number
+//   of unspecified length as an ASCII string
+	if (n < 0) 
+	{
+		UART0_SendChar('-');
+		n*=(-1);
+		UART0_SendUDecimal(n);
+	}
+	else UART0_SendUDecimal(n);
 }
 
 void UART2_SendUHex(uint32_t number){
