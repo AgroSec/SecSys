@@ -22,6 +22,7 @@
 /*-----------------Application Includes---------------*/
 #include "GSM.h"
 #include "PIR.h"
+#include "pc_display.h"
 
 /*-------------Global Variable Definitions------------*/
 uint32_t Count0_PIRA;  // number of times Task0 loops
@@ -31,12 +32,17 @@ uint32_t Count3_Cyclic50ms;   // number of times Task3 loops
 uint32_t Count4_Cyclic100ms;  // number of times Task4 loops
 uint32_t Count5_Cyclic500ms;  // number of times Task5 loops
 uint32_t Count6_Cyclic1000ms; // number of times Task6 loops
-uint32_t Count7_Blank; // number of times Task7 loops
-uint32_t Count8_Blank; // number of times Task8 loops
+uint32_t Count7_PIRA_Process; // number of times Task7 loops
+uint32_t Count8_PIRB_Process; // number of times Task8 loops
 uint32_t CountIdle;    // number of times Idle_Task loops
 
+uint32_t PIR_A_Trigger_Nr = 0;
+uint32_t PIR_B_Trigger_Nr = 0;
+uint32_t PIR_A_Alarm_Nr = 0;
+uint32_t PIR_B_Alarm_Nr = 0;
+
 int32_t Task7Sync;
-//int32_t Task87Sync;
+int32_t Task8Sync;
 //fifo_t FifoA;
 int32_t SerialMonitor; //Semaphore to block serial monitor
 int32_t GSMModule; //Semaphore to block GSM module
@@ -53,24 +59,17 @@ void Task0_PIRA(void){	//Edge triggered task
   Count0_PIRA = 0;
   while(1){
 		OS_Wait(&SemPortC.pin6);  // signaled in ISR
-		//OS_Wait(&SemPortF.pin2);  // signaled in ISR
 		OS_Sleep(50); //sleep to debounce switch		
 		if(GPIOPinRead(GPIO_PORTC_BASE,GPIO_INT_PIN_6)) {   
-		//if(GPIOPinRead(GPIO_PORTF_BASE,GPIO_INT_PIN_2)) { 
 			Count0_PIRA++;
 			Toggle0();
 			OS_Wait(&SerialMonitor);
-			UART0_SendString("PIR A Triggered a number of: ");
-			UART0_SendUDecimal(Count0_PIRA);
-			UART0_SendString(" times.");
-			UART0_SendNewLine();
+			PC_Display_Message("PIR A Triggered a number of: ",Count0_PIRA," times.");
 			OS_Signal(&SerialMonitor);
-			OS_Wait(&GSMModule);
-			SendSMS(PIR_A);
-			OS_Signal(&GSMModule);
+			PIR_A_Trigger_Nr++;	
+			if(PIR_A_Trigger_Nr == 1) OS_Signal(&Task7Sync); //1st trigger in PIR process timeperiod
 		}
 		OS_EdgeTrigger_Restart(PortC,GPIO_PIN_6);
-		//OS_EdgeTrigger_Restart(PortF,GPIO_PIN_2);
 		//OS_Signal(&Task7Sync);
   }
 }
@@ -83,15 +82,10 @@ void Task1_PIRB(void){	//Edge triggered task
 			Count1_PIRB++;
 			Toggle1();
 			OS_Wait(&SerialMonitor);
-			UART0_SendString("PIR B Triggered a number of: ");
-			UART0_SendUDecimal(Count1_PIRB);
-			UART0_SendString(" times.");
-			UART0_SendNewLine();
+				PC_Display_Message("PIR B Triggered a number of: ",Count1_PIRB," times.");
 			OS_Signal(&SerialMonitor);
-			OS_Wait(&GSMModule);
-			SendSMS(PIR_B);
-			OS_Signal(&GSMModule);
-
+			PIR_B_Trigger_Nr++;
+			if(PIR_B_Trigger_Nr == 1) OS_Signal(&Task8Sync); //1st trigger in PIR process timeperiod
 		}
 		//OS_Signal(&Task7Sync);
 		OS_EdgeTrigger_Restart(PortC,GPIO_PIN_7);
@@ -146,26 +140,42 @@ void Task6_Cyclic1000ms(void){
 	}
 }
 
-void Task7_BlankTask(void){
-	Count7_Blank = 0;
+void Task7_ProcessPIRA(void){
+	Count7_PIRA_Process = 0;
 	while(1){
-		//OS_Wait(&Task7Sync);
-		OS_Sleep(5000);
-		Count7_Blank++;
-		Toggle0();
-		//OS_Signal(&GSMModule);
-		//OS_EdgeTrigger_Restart(PortC,GPIO_PIN_6);
-		//OS_EdgeTrigger_Restart(PortC,GPIO_PIN_7);
+		OS_Wait(&Task7Sync);  //Wait for first PIR trigger in timeframe
+		Toggle0();  //Process task starts
+		OS_Sleep(PIR_TRIGGERS_TIMEFRAME*1000);  //Sleep for PIR_TRIGGERS_TIMEFRAME seconds
+		Count7_PIRA_Process++;
+		if(PIR_A_Trigger_Nr >= PIR_TRIGGERS_TO_ALARM){  //Check if it's necessary to raise alarm
+			PIR_A_Alarm_Nr++;
+			OS_Wait(&GSMModule); 
+			SendSMS(PIR_A);
+			OS_Signal(&GSMModule); 
+			PC_Display_Message("PIR A Alarm raised: ",PIR_A_Alarm_Nr," times.");
+		}
+		PIR_A_Trigger_Nr = 0
+		Toggle0();  //Process task ends
 	}
 }
 
-void Task8_BlankTask(void){
-Count8_Blank = 0;
+void Task8_ProcessPIRB(void){
+Count8_PIRB_Process = 0;
 	while(1){
-		Count8_Blank++;
+		OS_Wait(&Task8Sync);
 		Toggle1();
-		OS_Sleep(60000*10);
-		SendSMS(Status);
+		OS_Sleep(PIR_TRIGGERS_TIMEFRAME*1000);  //Sleep for PIR_TRIGGERS_TIMEFRAME seconds
+		Count8_PIRB_Process++;
+		if(PIR_B_Trigger_Nr >= PIR_TRIGGERS_TO_ALARM){  //Check if it's necessary to raise alarm
+			PIR_B_Alarm_Nr++;
+			OS_Wait(&GSMModule);
+			SendSMS(PIR_B);
+			OS_Signal(&GSMModule); 
+			PC_Display_Message("PIR B Alarm raised: ",PIR_B_Alarm_Nr," times.");
+		}
+		PIR_B_Trigger_Nr = 0
+		Toggle1();
+
 	}
 }
 
@@ -215,8 +225,8 @@ int main(void){
 								&Task4_Cyclic100ms, TASK4_PRIO,
 								&Task5_Cyclic500ms, TASK5_PRIO,
 								&Task6_Cyclic1000ms,TASK6_PRIO,
-								&Task7_BlankTask,BLANK_TASK_PRIO,
-                &Task8_BlankTask,BLANK_TASK_PRIO,
+								&Task7_ProcessPIRA,BLANK_TASK_PRIO,
+                &Task8_ProcessPIRB,BLANK_TASK_PRIO,
 	              &Idle_Task,IDLE_TASK_PRIO);	//Idle task is lowest priority
 	//7
 	//OS_FIFO_Init(&FifoA);

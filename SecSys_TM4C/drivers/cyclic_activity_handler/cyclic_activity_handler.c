@@ -19,7 +19,11 @@
 #include "uart_handler.h"
 /*-----------------Application Includes---------------*/
 #include "HX711.h"
+#include "PIR.h"
+#include "GSM.h"
+#include "pc_display.h"
 /*-------------Global Variable Definitions------------*/
+extern int32_t GSMModule;
 extern uint32_t HX711_CalibVal;
 /*-------------Local Variable Definitions-------------*/
 
@@ -42,23 +46,19 @@ void CYCL_100ms(void) {
 	
 	if (check ==  1) 
 	{ // positive value, above sensitivity limit
-		UART0_SendString("...............Tripped!!");
-		UART0_SendNewLine();
+		PC_Display_Message("...............Tripped!!", 0, "");
 	}
 	if (check ==  -1) 
 	{ // negative value, above sensitivity limit
-		UART0_SendString("...............Cut!!");
-		UART0_SendNewLine();
+		PC_Display_Message("...............Cut!!", 0, "");
 	}
 	if (check ==  0) 
 	{ // nil value, between upper and lower sensitivity limits
-		UART0_SendString("...............All good.");
-		UART0_SendNewLine();
+		PC_Display_Message("...............All good.", 0, "");
 	}
 	
 	currentValue = (int32_t)(100.0*((int64_t)currentRead - (int64_t)HX711_CalibVal) / conversionFactor);
-	UART0_SendFloat2(currentValue);
-	UART0_SendNewLine();
+	PC_Display_Message("", currentValue, "");
 	//GPIO_SetPin(PortE, 1<<3, 1<<3);		// set SLK pin to HIGH for powersave	
 #endif
 	
@@ -69,15 +69,27 @@ void CYCL_500ms(void) {
 }
 
 void CYCL_1000ms(void) {
+	static uint32_t counter = 0;
 	//Function calls that runs only every 1000 ms
-	UART0_SendString("Calibration value is.........................");
-	UART0_SendUDecimal(HX711_CalibVal);
-	UART0_SendNewLine();
-	
-	UART0_SendString("1 second passed...");
-	UART0_SendNewLine();
+	PC_Display_Message("Second passed: ", counter, " ");
 
+	if(!counter%2) {
+		//Every 2 second code
+	}
+	if(!counter%3) {
+		//Every 3 second code
+	}
+#if PIR_AVAILABLE
+	if(!counter%PIR_TRIGGERS_TIMEFRAME) {  //this case is 5 seconds
+		//Every PIR_TRIGGERS_TIMEFRAME nr of second code
+		Process_PIR();
+	}
+#endif
+	if(!counter%600){  //every 10 minutes
+		OS_Wait(&GSMModule);
+		SendSMS(Status);
+		OS_Signal(&GSMModule);
+	}
+	counter++;
 }
-
 //EOF
-

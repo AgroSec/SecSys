@@ -16,6 +16,7 @@
 #include "GSM.h"
 #include "PIR.h"
 #include "HX711.h"
+#include "pc_display.h"
 /*-------------------Service Includes-----------------*/
 #include "gpio_handler.h"
 #include "uart_handler.h"
@@ -27,8 +28,7 @@ extern uint32_t HX711_CalibVal;
 void InitDrivers(void) {
 	//Function calls to init drivers
 	UART0_Init();
-	UART0_SendString("System startup in progress...");
-	UART0_SendNewLine();
+	PC_Display_Message("System startup in progress...", 0, "");
 	
 #if GSM_AVAILABLE
 	UART2_Init();
@@ -39,18 +39,13 @@ void InitDrivers(void) {
 	GPIO_InitPortOutput(PortE, GPIO_PIN_3);	// output init for port PE3 - SLK_HX711
 	GPIO_InitPortOutput(PortF, GPIO_PIN_2);
 	
-	UART0_SendString("Calibrating HX711...");
-	UART0_SendNewLine();
+	PC_Display_Message("Calibrating HX711...", 0, "");
 	
 	HX711_CalibVal = HX711_Calibrate();
 	
-	UART0_SendString("HX711 Calibration value is : ");
-	UART0_SendUDecimal(HX711_CalibVal);
-	UART0_SendNewLine();
+	PC_Display_Message("HX711 Calibration value is : ", HX711_CalibVal, "");
 #endif
-	
-	UART0_SendString("Driver init done...");
-	UART0_SendNewLine();
+	PC_Display_Message("Driver init done...",0," ");
 }
 
 void InitApplications(void) {
@@ -62,8 +57,7 @@ void InitApplications(void) {
 #if PIR_AVAILABLE
 	Init_PIR();
 #endif
-	
-	UART0_SendString("Applications init done...");
-	UART0_SendNewLine();
+	PC_Display_Message("Applications init done...",0," ");
+	SendSMS(System_Ready);
 }
 //EOF

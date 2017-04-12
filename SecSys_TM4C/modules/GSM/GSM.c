@@ -4,6 +4,9 @@
 #include "SecSys_Config.h"
 /*------Export interface---Self header Includes------*/
 #include "GSM.h"
+/*-----------------Application Includes---------------*/
+#include "pc_display.h"
+
 /*-------------------Service Includes-----------------*/
 #include "gpio_handler.h"
 #include "uart_handler.h"
@@ -11,8 +14,10 @@
 /*-------------Global Variable Definitions------------*/
 extern uint32_t Count0_PIRA;  // number of times Task0 loops
 extern uint32_t Count1_PIRB;  // number of times Task1 loops
-extern uint32_t Count7_Blank; //increments every second
 extern uint32_t Count8_Blank; //increments every minute
+extern uint32_t PIR_A_Alarm_Nr;
+extern uint32_t PIR_B_Alarm_Nr;
+uint8_t GSM_Message[GSM_MESSAGE_SIZE] = {};
 /*-------------Local Variable Definitions-------------*/
 
 /*-------------------Function Definitions-------------*/
@@ -24,6 +29,13 @@ void PowerOnGSM(void){
 //  delay(7000);
 }
 
+void ResetMessage(void){
+	uint8_t i = 0;
+	for(i=0;i<GSM_MESSAGE_SIZE;i++){
+		GSM_Message[i]=0x00;
+	}
+}
+
 void SendSMS(SMS_Message_en message){
 	UART2_SendString("AT+CMGS=\"0751538300\"");  //set the mobile number to send the SMS
 	//UART2_SendNewLine();
@@ -32,14 +44,18 @@ void SendSMS(SMS_Message_en message){
 	SysCtlDelay(Millis2Ticks(100)); //Interrupts are NOT disabled and OS is NOT stoped during delay!
   switch (message) {
 		case PIR_A:
-			UART2_SendString("PIR A Triggered ");  //The SMS text you want to send
+			UART2_SendString("PIR A Trigger Nr: ");  //The SMS text you want to send
 			UART2_SendUDecimal(Count0_PIRA);
-			UART2_SendString(" times!!!");
+			UART2_SendNewLine();
+			UART2_SendString("PIR A Alarm Nr: ");
+			UART2_SendUDecimal(PIR_A_Alarm_Nr);
 			break;
 		case PIR_B:
-			UART2_SendString("PIR B Triggered ");
+			UART2_SendString("PIR B Trigger Nr: ");
 			UART2_SendUDecimal(Count1_PIRB);
-			UART2_SendString(" times!!!");
+			UART2_SendNewLine();
+			UART2_SendString("PIR B Alarm Nr: ");
+			UART2_SendUDecimal(PIR_B_Alarm_Nr);
 			break;
 		case Wire_1_Pull:
 			UART2_SendString("Wire 1 Pulled");
@@ -63,8 +79,8 @@ void SendSMS(SMS_Message_en message){
 			//Send security system status
 			UART2_SendString("Status:");
 			UART2_SendNewLine();
-			UART2_SendUDecimal(Count8_Blank*10);
-			UART2_SendString(" minutes");
+			UART2_SendUDecimal(0);
+			UART2_SendString("TODO minutes");
 			UART2_SendNewLine();
 			UART2_SendString("PIR A ");
 			UART2_SendUDecimal(Count0_PIRA);
@@ -78,6 +94,10 @@ void SendSMS(SMS_Message_en message){
 			//Wire Guard State
 			//PIR State
 			break;
+		case System_Ready:
+			//System startup delay completed
+			UART2_SendString("System setup ready...");
+			break;
 		case Wrong_Command:
 			//Wrong SMS command received
 			UART2_SendString("Wrong Command. (1)Deactivate Security. (2)Deactivate Alarm. (3)Trigger Alarm. (4)Get Status");
@@ -86,70 +106,59 @@ void SendSMS(SMS_Message_en message){
 			UART2_SendString("Something misterious happened");
 	}
 	UART2_SendChar(SUB);  //ASCII code of CTRL+Z indicating end of message
-  //SysCtlDelay(Millis2Ticks(5000)); //Interrupts are NOT disabled and OS is NOT stoped during delay!
-	UART0_SendNewLine();
-	UART0_SendString("SMS sent with message ID: ");
-	UART0_SendChar((uint8_t)message+'0');
-	UART0_SendNewLine();	
-	
+	PC_Display_Message("SMS sent with message ID: ",(uint8_t)message," ->");
 }
 
 
 
 unsigned char ReceiveSMS(void){
-//  unsigned char message[] = {};
-//  unsigned char message_byte = 0;
-//  unsigned char message_length = 0;
-//  unsigned char i = 0;
-//  unsigned char j = 0;
-//  unsigned char sender_number[] = {};
-//  unsigned char SMS_Received = 0;
-//  Serial.write(".");
-////  while((GSM_Serial.available())&&(GSM_Serial.read() != '\n')){  //While there is data on serial and it's not the end of the string
-////    message_byte = GSM_Serial.read();
-////    message[i] = message_byte;
-////    i++;
-////      //Serial.write(message[i]);
-////  }
-//  
-//  while((GSM_Serial.available())&&(GSM_Serial.read()=='+')) {
-//    delay(1);
-//    if(GSM_Serial.read()=='C'){
-//      delay(1);
-//      if(GSM_Serial.read()=='M'){
-//        delay(1);
-//        if(GSM_Serial.read()=='T'){
-//          SMS_Received = 1;
-//        }
-//      }
-//    }
+  //uint8_t message[] = {};
+  //uint8_t message_byte = 0;
+  uint8_t message_length = 0;
+  uint8_t i = 0;
+  uint8_t j = 0;
+  unsigned char sender_number[] = {};
+  unsigned char SMS_Received = 0;
+  Serial.write(".");
+//  while((GSM_Serial.available())&&(GSM_Serial.read() != '\n')){  //While there is data on serial and it's not the end of the string
+//    message_byte = GSM_Serial.read();
+//    message[i] = message_byte;
+//    i++;
+//      //Serial.write(message[i]);
 //  }
-//  if(SMS_Received == 1){
-//    while(GSM_Serial.read() != '\n'){
-//      message[i] = GSM_Serial.read();
-//      i++;
-//    }
-//    Serial.write("Message received");
-//    Serial.println(); 
-//    message_length = i;
-//    Serial.write("Message length");
-//    Serial.write(message_length);
-//    Serial.println();
-//    Serial.write("The message is:");
-//    for(i=0;i<message_length;i++){
-//      Serial.write(message[i]);
-//    }
-//  }
-//  
-////  if((message[0]=='+')&&(message[1]=='C')&&(message[2]=='M')&&(message[3]=='T')) { //serial message format confirms receival of SMS
+  
+  while((GSM_Serial.available())&&(UART2_GetChar()=='+')) {
+    //delay(1);
+    if(UART2_GetChar()=='C'){
+      //delay(1);
+      if(UART2_GetChar()=='M'){
+        //delay(1);
+        if(UART2_GetChar()=='T'){
+          SMS_Received = 1;
+        }
+      }
+    }
+  }
+  if(SMS_Received == 1){
+    while(UART2_GetChar() != '\n'){
+      GSM_Message[i] = UART2_GetChar();
+      i++;
+    }
+    message_length = i;
+		PC_Display_Message("Message received width", message_length," character length.");
+		PC_Display_Message("The message is", 0,GSM_Message);
+		
+  }
+  
+//  if((message[0]=='+')&&(message[1]=='C')&&(message[2]=='M')&&(message[3]=='T')) { //serial message format confirms receival of SMS
 
-////    for(i = SMS_NUMBER_START_INDEX; i <= SMS_NUMBER_END_INDEX; i++){
-////      sender_number[j] = message[i];
-////      j++;
-////    }
-//    //Serial.write("The sender number is");
-//    //Serial.write(sender_number[1]);
-//  //}
+//    for(i = SMS_NUMBER_START_INDEX; i <= SMS_NUMBER_END_INDEX; i++){
+//      sender_number[j] = message[i];
+//      j++;
+//    }
+    //Serial.write("The sender number is");
+    //Serial.write(sender_number[1]);
+  //}
 	return 0;
 }
 
