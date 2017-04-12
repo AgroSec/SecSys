@@ -71,7 +71,7 @@ void CYCL_500ms(void) {
 void CYCL_1000ms(void) {
 	static uint32_t counter = 0;
 	//Function calls that runs only every 1000 ms
-	PC_Display_Message("Second passed: ", counter, " ");
+	PC_Display_Message("Seconds passed: ", counter, " ");
 
 	if(!counter%2) {
 		//Every 2 second code
