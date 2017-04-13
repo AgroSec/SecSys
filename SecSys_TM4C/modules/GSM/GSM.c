@@ -12,12 +12,12 @@
 #include "uart_handler.h"
 
 /*-------------Global Variable Definitions------------*/
+uint8_t GSM_Message[GSM_MESSAGE_SIZE] = "";
 extern uint32_t Count0_PIRA;  // number of times Task0 loops
 extern uint32_t Count1_PIRB;  // number of times Task1 loops
 extern uint32_t Count8_Blank; //increments every minute
 extern uint32_t PIR_A_Alarm_Nr;
 extern uint32_t PIR_B_Alarm_Nr;
-uint8_t GSM_Message[GSM_MESSAGE_SIZE] = {};
 /*-------------Local Variable Definitions-------------*/
 
 /*-------------------Function Definitions-------------*/
@@ -30,7 +30,7 @@ void PowerOnGSM(void){
 }
 
 void ResetMessage(void){
-	uint8_t i = 0;
+	uint16_t i = 0;
 	for(i=0;i<GSM_MESSAGE_SIZE;i++){
 		GSM_Message[i]=0x00;
 	}
@@ -112,33 +112,25 @@ void SendSMS(SMS_Message_en message){
 
 
 unsigned char ReceiveSMS(void){
-  //uint8_t message[] = {};
-  //uint8_t message_byte = 0;
-  uint8_t message_length = 0;
-  uint8_t i = 0;
-  uint8_t j = 0;
-  unsigned char sender_number[] = {};
+  uint8_t message_data[160] = "";  //GSM message data, without header
+	uint8_t message_length = 0;
+  uint16_t i = 0;
+  uint16_t j = 0;
   unsigned char SMS_Received = 0;
-  Serial.write(".");
-//  while((GSM_Serial.available())&&(GSM_Serial.read() != '\n')){  //While there is data on serial and it's not the end of the string
-//    message_byte = GSM_Serial.read();
-//    message[i] = message_byte;
-//    i++;
-//      //Serial.write(message[i]);
-//  }
   
-  while((GSM_Serial.available())&&(UART2_GetChar()=='+')) {
+  if(UART2_GetChar()=='+') {  //1st condition
     //delay(1);
-    if(UART2_GetChar()=='C'){
+    if(UART2_GetChar()=='C'){  //2nd condition
       //delay(1);
-      if(UART2_GetChar()=='M'){
+      if(UART2_GetChar()=='M'){  //3rd condition
         //delay(1);
-        if(UART2_GetChar()=='T'){
-          SMS_Received = 1;
+        if(UART2_GetChar()=='T'){  //4th condition
+          SMS_Received = 1;  //Serial data confirms receival of SMS message
         }
       }
     }
   }
+	
   if(SMS_Received == 1){
     while(UART2_GetChar() != '\n'){
       GSM_Message[i] = UART2_GetChar();
@@ -147,22 +139,32 @@ unsigned char ReceiveSMS(void){
     message_length = i;
 		PC_Display_Message("Message received width", message_length," character length.");
 		PC_Display_Message("The message is", 0,GSM_Message);
-		
-  }
-  
-//  if((message[0]=='+')&&(message[1]=='C')&&(message[2]=='M')&&(message[3]=='T')) { //serial message format confirms receival of SMS
-
-//    for(i = SMS_NUMBER_START_INDEX; i <= SMS_NUMBER_END_INDEX; i++){
-//      sender_number[j] = message[i];
-//      j++;
-//    }
-    //Serial.write("The sender number is");
-    //Serial.write(sender_number[1]);
-  //}
-	return 0;
+	
+		i=0;
+		while(GSM_Message[i]!=CR) {  //Serch for end of message header
+			i++;
+		}
+		i++;
+		if(GSM_Message[i]==LF){  //End of message header
+			i++;
+			j=0;
+			while(GSM_Message[i] != '\n'){
+				message_data[j] = GSM_Message[i];  //Copy message data
+				j++;
+				i++;
+			}
+			PC_Display_Message("The SMS data length is: ",j," characters");
+			PC_Display_Message("The SMS data is: ",0,message_data);
+		}
+		ReadSMS(message_data);  //send message data for reading / parsing
+		return 1;  //Message received
+	}
+	else {
+		return 0;  //No message received
+	}
 }
 
-void ReadSMS(void){
+void ReadSMS(uint8_t *message_data){
 //  unsigned long currentMillis = millis();
 //  static unsigned long previousMillis = 0;
 //  unsigned char reveive_message = 0;
