@@ -1,9 +1,10 @@
-/*-------------------Driver Includes-----------------*/
-#include "driverlib/sysctl.h"
 /*-------------------Configuration Includes-----------*/
 #include "SecSys_Config.h"
 /*------Export interface---Self header Includes------*/
 #include "GSM.h"
+/*-------------------Driver Includes-----------------*/
+#include "driverlib/sysctl.h"
+#include "driverlib/uart.h"
 /*-----------------Application Includes---------------*/
 #include "pc_display.h"
 
@@ -21,19 +22,37 @@ extern uint32_t PIR_B_Alarm_Nr;
 /*-------------Local Variable Definitions-------------*/
 
 /*-------------------Function Definitions-------------*/
+void ResetMessage(void){
+	uint16_t i = 0;
+	for(i=0;i<GSM_MESSAGE_SIZE;i++){
+		GSM_Message[i]=0x00;
+	}
+}
+
 void PowerOnGSM(void){
 //  TODO
 //  digitalWrite(GSM_Power_Pin, HIGH);
 //  delay(1000);
 //  digitalWrite(GSM_Power_Pin, LOW);
 //  delay(7000);
-}
 
-void ResetMessage(void){
-	uint16_t i = 0;
-	for(i=0;i<GSM_MESSAGE_SIZE;i++){
-		GSM_Message[i]=0x00;
-	}
+	UART2_SendString("AT+CMGF=1");  //message format text
+	UART2_SendChar(CR);
+	SysCtlDelay(Millis2Ticks(100)); //Interrupts are NOT disabled and OS is NOT stoped during delay!	
+	
+	UART2_SendString("AT+CMGD=1,4");  //delete all messages
+	UART2_SendChar(CR);
+	SysCtlDelay(Millis2Ticks(100)); //Interrupts are NOT disabled and OS is NOT stoped during delay!
+	
+	UART2_SendString("AT+CSDH=1");  //show complete message header
+	UART2_SendChar(CR);
+	SysCtlDelay(Millis2Ticks(100)); //Interrupts are NOT disabled and OS is NOT stoped during delay!
+	
+	UART2_SendString("AT+CNMI=2,2,0,0,0");  //set message indication mode. details bellow
+	UART2_SendChar(CR);
+	SysCtlDelay(Millis2Ticks(100));  //Interrupts are NOT disabled and OS is NOT stoped during delay!
+	
+	ResetMessage();
 }
 
 void SendSMS(SMS_Message_en message){
@@ -44,18 +63,22 @@ void SendSMS(SMS_Message_en message){
 	SysCtlDelay(Millis2Ticks(100)); //Interrupts are NOT disabled and OS is NOT stoped during delay!
   switch (message) {
 		case PIR_A:
+			#if PIR_AVAILABLE
 			UART2_SendString("PIR A Trigger Nr: ");  //The SMS text you want to send
 			UART2_SendUDecimal(Count0_PIRA);
 			UART2_SendNewLine();
 			UART2_SendString("PIR A Alarm Nr: ");
 			UART2_SendUDecimal(PIR_A_Alarm_Nr);
+			#endif
 			break;
 		case PIR_B:
+			#if PIR_AVAILABLE
 			UART2_SendString("PIR B Trigger Nr: ");
 			UART2_SendUDecimal(Count1_PIRB);
 			UART2_SendNewLine();
 			UART2_SendString("PIR B Alarm Nr: ");
 			UART2_SendUDecimal(PIR_B_Alarm_Nr);
+			#endif
 			break;
 		case Wire_1_Pull:
 			UART2_SendString("Wire 1 Pulled");
@@ -77,6 +100,7 @@ void SendSMS(SMS_Message_en message){
 			break;
 		case Status: 
 			//Send security system status
+			#if PIR_AVAILABLE
 			UART2_SendString("Status:");
 			UART2_SendNewLine();
 			UART2_SendUDecimal(0);
@@ -88,6 +112,7 @@ void SendSMS(SMS_Message_en message){
 			UART2_SendString("PIR B ");
 			UART2_SendUDecimal(Count1_PIRB);
 			UART2_SendNewLine();
+			#endif
 			//TODO
 			//Active_System
 			//Active_Alarm
@@ -109,7 +134,54 @@ void SendSMS(SMS_Message_en message){
 	PC_Display_Message("SMS sent with message ID: ",(uint8_t)message," ->");
 }
 
+uint8_t CheckForSMS(void){
+	uint8_t result = 0;
+	
+	while(UARTCharsAvail(UART2_BASE)){
+		if(UART2_GetChar()!='+') {
+			SysCtlDelay(Millis2Ticks(1));
+			if(UART2_GetChar()=='C'){  //2nd condition
+				//delay(1);
+				SysCtlDelay(Millis2Ticks(1));
+				if(UART2_GetChar()=='M'){  //3rd condition
+					//delay(1);
+					SysCtlDelay(Millis2Ticks(1));
+					if(UART2_GetChar()=='T'){  //4th condition
+						SysCtlDelay(Millis2Ticks(1));
+						//SMS_Received = 1;  //Serial data confirms receival of SMS message
+						result = ReceiveSMS();
+					}
+				}
+			}
+		}
+	}
+	return result;
+}
 
+//	result = (uint8_t)UARTCharGetNonBlocking(UART2_BASE);
+	
+/*	
+  while(UART2_GetChar()!='+'){ //1st condition
+		//Wait until '+' is received
+	}
+  //if(UART2_GetChar()=='+') {  //1st condition
+    //delay(1);
+	SysCtlDelay(Millis2Ticks(100));
+	if(UART2_GetChar()=='C'){  //2nd condition
+		//delay(1);
+		SysCtlDelay(Millis2Ticks(100));
+		if(UART2_GetChar()=='M'){  //3rd condition
+			//delay(1);
+			SysCtlDelay(Millis2Ticks(100));
+			if(UART2_GetChar()=='T'){  //4th condition
+				SysCtlDelay(Millis2Ticks(100));
+				//SMS_Received = 1;  //Serial data confirms receival of SMS message
+				result = ReceiveSMS();
+			}
+		}
+	}
+	return result;
+}*/
 
 unsigned char ReceiveSMS(void){
   uint8_t message_data[160] = "";  //GSM message data, without header
@@ -117,20 +189,26 @@ unsigned char ReceiveSMS(void){
   uint16_t i = 0;
   uint16_t j = 0;
   unsigned char SMS_Received = 0;
-  
+	/*
   if(UART2_GetChar()=='+') {  //1st condition
     //delay(1);
+		SysCtlDelay(Millis2Ticks(100));
     if(UART2_GetChar()=='C'){  //2nd condition
       //delay(1);
+			SysCtlDelay(Millis2Ticks(100));
       if(UART2_GetChar()=='M'){  //3rd condition
         //delay(1);
+				SysCtlDelay(Millis2Ticks(100));
         if(UART2_GetChar()=='T'){  //4th condition
+					SysCtlDelay(Millis2Ticks(100));
           SMS_Received = 1;  //Serial data confirms receival of SMS message
         }
       }
     }
   }
+	*/
 	
+	SMS_Received = 1;  //Temporary TODO
   if(SMS_Received == 1){
     while(UART2_GetChar() != '\n'){
       GSM_Message[i] = UART2_GetChar();

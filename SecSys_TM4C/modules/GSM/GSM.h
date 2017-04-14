@@ -9,6 +9,7 @@
 void PowerOnGSM(void);
 void SendSMS(SMS_Message_en message);
 uint8_t ReceiveSMS(void);
+uint8_t CheckForSMS(void);
 void ReadSMS(uint8_t *message_data);
 #endif
 //EOF

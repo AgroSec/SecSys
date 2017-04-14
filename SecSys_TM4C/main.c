@@ -46,6 +46,7 @@ int32_t Task8Sync;
 //fifo_t FifoA;
 int32_t SerialMonitor; //Semaphore to block serial monitor
 int32_t GSMModule; //Semaphore to block GSM module
+int32_t SMSReceived; //Semaphore to block GSM module
 
 extern ptcbType PerTask[NUMPERIODIC];
 extern PortSema_t SemPortC;
@@ -179,10 +180,25 @@ Count8_PIRB_Process = 0;
 	}
 }
 
+void Task9_BlankTask(void){
+	//unsigned short message = 0;
+	//static uint32_t message_number = 0;
+	while(1){
+		OS_Sleep(1000);
+		/*
+		OS_Wait(&SMSReceived);
+		PC_Display_Message("Message nr: ",message_number," received.");
+		message = ReceiveSMS();
+		PC_Display_Message("Message nr: ",message_number," processed.");
+		*/
+	}
+}
+
 void Idle_Task(void){
   CountIdle = 0;
   while(1){
     CountIdle++;
+		//CountIdle = ReceiveSMS();  //When system is in IDLE just wait for new SMS
   }
 }
 
@@ -199,6 +215,7 @@ int main(void){
 	
 #if GSM_AVAILABLE	
 	OS_InitSemaphore(&GSMModule,1);
+	OS_InitSemaphore(&SMSReceived,0);
 #endif
 	
 	//4	
@@ -227,6 +244,7 @@ int main(void){
 								&Task6_Cyclic1000ms,TASK6_PRIO,
 								&Task7_ProcessPIRA,BLANK_TASK_PRIO,
                 &Task8_ProcessPIRB,BLANK_TASK_PRIO,
+								&Task9_BlankTask ,BLANK_TASK_PRIO,
 	              &Idle_Task,IDLE_TASK_PRIO);	//Idle task is lowest priority
 	//7
 	//OS_FIFO_Init(&FifoA);

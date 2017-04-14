@@ -4,7 +4,7 @@ Aproximat message size 300 byte => uint8_t message[300];
 AT+CMGF=1			message format text
 AT+CMGD=1,4			delete all messages
 AT+CMGR=1,0			read message with index 1
-AT+CNMI=2,2,0,0,0	set message indication mode. details bellow
+AT+CNMI=2,2,0,0,0		set message indication mode. details bellow
 
 	+CMT: <oa>,[<alpha>],<scts>[,<tooa>,<fo>, <pid>,<dcs>,<sca>,<tosca>,<length>]<CR><LF><data>
 	+CMT: "+40758438903","","17/04/12,23:05:43+12",145,32,0,0,"+40744946000",145,31<CR><LF>Test Sms using gsm modul sim900
@@ -22,3 +22,10 @@ AT+CNMI=2,2,0,0,0	set message indication mode. details bellow
 	
 AT+CPMS?			message memory report
 AT+CSDH=1			show complete message header
+
+------------------------------------------------------------------------------------------------------------------------------------------
+String copy =>		char *strncpy(char *dest, const char *src, size_t n)		https://www.tutorialspoint.com/c_standard_library/c_function_strncpy.htm
+String catenate =>	char *strcat(char *dest, const char *src)			https://www.tutorialspoint.com/c_standard_library/c_function_strcat.htm
+String search =>	char *strstr(const char *haystack, const char *needle)		https://www.tutorialspoint.com/c_standard_library/c_function_strstr.htm
+String break token =>	char *strtok(char *str, const char *delim)			https://www.tutorialspoint.com/c_standard_library/c_function_strtok.htm
+String compare =>	int strncmp(const char *str1, const char *str2, size_t n)	https://www.tutorialspoint.com/c_standard_library/c_function_strncmp.htm

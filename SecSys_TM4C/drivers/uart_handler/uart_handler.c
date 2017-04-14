@@ -1,18 +1,21 @@
 /*------------------Project Includes-----------------*/
 #include "uart_handler.h"
 #include "os_config.h"
+#include "os_core.h"
 /*-------------------Driver Includes-----------------*/
 #include "driverlib/sysctl.h"
 #include "driverlib/uart.h"
 #include "driverlib/pin_map.h"
 #include "driverlib/gpio.h"
-//#include "driverlib/interrupt.h"
+#include "driverlib/interrupt.h"
 /*-------------------HW define Includes--------------*/
 #include "inc/hw_memmap.h"
 #include "inc/hw_ints.h"
 
+extern int32_t SMSReceived;
 uint32_t Baud_Rate_Read = 0;
 uint32_t GSM_Baud_Rate_Read = 0;
+
 
 //UART0 functions
 void UART0_Init(void){
@@ -261,6 +264,8 @@ void UART2_Init(void){
 	UARTConfigSetExpClk(UART2_BASE, SysCtlClockGet(), GSM_BAUD_RATE, (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE |UART_CONFIG_PAR_NONE));  
 	UARTParityModeSet(UART2_BASE, UART_CONFIG_PAR_NONE);
 	
+	//UARTFIFOLevelSet(UART2_BASE,UART_FIFO_TX2_8,UART_FIFO_RX2_8);
+	
 	UARTFIFOEnable(UART2_BASE);  //Enable the UART FIFO
 	UARTEnable(UART2_BASE);  //Enable UART2
 	UARTConfigGetExpClk(UART2_BASE, SysCtlClockGet(), &GSM_Baud_Rate_Read, &uart_config_read);  //Get the Baud Rate
@@ -322,7 +327,13 @@ void UART2_SendNewLine(void){
 }
 
 uint8_t UART2_GetChar(void){
-	return (uint8_t)UARTCharGet(UART2_BASE);
+	//return (uint8_t)UARTCharGet(UART2_BASE);
+	
+	if(UARTCharsAvail(UART2_BASE)) {
+		return (uint8_t)UARTCharGetNonBlocking(UART2_BASE);
+	}
+	return 0;
+	
 }
 
 void UART2_GetString(uint8_t *bufPt, uint16_t max) {
@@ -404,12 +415,17 @@ char character;
   return number;
 }
 
+/*
 void UART0_Handler(void) {
 	//TODO
 }
 
 void UART2_Handler(void) {
-	//TODO
+	if(UARTIntStatus(UART2_BASE, true) == UART_INT_RX) {
+		UARTIntClear(UART2_BASE, UART_INT_RX);
+		OS_Signal(&SMSReceived);
+	}
 }
+*/
 
 //EOF

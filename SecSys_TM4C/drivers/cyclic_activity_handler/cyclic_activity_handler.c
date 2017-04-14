@@ -30,6 +30,7 @@ extern uint32_t HX711_CalibVal;
 /*-------------------Function Definitions-------------*/
 void CYCL_10ms(void) {
 	//Function calls that runs only every 10 ms
+	CheckForSMS();
 }
 
 void CYCL_50ms(void) {
@@ -69,7 +70,7 @@ void CYCL_500ms(void) {
 }
 
 void CYCL_1000ms(void) {
-	static uint32_t counter = 0;
+	static uint32_t counter = 1;
 	//Function calls that runs only every 1000 ms
 	PC_Display_Message("Seconds passed: ", counter, " ");
 
