@@ -53,51 +53,20 @@ void UART0_SendUDecimal(uint32_t n){
   UART0_SendChar(n+'0'); /* n is between 0 and 9 */
 }
 
-void UART0_SendDecimal(int32_t n){
-// This function extends the functionality of UART0_SendUDecimal
-//   to convert a signed decimal number
-//   of unspecified length as an ASCII string
+void UART0_SendNumeric(int32_t n, uint8_t digits)
+{	// function used to send numbers to uart0;
+	// accepts signed integers and also floating 
+	// point (by using and integer multiplied by 10^digits)
 	if (n < 0) 
-	{
 		UART0_SendChar('-');
-		UART0_SendUDecimal(-n);
-	}
-	else UART0_SendUDecimal(n);
-}
-
-void UART0_SendFloat2(int32_t n){
-// call this function with the float parameter cast to (int32_t) and multiplied by 100.
-// it will print the number with 2 decimal places.
-	if (n < 0) 
-	{
-		UART0_SendChar('-');
-		UART0_SendDecimal((-n)/100);
-		UART0_SendChar('.');
-		UART0_SendDecimal((-n)%100);
-	}
+	
+	if (digits <= 0)
+		UART0_SendUDecimal(n);
 	else 
 	{
-		UART0_SendDecimal(n/100);
+		UART0_SendDecimal(n / digits);
 		UART0_SendChar('.');
-		UART0_SendDecimal(n%100);
-	}
-}
-
-void UART0_SendFloat3(int32_t n){
-// call this function with the float parameter cast to (int32_t) and multiplied by 1000.
-// it will print the number with 3 decimal places.
-	if (n < 0) 
-	{
-		UART0_SendChar('-');
-		UART0_SendUDecimal((-n)/1000);
-		UART0_SendChar('.');
-		UART0_SendUDecimal((-n)%1000);
-	}
-	else 
-	{
-		UART0_SendUDecimal(n/1000);
-		UART0_SendChar('.');
-		UART0_SendUDecimal(n%1000);
+		UART0_SendDecimal(n % digits);		
 	}
 }
 

@@ -46,21 +46,21 @@ void CYCL_100ms(void) {
 	
 	if (check ==  1) 
 	{ // positive value, above sensitivity limit
-		PC_Display_Message("...............Tripped!!", 0, "");
+		PC_Display_Message_FP("...............Tripped!!", -32767, 0, "");
 	}
 	if (check ==  -1) 
 	{ // negative value, above sensitivity limit
-		PC_Display_Message("...............Cut!!", 0, "");
+		PC_Display_Message("...............Cut!!", -32767, 0, "");
 	}
 	if (check ==  0) 
 	{ // nil value, between upper and lower sensitivity limits
-		PC_Display_Message("...............All good.", 0, "");
+		PC_Display_Message("...............All good.", -32767, 0, "");
 	}
 	
 	currentValue = (int32_t)(100.0*((int64_t)currentRead - (int64_t)HX711_CalibVal) / conversionFactor);
-	PC_Display_Message("", currentValue, "");
+	PC_Display_Message_FP("", currentValue, 2, "");
 	//GPIO_SetPin(PortE, 1<<3, 1<<3);		// set SLK pin to HIGH for powersave	
-#endif
+#endif	// HX711_AVAILABLE
 	
 }
 
@@ -71,7 +71,7 @@ void CYCL_500ms(void) {
 void CYCL_1000ms(void) {
 	static uint32_t counter = 0;
 	//Function calls that runs only every 1000 ms
-	PC_Display_Message("Second passed: ", counter, " ");
+	PC_Display_Message("Seconds passed: ", counter, " ");
 
 	if(!counter%2) {
 		//Every 2 second code
@@ -84,12 +84,15 @@ void CYCL_1000ms(void) {
 		//Every PIR_TRIGGERS_TIMEFRAME nr of second code
 		Process_PIR();
 	}
-#endif
+#endif	// PIR_AVAILABLE
+
+#if GSM_AVAILABLE
 	if(!counter%600){  //every 10 minutes
 		OS_Wait(&GSMModule);
 		SendSMS(Status);
 		OS_Signal(&GSMModule);
 	}
 	counter++;
+#endif	// GSM_AVAILABLE
 }
 //EOF
