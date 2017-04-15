@@ -20,6 +20,11 @@ AT+CNMI=2,2,0,0,0		set message indication mode. details bellow
 	<tosca>		type of service center address = 145
 	<length>	message length = 31
 	
+	
+AT+CNMI=0,0/1,0,0,1
+	
+	
+	
 AT+CPMS?			message memory report
 AT+CSDH=1			show complete message header
 

@@ -11,31 +11,53 @@
 /*-------------------Service Includes-----------------*/
 #include "gpio_handler.h"
 #include "uart_handler.h"
+#include "string.h"
+#include "stdio.h"
 
 /*-------------Global Variable Definitions------------*/
-uint8_t GSM_Message[GSM_MESSAGE_SIZE] = "";
 extern uint32_t Count0_PIRA;  // number of times Task0 loops
 extern uint32_t Count1_PIRB;  // number of times Task1 loops
 extern uint32_t Count8_Blank; //increments every minute
 extern uint32_t PIR_A_Alarm_Nr;
 extern uint32_t PIR_B_Alarm_Nr;
+
+
+bool testDelete = 0;  // Delete messages during processing
+int msgCount = 0;  // Hold the int value w/count of new messages
+//TODO  // (Set by UART interrupt handler)
+
+// Data from most recent incoming message stored here
+char responseLine[10][75];  // Use to store UART inputs
+char *msgContent =  NULL;  // Message content holder
+char *msgSender =   NULL;  // Message sender
+char *msgDate =     NULL;  // Message date
+char *msgTime =     NULL;  // Message time
+
 /*-------------Local Variable Definitions-------------*/
 
 /*-------------------Function Definitions-------------*/
-void ResetMessage(void){
-	uint16_t i = 0;
-	for(i=0;i<GSM_MESSAGE_SIZE;i++){
-		GSM_Message[i]=0x00;
-	}
+void SendCommandValue(uint8_t *str, uint32_t value){
+	UART2_SendString(str);
+	UART2_SendUDecimal(value);
+	//TODO: Try also 	UART2_SendChar(LF);
+	UART2_SendChar(CR);
+}
+
+void SendCommandString(uint8_t *str1, uint8_t *str2){
+	UART2_SendString(str1);
+	UART2_SendString(str2);
+	//TODO: Try also 	UART2_SendChar(LF);
+	UART2_SendChar(CR);
 }
 
 void PowerOnGSM(void){
-//  TODO
+//  TODO: Keep GSM module reset pin in the following states to reset it.
 //  digitalWrite(GSM_Power_Pin, HIGH);
 //  delay(1000);
 //  digitalWrite(GSM_Power_Pin, LOW);
 //  delay(7000);
-
+	
+	//SendCommandValue("AT+CMGF=",1);  //message format text
 	UART2_SendString("AT+CMGF=1");  //message format text
 	UART2_SendChar(CR);
 	SysCtlDelay(Millis2Ticks(100)); //Interrupts are NOT disabled and OS is NOT stoped during delay!	
@@ -44,15 +66,13 @@ void PowerOnGSM(void){
 	UART2_SendChar(CR);
 	SysCtlDelay(Millis2Ticks(100)); //Interrupts are NOT disabled and OS is NOT stoped during delay!
 	
-	UART2_SendString("AT+CSDH=1");  //show complete message header
+	UART2_SendString("AT+CSDH=0");  //do not show complete message header
 	UART2_SendChar(CR);
 	SysCtlDelay(Millis2Ticks(100)); //Interrupts are NOT disabled and OS is NOT stoped during delay!
 	
-	UART2_SendString("AT+CNMI=2,2,0,0,0");  //set message indication mode. details bellow
+	UART2_SendString("AT+CNMI=0,0,0,0,1");  //set new message indication mode
 	UART2_SendChar(CR);
 	SysCtlDelay(Millis2Ticks(100));  //Interrupts are NOT disabled and OS is NOT stoped during delay!
-	
-	ResetMessage();
 }
 
 void SendSMS(SMS_Message_en message){
@@ -134,145 +154,222 @@ void SendSMS(SMS_Message_en message){
 	PC_Display_Message("SMS sent with message ID: ",(uint8_t)message," ->");
 }
 
-uint8_t CheckForSMS(void){
-	uint8_t result = 0;
-	
-	while(UARTCharsAvail(UART2_BASE)){
-		if(UART2_GetChar()!='+') {
-			SysCtlDelay(Millis2Ticks(1));
-			if(UART2_GetChar()=='C'){  //2nd condition
-				//delay(1);
-				SysCtlDelay(Millis2Ticks(1));
-				if(UART2_GetChar()=='M'){  //3rd condition
-					//delay(1);
-					SysCtlDelay(Millis2Ticks(1));
-					if(UART2_GetChar()=='T'){  //4th condition
-						SysCtlDelay(Millis2Ticks(1));
-						//SMS_Received = 1;  //Serial data confirms receival of SMS message
-						result = ReceiveSMS();
+
+
+
+
+
+
+//*****************************************************************************
+//
+// PROCESS SMS FOR ENVELOPE AND CONTENT 
+//
+//*****************************************************************************
+void 
+GSMprocessMessage( int msgNum )
+{
+    bool msgPresent[4] = {0000};    // Flag to ignore deleted messages
+    bool msgVerify = false;         // Flag for message error checking
+    char msgErrorCheck[4][225];     // Holder for message error checking
+    int lineCount;                  // Hold the number of lines
+    int oLoop;                      // Counter for outside error checking loop
+    int iLoop;                      // Counter for inside error checking loop
+
+    // Start message retrieval/parsing/error checking (runs simultaneously to
+    // reduce calls to the SIM module).
+    for ( oLoop=0; oLoop<3; oLoop++ )
+    {
+			// Request the message and get the lines of the response (includes 
+			// envelope, nulls, SIM responses)
+			SendCommandValue("AT+CMGR=",msgNum);
+			lineCount = GSMgetResponse();
+
+			// Delay for a bit, needed when processing multiple messages (maybe?)
+			SysCtlDelay(SysCtlClockGet()/160);
+
+			// Make sure there's message content, process for envelope and content
+			msgPresent[oLoop] = GSMparseMessage( lineCount );
+
+			// If there is a message, store it, see if it matches previous retrieval loop
+			if (msgPresent[oLoop])
+			{
+				// Store the message to one big string
+				sprintf(msgErrorCheck[oLoop], "%s%s%s%s", msgSender, msgDate, msgTime, msgContent);
+
+				// Check that string against previous copies from outer loop
+				for ( iLoop = 0; iLoop < oLoop; iLoop++ ) 
+				{
+					if (strstr(msgErrorCheck[oLoop],msgErrorCheck[iLoop]) != NULL){
+
+						// Set a flag to use for exiting outer loop
+						msgVerify = true;
+
+						// Exit inner loop
+						break;
 					}
 				}
 			}
+
+			// If there's no message, exit retrieval loop
+			else { break; }
+
+			// If we verified the message, exit retrieval loop
+			if (msgVerify) { break; }
+    }
+
+    // Show the user what we found
+		PC_Display_Message("\n\r>>> MESSAGE :",msgNum," ");
+    //UART0printf("\n\r>>> MESSAGE %u:",msgNum);
+    if ( msgPresent[oLoop] && msgVerify ) {
+			PC_Display_Message("> FROM :",0,msgSender);  //TODO: Try to send a BS to delete the 0
+			PC_Display_Message("> AT :",0,msgDate);			
+			PC_Display_Message("> ON :",0,msgTime);
+			PC_Display_Message("> TEXT :",0,msgContent);			
+			//UART0printf("\n\r> FROM: %s ON: %s AT: %s",msgSender,msgDate,msgTime);
+			//UART0printf("\n\r> TEXT: %s",msgContent);
+    }
+    else if (!msgPresent[oLoop]) { 
+			PC_Display_Message("> NOT PRESENT!",0,"");
+			//UART0printf("\n\r> NOT PRESENT!");
 		}
-	}
-	return result;
+    else {
+			PC_Display_Message("> COULD NOT VERIFY! ",0," ");
+			//UART0printf("\n\r> COULD NOT VERIFY!");
+		}
+
+    // Delete the message
+    if ( testDelete && msgPresent ){
+			SendCommandValue("AT+CMGD=",msgNum);
+			//UART1printf("AT+CMGD=%u\r\n",msgNum);
+			GSMgetResponse();
+			PC_Display_Message(">>> MESSAGE ",msgNum," DELETED");
+			//UART0printf ( "\n\r>>> MESSAGE %u DELETED",msgNum );
+    }
 }
 
-//	result = (uint8_t)UARTCharGetNonBlocking(UART2_BASE);
-	
-/*	
-  while(UART2_GetChar()!='+'){ //1st condition
-		//Wait until '+' is received
-	}
-  //if(UART2_GetChar()=='+') {  //1st condition
-    //delay(1);
-	SysCtlDelay(Millis2Ticks(100));
-	if(UART2_GetChar()=='C'){  //2nd condition
-		//delay(1);
-		SysCtlDelay(Millis2Ticks(100));
-		if(UART2_GetChar()=='M'){  //3rd condition
-			//delay(1);
-			SysCtlDelay(Millis2Ticks(100));
-			if(UART2_GetChar()=='T'){  //4th condition
-				SysCtlDelay(Millis2Ticks(100));
-				//SMS_Received = 1;  //Serial data confirms receival of SMS message
-				result = ReceiveSMS();
-			}
-		}
-	}
-	return result;
-}*/
+//*****************************************************************************
+//
+// STORE A GSM RESPONSE TO ARRAY responseLine[]
+//
+//*****************************************************************************
+int16_t GSMgetResponse(void) {
+bool readResponse = true;       // Keeps the loop open while getting message
+int readLine = 1;               // Counts the lines of the message
+char *GSMresponse = NULL;       // Use to grab input
+static char g_cInput[128];      // String input to a UART
+	while(readResponse) {
+		// Grab a line
+		UART2_GetString(g_cInput,sizeof(g_cInput));
+		//UART1gets(g_cInput,sizeof(g_cInput));
 
-unsigned char ReceiveSMS(void){
-  uint8_t message_data[160] = "";  //GSM message data, without header
-	uint8_t message_length = 0;
-  uint16_t i = 0;
-  uint16_t j = 0;
-  unsigned char SMS_Received = 0;
-	/*
-  if(UART2_GetChar()=='+') {  //1st condition
-    //delay(1);
-		SysCtlDelay(Millis2Ticks(100));
-    if(UART2_GetChar()=='C'){  //2nd condition
-      //delay(1);
-			SysCtlDelay(Millis2Ticks(100));
-      if(UART2_GetChar()=='M'){  //3rd condition
-        //delay(1);
-				SysCtlDelay(Millis2Ticks(100));
-        if(UART2_GetChar()=='T'){  //4th condition
-					SysCtlDelay(Millis2Ticks(100));
-          SMS_Received = 1;  //Serial data confirms receival of SMS message
+		// Stop after newline
+		GSMresponse = strtok(g_cInput,"\n");
+		strcpy(responseLine[readLine], GSMresponse);
+
+		// If this line says OK we've got the whole message
+		if ( strncmp(responseLine[readLine],"OK",2) == 0 ){readResponse = false;}
+		else { readLine++; }
+	}
+	return readLine;
+}
+
+//*****************************************************************************
+//
+// PARSE GSM MESSAGE FOR ENVELOPE AND MESSAGE CONTENT
+// Stores message envelope and constant to global variables, OR returns true
+// for message present, false for no message
+//
+//*****************************************************************************
+bool GSMparseMessage(int16_t lineCount) {
+int activeLine = 1;             // Counter for line being processed
+char *msgEnvelope = NULL;       // Message envelope holder
+const char commaCh[] = ",";     // Comma character
+
+	// Clear out the old message
+	msgContent = NULL;
+
+	// Parse the new message
+	while ( activeLine < lineCount+1 )
+	{
+			// CASE FOR ENVELOPE (which will look like:)
+			// +CMGR: "REC READ","+13158078555","","15/10/08,13:18:40-20"
+			if ( strstr(responseLine[activeLine],"+CMGR:") != '\0' )
+			{
+					// Start parsing
+					msgEnvelope = responseLine[activeLine];
+
+					// Go to first comma, skipping status
+					msgSender = strtok(msgEnvelope,",");
+
+					// Grab the number
+					msgSender = strtok(NULL,commaCh);
+
+					// Go to next comma, skipping phonebook entry
+					msgDate = strtok(NULL,commaCh);
+
+					// Grab the date
+					msgDate = strtok(NULL,commaCh);
+
+					// Grab the time
+					msgTime = strtok(NULL,commaCh);
+
+					// Store the number (with null terminator)
+					//strncpy(msgSender,msgSender+2,11);
+					msgSender += 2;  // Skip the "+1" prefix from the phone number.
+					msgSender[10] = '\0';  //TODO try index [10]
+
+					// Store the date (with null terminator)
+					//strncpy(msgDate,msgDate+1,8);
+					msgDate[8] = '\0';
+
+					// Store the time (with null terminator)
+					//strncpy(msgTime,msgTime,8);
+					msgTime[8] = '\0';
+			}
+
+			// CASE FOR MESSAGE CONTENT
+			// If we already found the envelope, and the line's not blank...
+			else if ( msgEnvelope != NULL && responseLine[activeLine] != NULL )
+			{
+					// ... and we haven't found any content, this is the first line.
+					if (msgContent == NULL) { msgContent = responseLine[activeLine]; }
+
+					// ... otherwise, add a space and append this line.
+					else if ( activeLine + 2 <= lineCount ) {
+							strcat(msgContent, " ");
+							strcat(msgContent, responseLine[activeLine]);
+					}
+			}
+			// Proceed to next line
+			activeLine++;
+	}
+	if (msgEnvelope == NULL) { // If we didn't find an envelope, there's no message
+		return false;
+	}
+	else { 	// Otherwise, return true.
+		return true;
+	}
+}
+
+//*****************************************************************************
+//
+// MAIN FUNCTION
+// Waits for message notification from UART interrupt, and initiates processing
+//
+//*****************************************************************************
+/*
+int main (void){
+    int msgOpen = 0;                    // Message being processed
+
+    while(1){
+        // Process new messages.
+        while (msgCount > 0)
+        {
+            // Start working on the oldest message
+            msgOpen = msgCount;
+            msgCount--;
+
+            // Process message for envelope and content
+            GSMprocessMessage(msgOpen);
         }
-      }
-    }
-  }
-	*/
-	
-	SMS_Received = 1;  //Temporary TODO
-  if(SMS_Received == 1){
-    while(UART2_GetChar() != '\n'){
-      GSM_Message[i] = UART2_GetChar();
-      i++;
-    }
-    message_length = i;
-		PC_Display_Message("Message received width", message_length," character length.");
-		PC_Display_Message("The message is", 0,GSM_Message);
-	
-		i=0;
-		while(GSM_Message[i]!=CR) {  //Serch for end of message header
-			i++;
-		}
-		i++;
-		if(GSM_Message[i]==LF){  //End of message header
-			i++;
-			j=0;
-			while(GSM_Message[i] != '\n'){
-				message_data[j] = GSM_Message[i];  //Copy message data
-				j++;
-				i++;
-			}
-			PC_Display_Message("The SMS data length is: ",j," characters");
-			PC_Display_Message("The SMS data is: ",0,message_data);
-		}
-		ReadSMS(message_data);  //send message data for reading / parsing
-		return 1;  //Message received
-	}
-	else {
-		return 0;  //No message received
-	}
-}
-
-void ReadSMS(uint8_t *message_data){
-//  unsigned long currentMillis = millis();
-//  static unsigned long previousMillis = 0;
-//  unsigned char reveive_message = 0;
-//  
-//  if(currentMillis - previousMillis >= SMS_READ_DELAY){
-//    previousMillis = currentMillis;
-//    reveive_message = ReceiveSMS();
-//    switch (reveive_message) {
-//      case 0:
-//        //Do nothing
-//        break;
-//      case 1:
-//        //Deactivate Security System
-//        Active_System = 0;
-//        break;
-//      case 2:
-//        //Deactivate Alarm
-//        Active_Alarm = 0;
-//        break;
-//      case 3:
-//        //Trigger Alarm
-//        Trigger_Alarm = 1;
-//        break;
-//      case 4:
-//        //Get Security Status
-//        SendSMS(Status);
-//        break;
-//      default:
-//        //Wrong message
-//        SendSMS(Wrong_Command);
-//    }
-//  }
-}
+    }*/

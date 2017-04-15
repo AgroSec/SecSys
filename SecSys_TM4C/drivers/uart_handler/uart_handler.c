@@ -340,21 +340,13 @@ void UART2_GetString(uint8_t *bufPt, uint16_t max) {
 int length=0;
 char character;
   character = UART2_GetChar();
-  while(character != CR){
-    if(character == BS){
-      if(length){
-        bufPt--;
-        length--;
-        UART2_SendChar(BS);
-      }
-    }
-    else if(length < max){
-      *bufPt = character;
-      bufPt++;
-      length++;
-      UART2_SendChar(character);
-    }
-    character = UART2_GetChar();
+  while(character != CR){//Todo test also with LF
+		if(length < max){
+			*bufPt = character;
+			bufPt++;
+			length++;
+		}
+		character = UART2_GetChar();
   }
   *bufPt = 0;
 }
@@ -366,21 +358,21 @@ char character;
   while(character != CR){ // accepts until <enter> is typed
 // The next line checks that the input is a digit, 0-9.
 // If the character is not 0-9, it is ignored and not echoed
-    if((character>='0') && (character<='9')) {
-      number = 10*number+(character-'0');   // this line overflows if above 4294967295
-      length++;
-      UART2_SendChar(character);
-    }
+		if((character>='0') && (character<='9')) {
+			number = 10*number+(character-'0');   // this line overflows if above 4294967295
+			length++;
+			UART2_SendChar(character);
+		}
 // If the input is a backspace, then the return number is
 // changed and a backspace is outputted to the screen
-    else if((character==BS) && length){
-      number /= 10;
-      length--;
-      UART2_SendChar(character);
-    }
-    character = UART2_GetChar();
-  }
-  return number;
+		else if((character==BS) && length){
+			number /= 10;
+			length--;
+			UART2_SendChar(character);
+		}
+		character = UART2_GetChar();
+	}
+	return number;
 }
 
 uint32_t UART2_GetUHex(void){
