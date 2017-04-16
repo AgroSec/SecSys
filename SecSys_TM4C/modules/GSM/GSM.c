@@ -27,11 +27,11 @@ int msgCount = 0;  // Hold the int value w/count of new messages
 //TODO  // (Set by UART interrupt handler)
 
 // Data from most recent incoming message stored here
-char responseLine[10][75];  // Use to store UART inputs
-char *msgContent =  NULL;  // Message content holder
-char *msgSender =   NULL;  // Message sender
-char *msgDate =     NULL;  // Message date
-char *msgTime =     NULL;  // Message time
+char responseLine[10][160];  // Use to store UART inputs
+static char *msgContent =  NULL;  // Message content holder
+static char *msgSender =   NULL;  // Message sender
+static char *msgDate =     NULL;  // Message date
+static char *msgTime =     NULL;  // Message time
 
 /*-------------Local Variable Definitions-------------*/
 
@@ -64,15 +64,17 @@ void PowerOnGSM(void){
 	
 	UART2_SendString("AT+CMGD=1,4");  //delete all messages
 	UART2_SendChar(CR);
-	SysCtlDelay(Millis2Ticks(100)); //Interrupts are NOT disabled and OS is NOT stoped during delay!
+	SysCtlDelay(Millis2Ticks(100));
 	
 	UART2_SendString("AT+CSDH=0");  //do not show complete message header
 	UART2_SendChar(CR);
-	SysCtlDelay(Millis2Ticks(100)); //Interrupts are NOT disabled and OS is NOT stoped during delay!
+	SysCtlDelay(Millis2Ticks(100));
 	
 	UART2_SendString("AT+CNMI=0,0,0,0,1");  //set new message indication mode
+	//Messages are stored on GSM module, no indication is provided
+	//AT+CMGR=1,0 will read the messages in a cyclic manner
 	UART2_SendChar(CR);
-	SysCtlDelay(Millis2Ticks(100));  //Interrupts are NOT disabled and OS is NOT stoped during delay!
+	SysCtlDelay(Millis2Ticks(100));
 }
 
 void SendSMS(SMS_Message_en message){
@@ -168,12 +170,12 @@ void SendSMS(SMS_Message_en message){
 void 
 GSMprocessMessage( int msgNum )
 {
-    bool msgPresent[4] = {0000};    // Flag to ignore deleted messages
-    bool msgVerify = false;         // Flag for message error checking
-    char msgErrorCheck[4][225];     // Holder for message error checking
-    int lineCount;                  // Hold the number of lines
-    int oLoop;                      // Counter for outside error checking loop
-    int iLoop;                      // Counter for inside error checking loop
+    bool msgPresent[4] = {0000};  // Flag to ignore deleted messages
+    bool msgVerify = false;  // Flag for message error checking
+    char msgErrorCheck[4][300];  // Holder for message error checking
+    int lineCount;  // Hold the number of lines
+    int oLoop;  // Counter for outside error checking loop
+    int iLoop;  // Counter for inside error checking loop
 
     // Start message retrieval/parsing/error checking (runs simultaneously to
     // reduce calls to the SIM module).
@@ -238,7 +240,7 @@ GSMprocessMessage( int msgNum )
 		}
 
     // Delete the message
-    if ( testDelete && msgPresent ){
+    if ( testDelete && *msgPresent ){
 			SendCommandValue("AT+CMGD=",msgNum);
 			//UART1printf("AT+CMGD=%u\r\n",msgNum);
 			GSMgetResponse();
@@ -253,17 +255,17 @@ GSMprocessMessage( int msgNum )
 //
 //*****************************************************************************
 int16_t GSMgetResponse(void) {
-bool readResponse = true;       // Keeps the loop open while getting message
-int readLine = 1;               // Counts the lines of the message
-char *GSMresponse = NULL;       // Use to grab input
-static char g_cInput[128];      // String input to a UART
+bool readResponse = true;  // Keeps the loop open while getting message
+int readLine = 1;  // Counts the lines of the message
+char *GSMresponse = NULL;  // Use to grab input TODO, allocate statically memory
+static char g_cInput[300];  // String input to a UART
 	while(readResponse) {
 		// Grab a line
-		UART2_GetString(g_cInput,sizeof(g_cInput));
+		UART2_GetString(g_cInput,sizeof(g_cInput));  //grabs string untill character != CR or LF
 		//UART1gets(g_cInput,sizeof(g_cInput));
 
 		// Stop after newline
-		GSMresponse = strtok(g_cInput,"\n");
+		GSMresponse = strtok(g_cInput,"\n");  //TODO test what is the output of this line
 		strcpy(responseLine[readLine], GSMresponse);
 
 		// If this line says OK we've got the whole message

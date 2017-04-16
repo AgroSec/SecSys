@@ -340,7 +340,7 @@ void UART2_GetString(uint8_t *bufPt, uint16_t max) {
 int length=0;
 char character;
   character = UART2_GetChar();
-  while(character != CR){//Todo test also with LF
+  while((character != CR)||(character != LF)){//Todo test also with LF
 		if(length < max){
 			*bufPt = character;
 			bufPt++;

@@ -30,7 +30,7 @@ extern uint32_t HX711_CalibVal;
 /*-------------------Function Definitions-------------*/
 void CYCL_10ms(void) {
 	//Function calls that runs only every 10 ms
-	CheckForSMS();
+	//CheckForSMS();
 }
 
 void CYCL_50ms(void) {
