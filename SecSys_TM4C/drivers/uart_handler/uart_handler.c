@@ -326,29 +326,26 @@ void UART2_SendNewLine(void){
   UART2_SendChar(LF);
 }
 
-uint8_t UART2_GetChar(void){
+char UART2_GetChar(void){
 	//return (uint8_t)UARTCharGet(UART2_BASE);
 	
-	if(UARTCharsAvail(UART2_BASE)) {
-		return (uint8_t)UARTCharGetNonBlocking(UART2_BASE);
-	}
-	return 0;
+	//if(UARTCharsAvail(UART2_BASE)) {
+		return (char)UARTCharGetNonBlocking(UART2_BASE);
+	//}
+	//return 0;
 	
 }
 
-void UART2_GetString(uint8_t *bufPt, uint16_t max) {
-int length=0;
+void UART2_GetString(char *bufPt, uint16_t max) {
+uint16_t length=0;
 char character;
-  character = UART2_GetChar();
-  while((character != CR)||(character != LF)){//Todo test also with LF
-		if(length < max){
-			*bufPt = character;
-			bufPt++;
-			length++;
-		}
+	do{
 		character = UART2_GetChar();
-  }
-  *bufPt = 0;
+		*bufPt = character;
+		bufPt++;
+		length++;
+	} while((character != CR)&&(character != LF)&&(character != 0)&&(length < max));
+	*bufPt = 0;  //put ending 0
 }
 
 uint32_t UART2_GetUDecimal(void){

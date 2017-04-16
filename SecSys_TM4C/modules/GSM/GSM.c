@@ -22,12 +22,12 @@ extern uint32_t PIR_A_Alarm_Nr;
 extern uint32_t PIR_B_Alarm_Nr;
 
 
-bool testDelete = 0;  // Delete messages during processing
+bool testDelete = 1;  // Delete messages during processing
 int msgCount = 0;  // Hold the int value w/count of new messages
 //TODO  // (Set by UART interrupt handler)
 
 // Data from most recent incoming message stored here
-char responseLine[10][160];  // Use to store UART inputs
+char responseLine[6][160];  // Use to store UART inputs
 static char *msgContent =  NULL;  // Message content holder
 static char *msgSender =   NULL;  // Message sender
 static char *msgDate =     NULL;  // Message date
@@ -168,12 +168,12 @@ void SendSMS(SMS_Message_en message){
 //
 //*****************************************************************************
 void 
-GSMprocessMessage( int msgNum )
+GSMprocessMessage( uint8_t msgNum )
 {
     bool msgPresent[4] = {0000};  // Flag to ignore deleted messages
     bool msgVerify = false;  // Flag for message error checking
     char msgErrorCheck[4][300];  // Holder for message error checking
-    int lineCount;  // Hold the number of lines
+    int lineCount=0;  // Hold the number of lines
     int oLoop;  // Counter for outside error checking loop
     int iLoop;  // Counter for inside error checking loop
 
@@ -184,10 +184,11 @@ GSMprocessMessage( int msgNum )
 			// Request the message and get the lines of the response (includes 
 			// envelope, nulls, SIM responses)
 			SendCommandValue("AT+CMGR=",msgNum);
+			SysCtlDelay(Millis2Ticks(1));
 			lineCount = GSMgetResponse();
 
 			// Delay for a bit, needed when processing multiple messages (maybe?)
-			SysCtlDelay(SysCtlClockGet()/160);
+			SysCtlDelay(Millis2Ticks(1));;
 
 			// Make sure there's message content, process for envelope and content
 			msgPresent[oLoop] = GSMparseMessage( lineCount );
@@ -240,7 +241,7 @@ GSMprocessMessage( int msgNum )
 		}
 
     // Delete the message
-    if ( testDelete && *msgPresent ){
+    if ( testDelete && !(*msgPresent) ){
 			SendCommandValue("AT+CMGD=",msgNum);
 			//UART1printf("AT+CMGD=%u\r\n",msgNum);
 			GSMgetResponse();
@@ -254,25 +255,26 @@ GSMprocessMessage( int msgNum )
 // STORE A GSM RESPONSE TO ARRAY responseLine[]
 //
 //*****************************************************************************
-int16_t GSMgetResponse(void) {
+uint8_t GSMgetResponse(void) {
 bool readResponse = true;  // Keeps the loop open while getting message
-int readLine = 1;  // Counts the lines of the message
+uint8_t readLine = 0;  // Counts the lines of the message
 char *GSMresponse = NULL;  // Use to grab input TODO, allocate statically memory
-static char g_cInput[300];  // String input to a UART
-	while(readResponse) {
+//char GSMresponse[160] = "";  // Use to grab input TODO, allocate statically memory
+static char g_cInput[160];  // String input to a UART
+	while(readResponse&&(readLine<6)) {
 		// Grab a line
 		UART2_GetString(g_cInput,sizeof(g_cInput));  //grabs string untill character != CR or LF
 		//UART1gets(g_cInput,sizeof(g_cInput));
 
 		// Stop after newline
 		GSMresponse = strtok(g_cInput,"\n");  //TODO test what is the output of this line
-		strcpy(responseLine[readLine], GSMresponse);
+		strcpy(responseLine[readLine],/*g_cInput*/ GSMresponse);
 
 		// If this line says OK we've got the whole message
 		if ( strncmp(responseLine[readLine],"OK",2) == 0 ){readResponse = false;}
 		else { readLine++; }
 	}
-	return readLine;
+	return (readLine+1);  //because [0] is first line #LOL
 }
 
 //*****************************************************************************
@@ -282,10 +284,10 @@ static char g_cInput[300];  // String input to a UART
 // for message present, false for no message
 //
 //*****************************************************************************
-bool GSMparseMessage(int16_t lineCount) {
-int activeLine = 1;             // Counter for line being processed
-char *msgEnvelope = NULL;       // Message envelope holder
-const char commaCh[] = ",";     // Comma character
+bool GSMparseMessage(uint8_t lineCount) {
+uint8_t activeLine = 1;             // Counter for line being processed
+uint8_t *msgEnvelope = NULL;       // Message envelope holder
+const uint8_t commaCh[] = ",";     // Comma character
 
 	// Clear out the old message
 	msgContent = NULL;
@@ -295,7 +297,7 @@ const char commaCh[] = ",";     // Comma character
 	{
 			// CASE FOR ENVELOPE (which will look like:)
 			// +CMGR: "REC READ","+13158078555","","15/10/08,13:18:40-20"
-			if ( strstr(responseLine[activeLine],"+CMGR:") != '\0' )
+			if ( strstr(responseLine[activeLine],"+CMGR:") != '\0' )  //if message received
 			{
 					// Start parsing
 					msgEnvelope = responseLine[activeLine];
@@ -318,7 +320,7 @@ const char commaCh[] = ",";     // Comma character
 					// Store the number (with null terminator)
 					//strncpy(msgSender,msgSender+2,11);
 					msgSender += 2;  // Skip the "+1" prefix from the phone number.
-					msgSender[10] = '\0';  //TODO try index [10]
+					msgSender[10] = '\0';  //TODO try index [11] if 10 fails
 
 					// Store the date (with null terminator)
 					//strncpy(msgDate,msgDate+1,8);
@@ -337,7 +339,7 @@ const char commaCh[] = ",";     // Comma character
 					if (msgContent == NULL) { msgContent = responseLine[activeLine]; }
 
 					// ... otherwise, add a space and append this line.
-					else if ( activeLine + 2 <= lineCount ) {
+					else if ( activeLine + 2 <= lineCount ) {  //TODO see why +2 ???
 							strcat(msgContent, " ");
 							strcat(msgContent, responseLine[activeLine]);
 					}

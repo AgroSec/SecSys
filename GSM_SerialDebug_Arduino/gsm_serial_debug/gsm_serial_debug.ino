@@ -11,11 +11,11 @@ SoftwareSerial mySerial(GSM_RX_Pin, GSM_TX_Pin);  //10-RX, 11-TX
 /*-------------------------------Setup secion--------------------------------*/
 void setup() {
   Serial.begin(19200);  //Setting the baud rate of serial communication with serial monitor
-  mySerial.begin(19200);  //Setting the baud rate of GSM Module
+  mySerial.begin(9600);  //Setting the baud rate of GSM Module
   mySerial.println("AT+CMGF=1\r");  //message format text
-  mySerial.println("AT+CMGD=1,4\r");  //delete all messages
-  mySerial.println("AT+CNMI=0,0,0,0,1\r");  //set message indication mode. details bellow
-  mySerial.println("AT+CMGR=1,0");  //read message with index 1
+  //mySerial.println("AT+CMGD=1,4\r");  //delete all messages
+  //mySerial.println("AT+CNMI=0,0,0,0,1\r");  //set message indication mode. details bellow
+  //mySerial.println("AT+CMGR=1,0");  //read message with index 1
 }
 
 /*-------------------------Function declaration secion------------------------*/

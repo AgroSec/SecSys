@@ -46,8 +46,8 @@ void UART2_SendUDecimal(uint32_t n);
 void UART2_SendDecimal(int32_t n);
 void UART2_SendUHex(uint32_t number);
 void UART2_SendNewLine(void);
-uint8_t UART2_GetChar(void);
-void UART2_GetString(uint8_t *bufPt, uint16_t max);
+char UART2_GetChar(void);
+void UART2_GetString(char *bufPt, uint16_t max);
 uint32_t UART2_GetUDecimal(void);
 uint32_t UART2_GetUHex(void);
 #endif

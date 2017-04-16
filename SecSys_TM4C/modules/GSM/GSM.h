@@ -12,9 +12,9 @@ void SendSMS(SMS_Message_en message);
 //uint8_t CheckForSMS(void);
 //void ReadSMS(uint8_t *message_data);
 
-int16_t GSMgetResponse(void);
-bool GSMparseMessage(int16_t lineCount);
-
+uint8_t GSMgetResponse(void);
+bool GSMparseMessage(uint8_t lineCount);
+void GSMprocessMessage(uint8_t msgNum);
 #endif
 //EOF
 
