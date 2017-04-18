@@ -67,9 +67,9 @@ void UART0_SendNumeric(int32_t n, uint8_t digits)
 		UART0_SendUDecimal(n);
 	else 
 	{
-		UART0_SendDecimal(n / digits);
+		UART0_SendUDecimal(n / digits);
 		UART0_SendChar('.');
-		UART0_SendDecimal(n % digits);		
+		UART0_SendUDecimal(n % digits);		
 	}
 }
 

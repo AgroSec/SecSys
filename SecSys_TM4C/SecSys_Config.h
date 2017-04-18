@@ -5,7 +5,7 @@
 
 #define PIR_AVAILABLE		(0)
 #define GSM_AVAILABLE		(0)
-#define HX711_AVAILABLE	(1)
+#define HX711_AVAILABLE	(0)
 #define RFID_AVAILABLE	(0)
 #define TEMP_AVAILABLE	(1)
 

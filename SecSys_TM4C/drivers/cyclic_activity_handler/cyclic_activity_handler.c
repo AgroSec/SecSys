@@ -51,11 +51,11 @@ void CYCL_100ms(void) {
 	}
 	if (check ==  -1) 
 	{ // negative value, above sensitivity limit
-		PC_Display_Message("...............Cut!!", -32767, 0, "");
+		PC_Display_Message_FP("...............Cut!!", -32767, 0, "");
 	}
 	if (check ==  0) 
 	{ // nil value, between upper and lower sensitivity limits
-		PC_Display_Message("...............All good.", -32767, 0, "");
+		PC_Display_Message_FP("...............All good.", -32767, 0, "");
 	}
 	
 	currentValue = (int32_t)(100.0*((int64_t)currentRead - (int64_t)HX711_CalibVal) / conversionFactor);
