@@ -15,7 +15,7 @@
 /*-----------------Application Includes---------------*/
 #include "GSM.h"
 #include "PIR.h"
-#include "HX711.h"
+#include "LoadCell.h"
 #include "pc_display.h"
 /*-------------------Service Includes-----------------*/
 #include "gpio_handler.h"

@@ -22,7 +22,7 @@
 /*-----------------Application Includes---------------*/
 #include "GSM.h"
 #include "PIR.h"
-#include "HX711.h"
+#include "LoadCell.h"
 #include "pc_display.h"
 
 /*-------------Global Variable Definitions------------*/

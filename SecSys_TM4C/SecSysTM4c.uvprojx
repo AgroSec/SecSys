@@ -335,7 +335,7 @@
               <MiscControls></MiscControls>
               <Define>rvmdk PART_TM4C123GH6PM TARGET_IS_TM4C123_RA1</Define>
               <Undefine></Undefine>
-              <IncludePath>.\inc;.\OS;.\3rd_party;..\..\TivaWare_C_Series-2.1.1.71;..\SecSys_TM4C;.\drivers\uart_handler;.\drivers\gpio_handler;.\drivers\cyclic_activity_handler;.\drivers\startup_handler;.\modules\GSM;.\modules\PIR;.\modules\LoadCell;.\modules\Temperature;.\modules\PC_Display</IncludePath>
+              <IncludePath>.\inc;.\OS;.\3rd_party;..\..\TivaWare_C_Series-2.1.1.71;..\SecSys_TM4C;.\drivers\uart_handler;.\drivers\gpio_handler;.\drivers\hx711_handler;.\drivers\onewire_handler;.\drivers\startup_handler;.\drivers\cyclic_activity_handler;.\modules\GSM;.\modules\PIR;.\modules\LoadCell;.\modules\Temperature;.\modules\PC_Display</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -435,14 +435,19 @@
               <FilePath>.\modules\PIR\PIR.c</FilePath>
             </File>
             <File>
-              <FileName>HX711.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\modules\LoadCell\HX711.c</FilePath>
-            </File>
-            <File>
               <FileName>pc_display.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\modules\PC_Display\pc_display.c</FilePath>
+            </File>
+            <File>
+              <FileName>DS18B20.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\modules\Temperature\DS18B20.c</FilePath>
+            </File>
+            <File>
+              <FileName>LoadCell.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\modules\LoadCell\LoadCell.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -468,6 +473,16 @@
               <FileName>startup_handler.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\drivers\startup_handler\startup_handler.c</FilePath>
+            </File>
+            <File>
+              <FileName>hx711_handler.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\drivers\hx711_handler\hx711_handler.c</FilePath>
+            </File>
+            <File>
+              <FileName>onewire_handler.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\drivers\onewire_handler\onewire_handler.c</FilePath>
             </File>
           </Files>
         </Group>

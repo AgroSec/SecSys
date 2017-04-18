@@ -17,8 +17,9 @@
 /*-------------------Service Includes-----------------*/
 #include "gpio_handler.h"
 #include "uart_handler.h"
+#include "hx711_handler.h"
 /*-----------------Application Includes---------------*/
-#include "HX711.h"
+#include "LoadCell.h"
 #include "PIR.h"
 #include "GSM.h"
 #include "pc_display.h"
