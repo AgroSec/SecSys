@@ -1,18 +1,21 @@
 /*------------------Project Includes-----------------*/
 #include "uart_handler.h"
 #include "os_config.h"
+#include "os_core.h"
 /*-------------------Driver Includes-----------------*/
 #include "driverlib/sysctl.h"
 #include "driverlib/uart.h"
 #include "driverlib/pin_map.h"
 #include "driverlib/gpio.h"
-#include "driverlib/interrupts.h"
+#include "driverlib/interrupt.h"
 /*-------------------HW define Includes--------------*/
 #include "inc/hw_memmap.h"
 #include "inc/hw_ints.h"
 
+extern int32_t SMSReceived;
 uint32_t Baud_Rate_Read = 0;
 uint32_t GSM_Baud_Rate_Read = 0;
+
 
 //UART0 functions
 void UART0_Init(void){
@@ -218,8 +221,8 @@ void UART2_Init(void){
 	GPIO_PORTD_LOCK_R = 0x4C4F434B; //Unlock GPIO PD7
 	GPIO_PORTD_CR_R |= 0xC0;  //Allow changes to PD6,7
 	
-	IntDisable(INT_UART2);
-	UARTIntDisable(UART2_BASE,UART_INT_TX|UART_INT_RX);  //Disable UART2 Interrupts
+	//IntDisable(INT_UART2);
+	//UARTIntDisable(UART2_BASE,UART_INT_TX|UART_INT_RX);  //Disable UART2 Interrupts
 	UARTDisable(UART2_BASE);  //Disable UART2 while configuration
 	
 	GPIOPinConfigure(GPIO_PD6_U2RX);
@@ -230,12 +233,14 @@ void UART2_Init(void){
 	UARTConfigSetExpClk(UART2_BASE, SysCtlClockGet(), GSM_BAUD_RATE, (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE |UART_CONFIG_PAR_NONE));  
 	UARTParityModeSet(UART2_BASE, UART_CONFIG_PAR_NONE);
 	
+	//UARTFIFOLevelSet(UART2_BASE,UART_FIFO_TX2_8,UART_FIFO_RX2_8);
+	
 	UARTFIFOEnable(UART2_BASE);  //Enable the UART FIFO
 	UARTEnable(UART2_BASE);  //Enable UART2
 	UARTConfigGetExpClk(UART2_BASE, SysCtlClockGet(), &GSM_Baud_Rate_Read, &uart_config_read);  //Get the Baud Rate
-	UARTIntEnable(UART2_BASE,UART_INT_RX);
-	IntPrioritySet(INT_UART2,(UART2_INT_PRIO<<5));
-	IntEnable(INT_UART2);
+	//UARTIntEnable(UART2_BASE,UART_INT_RX);
+	//IntPrioritySet(INT_UART2,(UART2_INT_PRIO<<5));
+	//IntEnable(INT_UART2);
 }
 
 void UART2_SendChar(uint8_t data){
@@ -290,31 +295,26 @@ void UART2_SendNewLine(void){
   UART2_SendChar(LF);
 }
 
-uint8_t UART2_GetChar(void){
-	return (uint8_t)UARTCharGet(UART2_BASE);
+char UART2_GetChar(void){
+	//return (uint8_t)UARTCharGet(UART2_BASE);
+	
+	//if(UARTCharsAvail(UART2_BASE)) {
+		return (char)UARTCharGetNonBlocking(UART2_BASE);
+	//}
+	//return 0;
+	
 }
 
-void UART2_GetString(uint8_t *bufPt, uint16_t max) {
-int length=0;
+void UART2_GetString(char *bufPt, uint16_t max) {
+uint16_t length=0;
 char character;
-  character = UART2_GetChar();
-  while(character != CR){
-    if(character == BS){
-      if(length){
-        bufPt--;
-        length--;
-        UART2_SendChar(BS);
-      }
-    }
-    else if(length < max){
-      *bufPt = character;
-      bufPt++;
-      length++;
-      UART2_SendChar(character);
-    }
-    character = UART2_GetChar();
-  }
-  *bufPt = 0;
+	do{
+		character = UART2_GetChar();
+		*bufPt = character;
+		bufPt++;
+		length++;
+	} while((character != CR)&&(character != LF)&&(character != 0)&&(length < max));
+	*bufPt = 0;  //put ending 0
 }
 
 uint32_t UART2_GetUDecimal(void){
@@ -324,21 +324,21 @@ char character;
   while(character != CR){ // accepts until <enter> is typed
 // The next line checks that the input is a digit, 0-9.
 // If the character is not 0-9, it is ignored and not echoed
-    if((character>='0') && (character<='9')) {
-      number = 10*number+(character-'0');   // this line overflows if above 4294967295
-      length++;
-      UART2_SendChar(character);
-    }
+		if((character>='0') && (character<='9')) {
+			number = 10*number+(character-'0');   // this line overflows if above 4294967295
+			length++;
+			UART2_SendChar(character);
+		}
 // If the input is a backspace, then the return number is
 // changed and a backspace is outputted to the screen
-    else if((character==BS) && length){
-      number /= 10;
-      length--;
-      UART2_SendChar(character);
-    }
-    character = UART2_GetChar();
-  }
-  return number;
+		else if((character==BS) && length){
+			number /= 10;
+			length--;
+			UART2_SendChar(character);
+		}
+		character = UART2_GetChar();
+	}
+	return number;
 }
 
 uint32_t UART2_GetUHex(void){
@@ -373,12 +373,17 @@ char character;
   return number;
 }
 
+/*
 void UART0_Handler(void) {
 	//TODO
 }
 
 void UART2_Handler(void) {
-	//TODO
+	if(UARTIntStatus(UART2_BASE, true) == UART_INT_RX) {
+		UARTIntClear(UART2_BASE, UART_INT_RX);
+		OS_Signal(&SMSReceived);
+	}
 }
+*/
 
 //EOF

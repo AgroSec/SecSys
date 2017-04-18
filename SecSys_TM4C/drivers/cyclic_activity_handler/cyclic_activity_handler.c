@@ -30,6 +30,7 @@ extern uint32_t HX711_CalibVal;
 /*-------------------Function Definitions-------------*/
 void CYCL_10ms(void) {
 	//Function calls that runs only every 10 ms
+	//CheckForSMS();
 }
 
 void CYCL_50ms(void) {
@@ -69,18 +70,22 @@ void CYCL_500ms(void) {
 }
 
 void CYCL_1000ms(void) {
-	static uint32_t counter = 0;
+	static uint32_t counter = 1;
 	//Function calls that runs only every 1000 ms
 	PC_Display_Message("Seconds passed: ", counter, " ");
 
-	if(!counter%2) {
+	if(!(counter%2)) {
 		//Every 2 second code
 	}
-	if(!counter%3) {
+	if(!(counter%3)) {
 		//Every 3 second code
 	}
+	if(!(counter%6)) {
+		//Every 10 second code
+		GSMprocessMessage(1);
+	}
 #if PIR_AVAILABLE
-	if(!counter%PIR_TRIGGERS_TIMEFRAME) {  //this case is 5 seconds
+	if(!counter%PIR_TRIGGERS_TIMEFRAME) {  //this case is 10 seconds
 		//Every PIR_TRIGGERS_TIMEFRAME nr of second code
 		Process_PIR();
 	}

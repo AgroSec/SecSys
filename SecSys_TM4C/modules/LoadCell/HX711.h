@@ -1,4 +1,7 @@
 #ifndef HX711_H
+/*-------------------Type Includes--------------------*/
+#include <stdint.h>
+#include <stdbool.h>
 	#define HX711_H 1
 	#if HX711_AVAILABLE
 		//#include <stdint.h>

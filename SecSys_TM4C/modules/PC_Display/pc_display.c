@@ -11,11 +11,11 @@
 /*-------------Local Variable Definitions-------------*/
 
 /*-------------------Function Definitions-------------*/
-void PC_Display_Message(uint8_t *string1, uint32_t value, uint8_t *string2){
+void PC_Display_Message( char *string1, uint32_t value, char *string2){
 #if SERIAL_DEBUG_ACTIVE
-	UART0_SendString(string1);
+	UART0_SendString((uint8_t*)string1);  //TODO check if casting is made OK
 	UART0_SendUDecimal(value);
-	UART0_SendString(string2);
+	UART0_SendString((uint8_t*)string2);
 	UART0_SendNewLine();
 #endif
 }

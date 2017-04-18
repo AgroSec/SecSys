@@ -46,11 +46,12 @@ int32_t Task8Sync;
 //fifo_t FifoA;
 int32_t SerialMonitor; //Semaphore to block serial monitor
 int32_t GSMModule; //Semaphore to block GSM module
+int32_t SMSReceived; //Semaphore to block GSM module
 
 extern ptcbType PerTask[NUMPERIODIC];
 extern PortSema_t SemPortC;
 //extern PortSema_t SemPortD;
-//extern PortSema_t SemPortF;
+extern PortSema_t SemPortF;
 
 /*-------------Local Variable Definitions-------------*/
 
@@ -179,10 +180,35 @@ Count8_PIRB_Process = 0;
 	}
 }
 
+void Task9_BlankTask(void){
+	//unsigned short message = 0;
+	//static uint32_t message_number = 0;
+	while(1){
+		//OS_Sleep(1000);
+		/*
+		OS_Wait(&SMSReceived);
+		PC_Display_Message("Message nr: ",message_number," received.");
+		message = ReceiveSMS();
+		PC_Display_Message("Message nr: ",message_number," processed.");
+		*/
+		OS_Wait(&SemPortF.pin0);  // signaled in OS on button touch
+		OS_Sleep(50);  //sleep to debounce switch		
+		//if(GPIOPinRead(GPIO_PORTF_BASE,GPIO_INT_PIN_0)!=GPIO_PIN_0) {   
+			//Profile_Toggle2();
+			//Action to perform
+			GSMprocessMessage(1);
+		//}
+		OS_EdgeTrigger_Restart(PortF,GPIO_PIN_0);
+	}
+}
+
+//TODO add task 10 - blank task for future inplementation
+
 void Idle_Task(void){
   CountIdle = 0;
   while(1){
     CountIdle++;
+		//CountIdle = ReceiveSMS();  //When system is in IDLE just wait for new SMS
   }
 }
 
@@ -193,12 +219,13 @@ int main(void){
 	Profile_Init();  // enable digital I/O on profile pins
 	
 	//3
-	//OS_InitSemaphore(&SemPortF.pin0,0);
-	//OS_InitSemaphore(&SemPortF.pin4,0);
+	OS_InitSemaphore(&SemPortF.pin0,0);
+	OS_InitSemaphore(&SemPortF.pin4,0);
 	OS_InitSemaphore(&SerialMonitor,1);
 	
 #if GSM_AVAILABLE	
 	OS_InitSemaphore(&GSMModule,1);
+	OS_InitSemaphore(&SMSReceived,0);
 #endif
 	
 	//4	
@@ -206,10 +233,11 @@ int main(void){
 	OS_InitSemaphore(&SemPortC.pin6,0);
 	OS_InitSemaphore(&SemPortC.pin7,0);
 	OS_EdgeTrigger_Init(PortC,GPIO_PIN_6|GPIO_PIN_7,INT_PRIO_PIN,GPIO_RISING_EDGE,GPIO_PIN_TYPE_STD_WPD);
-	//OS_InitSemaphore(&Task7Sync,0);
+	OS_InitSemaphore(&Task7Sync,0);
+	OS_InitSemaphore(&Task8Sync,0);
 #endif
 
-	//OS_EdgeTrigger_Init(PortF,GPIO_PIN_0|GPIO_PIN_4,INT_PRIO_PIN,GPIO_RISING_EDGE,GPIO_PIN_TYPE_STD_WPD);
+	OS_EdgeTrigger_Init(PortF,GPIO_PIN_0,INT_PRIO_PIN,GPIO_FALLING_EDGE,GPIO_PIN_TYPE_STD_WPU);
 	//5
 	OS_AddPeriodicEventThread(&PerTask[0].semaphore, 10);
 	OS_AddPeriodicEventThread(&PerTask[1].semaphore, 50);
@@ -227,6 +255,7 @@ int main(void){
 								&Task6_Cyclic1000ms,TASK6_PRIO,
 								&Task7_ProcessPIRA,BLANK_TASK_PRIO,
                 &Task8_ProcessPIRB,BLANK_TASK_PRIO,
+								&Task9_BlankTask ,TASK0_PRIO,
 	              &Idle_Task,IDLE_TASK_PRIO);	//Idle task is lowest priority
 	//7
 	//OS_FIFO_Init(&FifoA);

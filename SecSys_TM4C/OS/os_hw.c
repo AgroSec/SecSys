@@ -87,9 +87,10 @@ void GPIOPortF_Handler(void){	 //PortF GPIO interrupt handler
 	uint8_t status;	
 	status = GPIOIntStatus(GPIO_PORTF_BASE,/*false*/true);
 	if(status & GPIO_INT_PIN_0) {
+		GPIOIntDisable(GPIO_PORTF_BASE, GPIO_INT_PIN_0);  //disarm interrupt to prevent bouncing to create multiple signals	
 		GPIOIntClear(GPIO_PORTF_BASE,GPIO_INT_PIN_0); //acknowledge by clearing flag
 		OS_Signal(&SemPortF.pin0);  //signal semaphore	
-		GPIOIntDisable(GPIO_PORTF_BASE, GPIO_INT_PIN_0);  //disarm interrupt to prevent bouncing to create multiple signals	
+		
 	}
 	if(status & GPIO_INT_PIN_1) {	GPIOIntClear(GPIO_PORTF_BASE,GPIO_INT_PIN_1); OS_Signal(&SemPortF.pin1); GPIOIntDisable(GPIO_PORTF_BASE, GPIO_INT_PIN_1);}
 	if(status & GPIO_INT_PIN_2) {	GPIOIntClear(GPIO_PORTF_BASE,GPIO_INT_PIN_2); OS_Signal(&SemPortF.pin2); GPIOIntDisable(GPIO_PORTF_BASE, GPIO_INT_PIN_2);}

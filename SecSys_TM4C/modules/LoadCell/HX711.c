@@ -1,13 +1,10 @@
-/*---------------------OS Includes--------------------*/
-
-/*-------------------Driver Includes------------------*/
-#include "driverlib/sysctl.h"
-/*-------------------Type Includes--------------------*/
-#include <stdint.h>
-/*-------------------Configuration Includes-----------*/
-#include "SecSys_Config.h"
 /*------Export interface---Self header Includes-------*/
 #include "HX711.h"
+/*-------------------Driver Includes------------------*/
+#include "driverlib/sysctl.h"
+/*-------------------Configuration Includes-----------*/
+#include "SecSys_Config.h"
+
 #if HX711_AVAILABLE
 /*-------------------Service Includes-----------------*/
 #include "gpio_handler.h"

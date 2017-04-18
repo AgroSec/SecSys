@@ -31,7 +31,7 @@
 #define THREADFREQ 1000   // frequency in Hz
 
 //Define number of threads and number of periodic event threads
-#define NUMTHREADS  10  // maximum number of threads
+#define NUMTHREADS  11  // maximum number of threads
 #define NUMPERIODIC NUMTHREADS // number of periodic threads
 //for less chance of human configuration error, it's defined to be equal to nr of threads in the OS
 //however it will take up more memory at compile time

@@ -56,8 +56,9 @@ void InitApplications(void) {
 	
 #if PIR_AVAILABLE
 	Init_PIR();
+	SendSMS(System_Ready);
 #endif
 	PC_Display_Message("Applications init done...",0," ");
-	SendSMS(System_Ready);
+
 }
 //EOF

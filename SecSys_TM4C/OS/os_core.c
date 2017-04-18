@@ -86,7 +86,8 @@ int OS_AddThreads(void(*thread0)(void), uint32_t p0,
                   void(*thread6)(void), uint32_t p6,
 									void(*thread7)(void), uint32_t p7,
                   void(*thread8)(void), uint32_t p8,
-                  void(*thread9)(void), uint32_t p9){
+                  void(*thread9)(void), uint32_t p9,
+									void(*thread10)(void), uint32_t p10){
   int32_t status; //I bit status
   int32_t i;	//thread index
   status = StartCritical(); //Disable Interrupts
@@ -101,8 +102,9 @@ int OS_AddThreads(void(*thread0)(void), uint32_t p0,
 	tcbs[6].next = &tcbs[7];	//main thread 6 points to main thread 7
 	tcbs[7].next = &tcbs[8];	//main thread 7 points to main thread 8
 	tcbs[8].next = &tcbs[9];	//main thread 8 points to main thread 9
-	tcbs[9].next = &tcbs[0];	//main thread 9 points to main thread 0
-	
+	tcbs[9].next = &tcbs[10];	//main thread 9 points to main thread 0
+	tcbs[10].next = &tcbs[0];	//main thread 9 points to main thread 0
+										
 	//initialize threads as not blocked									
 	for(i=0; i< NUMTHREADS; i++){tcbs[i].blocked = 0;}
 	
@@ -130,7 +132,8 @@ int OS_AddThreads(void(*thread0)(void), uint32_t p0,
 	Stacks[8][STACKSIZE-2] = (int32_t)(thread8);	//Set address of thread 8 as PC
 	SetInitialStack(9);	//SetInitialStack initial stack of main thread 9
 	Stacks[9][STACKSIZE-2] = (int32_t)(thread9);	//Set address of thread 9 as PC
-
+	SetInitialStack(10);	//SetInitialStack initial stack of main thread 10
+	Stacks[10][STACKSIZE-2] = (int32_t)(thread10);	//Set address of thread 10 as PC
 	
 	//initialize priority for each thread
 	tcbs[0].priority = p0;
@@ -143,6 +146,7 @@ int OS_AddThreads(void(*thread0)(void), uint32_t p0,
 	tcbs[7].priority = p7;
 	tcbs[8].priority = p8;
 	tcbs[9].priority = p9;
+	tcbs[10].priority = p10;
 	
 	EndCritical(status);	//Enable Interrupts
 	return 1;         // successful

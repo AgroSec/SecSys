@@ -8,8 +8,13 @@
 
 void PowerOnGSM(void);
 void SendSMS(SMS_Message_en message);
-unsigned char ReceiveSMS(void);
-void ReadSMS(void);
+//uint8_t ReceiveSMS(void);
+//uint8_t CheckForSMS(void);
+//void ReadSMS(uint8_t *message_data);
+
+uint8_t GSMgetResponse(void);
+bool GSMparseMessage(uint8_t lineCount);
+void GSMprocessMessage(uint8_t msgNum);
 #endif
 //EOF
 
