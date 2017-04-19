@@ -1,5 +1,6 @@
 /*------------------Project Includes-----------------*/
 #include "uart_handler.h"
+#include "fifo.h"
 #include "os_config.h"
 #include "os_core.h"
 /*-------------------Driver Includes-----------------*/
@@ -12,12 +13,57 @@
 #include "inc/hw_memmap.h"
 #include "inc/hw_ints.h"
 
+/*-------------------Macro Definitions----------------*/
+// U0Rx (VCP receive) connected to PA0
+// U0Tx (VCP transmit) connected to PA1
+
+#define BAUD_RATE (115200)
+#define GSM_BAUD_RATE (115200) //TODO test with faster baud rates
+
+#define UART2_INT_PRIO (2)
+
+#define GPIO_PORTD_LOCK_R       (*((volatile uint32_t *)0x40007520))
+#define GPIO_PORTD_CR_R         (*((volatile uint32_t *)0x40007524))
+
+#define FIFOSIZE   300	// size of the FIFOs (must be power of 2)
+#define FIFOSUCCESS 1		// return value on success
+#define FIFOFAIL    0		// return value on failure
+
+// create index implementation FIFO (see FIFO.h)
+AddIndexFifo(Rx, FIFOSIZE, char, FIFOSUCCESS, FIFOFAIL)
+AddIndexFifo(Tx, FIFOSIZE, char, FIFOSUCCESS, FIFOFAIL)
+
+/*-------------Global Variable Definitions------------*/
 extern int32_t SMSReceived;
 uint32_t Baud_Rate_Read = 0;
 uint32_t GSM_Baud_Rate_Read = 0;
 
+/*-------------------Function Definitions-------------*/
+// copy from hardware RX FIFO to software RX FIFO
+// stop when hardware RX FIFO is empty or software RX FIFO is full
+void static copyHardwareToSoftware(void){
+	char letter;
+	while((UARTCharsAvail(UART2_BASE)) && (RxFifo_Size() < (FIFOSIZE - 1))){
+		letter = UARTCharGet(UART2_BASE);
+		RxFifo_Put(letter);
+	}
+}
+// copy from software TX FIFO to hardware TX FIFO
+// stop when software TX FIFO is empty or hardware TX FIFO is full
+void static copySoftwareToHardware(void){
+	char letter;
+	while((UARTSpaceAvail(UART2_BASE)) && (TxFifo_Size() > 0)){
+		TxFifo_Get(&letter);
+		UARTCharPut(UART2_BASE,letter);
+	}
+}
 
-//UART0 functions
+
+//*****************************************************************************
+//
+// UART0 SPECIFIC FUNCTIONS
+//
+//*****************************************************************************
 void UART0_Init(void){
 	uint32_t uart_config_read = 0;
 	SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);  //Enable clock on UART0
@@ -238,44 +284,57 @@ char character;
   }
   return number;
 }
-/*
-UARTIntDisable(UART2_BASE,UART_INT_TX|UART_INT_RX)
 
-*/
-//UART2 functions
+//*****************************************************************************
+//
+// UART2 SPECIFIC FUNCTIONS
+//
+//*****************************************************************************
 void UART2_Init(void){
 	uint32_t uart_config_read = 0;
 	SysCtlPeripheralEnable(SYSCTL_PERIPH_UART2);  //Enable clock on UART2
 	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);  //Enable clock on port D  //PD6 and PD7 will be RX and TX to GSM module
 	while(!SysCtlPeripheralReady(SYSCTL_PERIPH_UART2));  //wait for UART2 to initialize
 	while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOD));  //wait for PortD to initialize
-	GPIO_PORTD_LOCK_R = 0x4C4F434B; //Unlock GPIO PD7
+	
+	RxFifo_Init();  // initialize empty FIFOs
+	TxFifo_Init();
+	
+	GPIO_PORTD_LOCK_R = 0x4C4F434B;  //Unlock GPIO PD7
 	GPIO_PORTD_CR_R |= 0xC0;  //Allow changes to PD6,7
 	
-	//IntDisable(INT_UART2);
-	//UARTIntDisable(UART2_BASE,UART_INT_TX|UART_INT_RX);  //Disable UART2 Interrupts
+	IntDisable(INT_UART2);
+	UARTIntDisable(UART2_BASE,UART_INT_RX|UART_INT_TX|UART_INT_RT);  //Disable UART2 Interrupts
 	UARTDisable(UART2_BASE);  //Disable UART2 while configuration
 	
-	GPIOPinConfigure(GPIO_PD6_U2RX);
+	GPIOPinConfigure(GPIO_PD6_U2RX);  //PCTL
 	GPIOPinConfigure(GPIO_PD7_U2TX);
-	GPIOPinTypeUART(GPIO_PORTD_BASE, GPIO_PIN_6 | GPIO_PIN_7);
+	GPIOPinTypeUART(GPIO_PORTD_BASE, GPIO_PIN_6 | GPIO_PIN_7);  //DIR, PAD, 
+	
 	UARTClockSourceSet(UART2_BASE, UART_CLOCK_SYSTEM);  //Set the clock source for UART2
 	//Next: Set the BAUD RATE, and configure UART2 with 8 data bits, 1 stop bit and no parity bit
 	UARTConfigSetExpClk(UART2_BASE, SysCtlClockGet(), GSM_BAUD_RATE, (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE |UART_CONFIG_PAR_NONE));  
 	UARTParityModeSet(UART2_BASE, UART_CONFIG_PAR_NONE);
-	
-	//UARTFIFOLevelSet(UART2_BASE,UART_FIFO_TX2_8,UART_FIFO_RX2_8);
-	
+	UARTFIFOLevelSet(UART2_BASE,UART_FIFO_TX1_8,UART_FIFO_RX1_8);
+
 	UARTFIFOEnable(UART2_BASE);  //Enable the UART FIFO
 	UARTEnable(UART2_BASE);  //Enable UART2
+	UARTIntEnable(UART2_BASE,UART_INT_RX|UART_INT_TX|UART_INT_RT);
+	IntPrioritySet(INT_UART2,(UART2_INT_PRIO<<5));
+	IntEnable(INT_UART2);
+	
 	UARTConfigGetExpClk(UART2_BASE, SysCtlClockGet(), &GSM_Baud_Rate_Read, &uart_config_read);  //Get the Baud Rate
-	//UARTIntEnable(UART2_BASE,UART_INT_RX);
-	//IntPrioritySet(INT_UART2,(UART2_INT_PRIO<<5));
-	//IntEnable(INT_UART2);
 }
 
+// output ASCII character to UART
 void UART2_SendChar(uint8_t data){
-	UARTCharPut(UART2_BASE, data);
+	//New method with SW FIFO
+	while(TxFifo_Put(data) == FIFOFAIL){};  // spin if TxFifo is full  
+	UARTIntDisable(UART2_BASE,UART_INT_TX);  // disable TX FIFO interrupt
+	copySoftwareToHardware();
+	UARTIntEnable(UART2_BASE,UART_INT_TX);  // enable TX FIFO interrupt
+	//Old method with only HW FIFO
+	//UARTCharPut(UART2_BASE, data);
 }
 
 void UART2_SendString(uint8_t *pt){
@@ -297,13 +356,12 @@ void UART2_SendDecimal(int32_t n){
 // This function extends the functionality of UART2_SendUDecimal
 //   to convert a signed decimal number
 //   of unspecified length as an ASCII string
-	if (n < 0) 
-	{
-		UART0_SendChar('-');
+	if (n < 0) {
+		UART2_SendChar('-');
 		n*=(-1);
-		UART0_SendUDecimal(n);
+		UART2_SendUDecimal(n);
 	}
-	else UART0_SendUDecimal(n);
+	else UART2_SendUDecimal(n);
 }
 
 void UART2_SendUHex(uint32_t number){
@@ -312,12 +370,8 @@ void UART2_SendUHex(uint32_t number){
     UART2_SendUHex(number%0x10);
   }
   else{
-    if(number < 0xA){
-      UART2_SendChar(number+'0');
-     }
-    else{
-      UART2_SendChar((number-0x0A)+'A');
-    }
+    if(number < 0xA){ UART2_SendChar(number+'0');}
+    else{ UART2_SendChar((number-0x0A)+'A');}
   }
 }
 
@@ -327,13 +381,17 @@ void UART2_SendNewLine(void){
 }
 
 char UART2_GetChar(void){
-	//return (uint8_t)UARTCharGet(UART2_BASE);
-	
-	//if(UARTCharsAvail(UART2_BASE)) {
-		return (char)UARTCharGetNonBlocking(UART2_BASE);
-	//}
-	//return 0;
-	
+	//New method with SW FIFO
+  char letter;
+  while(RxFifo_Get(&letter) == FIFOFAIL){};
+  return(letter);
+		
+	//Old method 1 with HW FIFO:
+	//return (char)UARTCharGet(UART2_BASE);
+		
+	//Old method 2 with HW FIFO:
+	//if(UARTCharsAvail(UART2_BASE)) return (char)UARTCharGetNonBlocking(UART2_BASE);
+	//else return 0;
 }
 
 void UART2_GetString(char *bufPt, uint16_t max) {
@@ -344,77 +402,35 @@ char character;
 		*bufPt = character;
 		bufPt++;
 		length++;
-	} while((character != CR)&&(character != LF)&&(character != 0)&&(length < max));
+	} while((character != CR)/*&&(character != LF)&&(character != 0)*/&&(length < max)); //TODO test LF and 0
 	*bufPt = 0;  //put ending 0
 }
 
-uint32_t UART2_GetUDecimal(void){
-uint32_t number=0, length=0;
-char character;
-  character = UART2_GetChar();
-  while(character != CR){ // accepts until <enter> is typed
-// The next line checks that the input is a digit, 0-9.
-// If the character is not 0-9, it is ignored and not echoed
-		if((character>='0') && (character<='9')) {
-			number = 10*number+(character-'0');   // this line overflows if above 4294967295
-			length++;
-			UART2_SendChar(character);
-		}
-// If the input is a backspace, then the return number is
-// changed and a backspace is outputted to the screen
-		else if((character==BS) && length){
-			number /= 10;
-			length--;
-			UART2_SendChar(character);
-		}
-		character = UART2_GetChar();
-	}
-	return number;
-}
+uint32_t UART2_GetUDecimal(void){	return 0;}  //TODO Low prio
+uint32_t UART2_GetUHex(void){	return 0;}  //TODO Low prio
+void UART0_Handler(void){}  //TODO Low prio
 
-uint32_t UART2_GetUHex(void){
-uint32_t number=0, digit, length=0;
-char character;
-  character = UART2_GetChar();
-  while(character != CR){
-    digit = 0x10; // assume bad
-    if((character>='0') && (character<='9')){
-      digit = character-'0';
-    }
-    else if((character>='A') && (character<='F')){
-      digit = (character-'A')+0xA;
-    }
-    else if((character>='a') && (character<='f')){
-      digit = (character-'a')+0xA;
-    }
-// If the character is not 0-9 or A-F, it is ignored and not echoed
-    if(digit <= 0xF){
-      number = number*0x10+digit;
-      length++;
-      UART2_SendChar(character);
-    }
-// Backspace outputted and return value changed if a backspace is inputted
-    else if((character==BS) && length){
-      number /= 0x10;
-      length--;
-      UART2_SendChar(character);
-    }
-    character = UART2_GetChar();
-  }
-  return number;
-}
-
-/*
-void UART0_Handler(void) {
-	//TODO
-}
-
+// at least one of three things has happened:
+// hardware TX FIFO goes from 3 to 2 or less items
+// hardware RX FIFO goes from 1 to 2 or more items
+// UART receiver has timed out
 void UART2_Handler(void) {
-	if(UARTIntStatus(UART2_BASE, true) == UART_INT_RX) {
-		UARTIntClear(UART2_BASE, UART_INT_RX);
-		OS_Signal(&SMSReceived);
+	if(UARTIntStatus(UART2_BASE, true) == UART_INT_TX) {  // hardware TX FIFO <= 2 items
+		UARTIntClear(UART2_BASE, UART_INT_TX);  // acknowledge TX FIFO
+		copySoftwareToHardware();  //copy from software TX FIFO to hardware TX FIFO
+    if(TxFifo_Size() == 0){  // software TX FIFO is empty
+			UARTIntDisable(UART2_BASE,UART_INT_TX); // disable TX FIFO interrupt
+		}
+	}
+	
+	if(UARTIntStatus(UART2_BASE, true) == UART_INT_RX) {  // hardware RX FIFO >= 2 items
+		UARTIntClear(UART2_BASE, UART_INT_RX);  // acknowledge RX FIFO
+		copyHardwareToSoftware();  // copy from hardware RX FIFO to software RX FIFO
+	}
+	
+	if(UARTIntStatus(UART2_BASE, true) == UART_INT_RT) {  // receiver timed out
+		UARTIntClear(UART2_BASE, UART_INT_RT);  // acknowledge receiver time out
+		copyHardwareToSoftware();  // copy from hardware RX FIFO to software RX FIFO
 	}
 }
-*/
-
 //EOF

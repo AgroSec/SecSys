@@ -4,10 +4,7 @@
 /*--------------------Type Includes------------------*/
 #include "stdbool.h"
 #include "stdint.h"
-
 /*-------------------Macro Definitions----------------*/
-// U0Rx (VCP receive) connected to PA0
-// U0Tx (VCP transmit) connected to PA1
 // standard ASCII symbols
 #define CR   0x0D  //Cariege return
 #define LF   0x0A  //Line feed
@@ -16,11 +13,6 @@
 #define SP   0x20
 #define DEL  0x7F
 #define SUB  0x1A //Ctrl+Z
-
-#define BAUD_RATE (115200)
-#define GSM_BAUD_RATE (9600) //TODO test with faster baud rates
-
-#define UART2_INT_PRIO (3)
 
 /*-----------External function definisions-----------*/
 //UART0 functions
