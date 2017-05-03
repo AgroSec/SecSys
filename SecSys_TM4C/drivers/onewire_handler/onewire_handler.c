@@ -18,8 +18,6 @@ int16_t LastFamilyDiscrepancy;
 int16_t LastDeviceFlag;
 uint8_t crc8;
 /*-------------Local Variable Definitions-------------*/
-#define TMEXUTIL
-int32_t session_handle;
 #define FALSE 0
 #define TRUE 1
 /*-------------------Function Definitions-------------*/
@@ -180,10 +178,11 @@ int16_t OWSearch()
 int16_t OWVerify()
 {
 	uint8_t rom_backup[8];
-	int16_t i,rslt,ld_backup,ldf_backup,lfd_backup;
+	int16_t i, rslt, ld_backup, ldf_backup, lfd_backup;
 	// keep a backup copy of the current state
 	for (i = 0; i < 8; i++)
-	rom_backup[i] = ROM_NO[i];
+		rom_backup[i] = ROM_NO[i];
+	
 	ld_backup = LastDiscrepancy;
 	ldf_backup = LastDeviceFlag;
 	lfd_backup = LastFamilyDiscrepancy;
@@ -265,28 +264,72 @@ void OWFamilySkipSetup()
 //
 int16_t OWReset()
 {
- // platform specific
- // TMEX API TEST BUILD
- return (TMTouchReset(session_handle) == 1);
+	uint8_t r;
+	uint8_t retries = 125;
+
+	DisableInterrupts();
+	GPIO_InitPortInput(OW_port1, OW_pin1, GPIO_PIN_TYPE_OD);
+	EnableInterrupts();
+	// wait until the wire is high... just in case
+	do {
+			if (--retries == 0) return 0;
+			delayMicroseconds(2);
+	} while ( !GPIOPinRead(OW_port1, OW_pin1));
+
+	DisableInterrupts();
+	GPIO_InitPortOutput(OW_port1, OW_pin1);
+	EnableInterrupts();
+	delayMicroseconds(500);
+	DisableInterrupts();
+	GPIO_InitPortInput(OW_port1, OW_pin1, GPIO_PIN_TYPE_OD);	// allow it to float
+	delayMicroseconds(80);
+	r = !GPIOPinRead(OW_port1, OW_pin1);
+	EnableInterrupts();
+	delayMicroseconds(420);
+	return r;
 }
 //--------------------------------------------------------------------------
 // Send 8 bits of data to the 1-Wire bus
 //
 void OWWriteByte(uint8_t byte_value)
 {
- // platform specific
+	uint8_t bitMask;
 
- // TMEX API TEST BUILD
- TMTouchByte(session_handle,byte_value);
+	for (bitMask = 0x01; bitMask; bitMask <<= 1) 
+	{
+		OWWriteBit( (bitMask & byte_value)?1:0);
+  }
+  
+  if (!OW_parasitic_power) 
+	{
+		DisableInterrupts();
+		GPIO_InitPortInput(OW_port1, OW_pin1, GPIO_PIN_TYPE_OD);
+		GPIO_SetPin(OW_port1, OW_pin1, 0);
+		EnableInterrupts();
+	}
 }
 //--------------------------------------------------------------------------
 // Send 1 bit of data to teh 1-Wire bus
 //
 void OWWriteBit(uint8_t bit_value)
 {
- // platform specific
- // TMEX API TEST BUILD
- TMTouchBit(session_handle,(short)bit_value);
+	if (bit_value & 1) {
+		DisableInterrupts();
+		GPIO_InitPortOutput(OW_port1, OW_pin1);	// drive output low
+		GPIO_SetPin(OW_port1, OW_pin1, 0);
+		delayMicroseconds(6);
+		GPIO_SetPin(OW_port1, OW_pin1, OW_pin1);	// drive output high
+		EnableInterrupts();
+		delayMicroseconds(64);
+	} else {
+		DisableInterrupts();
+		GPIO_InitPortOutput(OW_port1, OW_pin1);	// drive output low
+		GPIO_SetPin(OW_port1, OW_pin1, 0);
+		delayMicroseconds(60);
+		GPIO_SetPin(OW_port1, OW_pin1, OW_pin1);	// drive output high
+		EnableInterrupts();
+		delayMicroseconds(10);
+	}
 }
 //--------------------------------------------------------------------------
 // Read 1 bit of data from the 1-Wire bus
@@ -295,9 +338,18 @@ void OWWriteBit(uint8_t bit_value)
 //
 uint8_t OWReadBit()
 {
-	// platform specific
-	// TMEX API TEST BUILD
-	return (uint8_t)TMTouchBit(session_handle,0x01);
+	uint8_t r;
+
+	DisableInterrupts();
+	GPIO_InitPortOutput(OW_port1, OW_pin1);
+	GPIO_SetPin(OW_port1, OW_pin1, 0);
+	delayMicroseconds(6);
+	GPIO_InitPortInput(OW_port1, OW_pin1, GPIO_PIN_TYPE_OD);	// let pin float, pull up will raise
+	delayMicroseconds(9);
+	r = GPIOPinRead(OW_port1, OW_pin1);
+	EnableInterrupts();
+	delayMicroseconds(55);
+	return r;
 }
 // TEST BUILD
 
@@ -332,85 +384,6 @@ uint8_t docrc8(uint8_t value)
 	// TEST BUILD
 	crc8 = dscrc_table[crc8 ^ value];
 	return crc8;
-}
-
-
-//--------------------------------------------------------------------------
-// TEST BUILD MAIN
-//
-int16_t main(short argc, char **argv)
-{
-	short PortType=5,PortNum=1;
-	int16_t rslt,i,cnt;
-	// TMEX API SETUP
-	// get a session
-	session_handle = TMExtendedStartSession(PortNum,PortType,NULL);
-	if (session_handle <= 0)
-	{
-		printf("No session, %d\n",session_handle);
-		exit(0);
-	}
-
-	// setup the port
-	rslt = TMSetup(session_handle);
-	if (rslt != 1)
-	{
-		printf("Fail setup, %d\n",rslt);
-		exit(0);
-	}
-	// END TMEX API SETUP
-	// find ALL devices
-	printf("\nFIND ALL\n");
-	cnt = 0;
-	rslt = OWFirst();
-	while (rslt)
-	{
-		// print16_t device found
-		for (i = 7; i >= 0; i--)
-		printf("%02X", ROM_NO[i]);
-		printf(" %d\n",++cnt);
-		rslt = OWNext();
-	}
-	// find only 0x1A
-	printf("\nFIND ONLY 0x1A\n");
-	cnt = 0;
-	OWTargetSetup(0x1A);
-	while (OWNext())
-	{
-		// check for incorrect type
-		if (ROM_NO[0] != 0x1A)
-		break;
-
-		// print device found
-		for (i = 7; i >= 0; i--)
-		printf("%02X", ROM_NO[i]);
-		printf(" %d\n",++cnt);
-	}
-	// find all but 0x04, 0x1A, 0x23, and 0x01
-	printf("\nFIND ALL EXCEPT 0x10, 0x04, 0x0A, 0x1A, 0x23, 0x01\n");
-	cnt = 0;
-	rslt = OWFirst();
-	while (rslt)
-	{
-		// check for incorrect type
-		if ((ROM_NO[0] == 0x04) || (ROM_NO[0] == 0x1A) ||
-		(ROM_NO[0] == 0x01) || (ROM_NO[0] == 0x23) ||
-		(ROM_NO[0] == 0x0A) || (ROM_NO[0] == 0x10))
-			OWFamilySkipSetup();
-		else
-		{
-			// print device found
-			for (i = 7; i >= 0; i--)
-				printf("%02X", ROM_NO[i]);
-			printf(" %d\n",++cnt);
-		}
-		rslt = OWNext();
-	}
-	// TMEX API CLEANUP
-	// release the session
-	TMEndSession(session_handle);
-	// END TMEX API CLEANUP
-
 }
 
 #endif	// TEMP_AVAILABLE

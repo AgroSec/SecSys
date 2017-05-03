@@ -18,8 +18,10 @@
 #include "gpio_handler.h"
 #include "uart_handler.h"
 #include "hx711_handler.h"
+#include "onewire_handler.h"
 /*-----------------Application Includes---------------*/
 #include "LoadCell.h"
+#include "DS18B20.h"
 #include "PIR.h"
 #include "GSM.h"
 #include "pc_display.h"
@@ -85,6 +87,11 @@ void CYCL_1000ms(void) {
 		//Every 10 second code
 		GSMprocessMessage(1);
 	}
+	
+#if TEMP_AVAILABLE	
+	doStuffOnOneWire();
+#endif	// TEMP_AVAILABLE
+	
 #if PIR_AVAILABLE
 	if(!counter%PIR_TRIGGERS_TIMEFRAME) {  //this case is 10 seconds
 		//Every PIR_TRIGGERS_TIMEFRAME nr of second code
@@ -101,4 +108,5 @@ void CYCL_1000ms(void) {
 	counter++;
 #endif	// GSM_AVAILABLE
 }
+
 //EOF
