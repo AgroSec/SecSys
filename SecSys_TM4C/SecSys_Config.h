@@ -5,7 +5,7 @@
 
 #define PIR_AVAILABLE		(0)
 #define GSM_AVAILABLE		(0)
-#define HX711_AVAILABLE	(1)
+#define HX711_AVAILABLE	(0)
 #define RFID_AVAILABLE	(0)
 #define TEMP_AVAILABLE	(1)
 
@@ -16,6 +16,7 @@
 
 #define SERIAL_DEBUG_ACTIVE (1)  //Set Serial Debug active or inactive (for serial monitor)
 
+#define Micros2Ticks(x) (((SysCtlClockGet()*(x))/1000/1000) - 1)	
 #define Millis2Ticks(x) (((SysCtlClockGet()*(x))/1000) - 1)	
 //Returns the clock cycles required for the requested time in mili seconds
 #define PIR_TRIGGERS_TO_ALARM (2) //number of PIR triggers to consider as valid alarm
