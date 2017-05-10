@@ -34,7 +34,7 @@ uint8_t GPIO_InitPortOutput(ports_t port, uint8_t pin){
 		
 			GPIOPinTypeGPIOOutput(GPIO_PORTA_BASE, pin);  //Set as GPIO Output
 			GPIODirModeSet(GPIO_PORTA_BASE, pin, GPIO_DIR_MODE_OUT);  //Set direction Output
-			GPIOPadConfigSet(GPIO_PORTA_BASE, pin, GPIO_STRENGTH_2MA,GPIO_PIN_TYPE_STD_WPD); //Configure pin
+			GPIOPadConfigSet(GPIO_PORTA_BASE, pin, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD_WPD); //Configure pin
 			GPIOPinWrite(GPIO_PORTA_BASE, pin, 0);
 			break;
 		
@@ -53,7 +53,7 @@ uint8_t GPIO_InitPortOutput(ports_t port, uint8_t pin){
 
 			GPIOPinTypeGPIOOutput(GPIO_PORTC_BASE, pin);
 			GPIODirModeSet(GPIO_PORTC_BASE, pin, GPIO_DIR_MODE_OUT);
-			GPIOPadConfigSet(GPIO_PORTC_BASE, pin, GPIO_STRENGTH_2MA,GPIO_PIN_TYPE_STD);
+			GPIOPadConfigSet(GPIO_PORTC_BASE, pin, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD);
 			GPIOPinWrite(GPIO_PORTC_BASE, pin, 0);
 			break;
 			
@@ -64,7 +64,7 @@ uint8_t GPIO_InitPortOutput(ports_t port, uint8_t pin){
 		
 			GPIOPinTypeGPIOOutput(GPIO_PORTD_BASE, pin);  //Set as GPIO Output
 			GPIODirModeSet(GPIO_PORTD_BASE, pin, GPIO_DIR_MODE_OUT);  //Set direction Output
-			GPIOPadConfigSet(GPIO_PORTD_BASE, pin, GPIO_STRENGTH_2MA,GPIO_PIN_TYPE_STD);  //Configure pin
+			GPIOPadConfigSet(GPIO_PORTD_BASE, pin, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD);  //Configure pin
 			GPIOPinWrite(GPIO_PORTD_BASE, pin, 0);
 			break;
 		
@@ -76,7 +76,7 @@ uint8_t GPIO_InitPortOutput(ports_t port, uint8_t pin){
 			
 			GPIOPinTypeGPIOOutput(GPIO_PORTE_BASE, pin);
 			GPIODirModeSet(GPIO_PORTE_BASE, pin, GPIO_DIR_MODE_OUT);  //Set direction Output
-			GPIOPadConfigSet(GPIO_PORTE_BASE, pin, GPIO_STRENGTH_2MA,GPIO_PIN_TYPE_STD); //Configure pin
+			GPIOPadConfigSet(GPIO_PORTE_BASE, pin, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD); //Configure pin
 			//GPIOPinWrite(GPIO_PORTE_BASE, pin, 0);	// MiSU patch
 			break;
 		
@@ -88,7 +88,7 @@ uint8_t GPIO_InitPortOutput(ports_t port, uint8_t pin){
 			
 			GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, pin);  //Set GPIO Input
 			GPIODirModeSet(GPIO_PORTF_BASE, pin, GPIO_DIR_MODE_OUT);  //Set direction input
-			GPIOPadConfigSet(GPIO_PORTF_BASE, pin, GPIO_STRENGTH_2MA,GPIO_PIN_TYPE_STD); //Configure pin
+			GPIOPadConfigSet(GPIO_PORTF_BASE, pin, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD); //Configure pin
 			GPIOPinWrite(GPIO_PORTF_BASE, pin, 0);
 			break;		
 			
@@ -145,12 +145,12 @@ uint8_t GPIO_InitPortInput(ports_t port, uint8_t pin, uint8_t resistor)
 		case PortE:  //PortE
 			SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);	//Enable clock on port E
 			while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOE));
-			if(pin && GPIO_PIN_0) { GPIO_PORTE_LOCK_R = 0x4C4F434B; } //Unlock GPIO PF0 if necessary
-			GPIO_PORTE_CR_R |= pin;  //Allow changes to PF4-0
+			if(pin && GPIO_PIN_0) { GPIO_PORTE_LOCK_R = 0x4C4F434B; } //Unlock GPIO PE0 if necessary
+			GPIO_PORTE_CR_R |= pin;  //Allow changes to PE4-0
 			
 			GPIOPinTypeGPIOInput(GPIO_PORTE_BASE, pin);  //Set GPIO Input
 			GPIODirModeSet(GPIO_PORTE_BASE, pin, GPIO_DIR_MODE_IN);  //Set direction input
-			GPIOPadConfigSet(GPIO_PORTE_BASE, pin, GPIO_STRENGTH_2MA,resistor); //Configure PUR
+			GPIOPadConfigSet(GPIO_PORTE_BASE, pin, GPIO_STRENGTH_2MA, resistor); //Configure PUR
 			break;
 		case PortF:  //PortF
 			

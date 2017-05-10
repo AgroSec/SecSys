@@ -8,6 +8,7 @@
 #include "onewire_handler.h"
 /*-------------------Service Includes-----------------*/
 #include "gpio_handler.h"
+#include "PC_Display.h"
 /*-----------------Application Includes---------------*/
 
 /*-------------Global Variable Definitions------------*/
@@ -290,25 +291,39 @@ int16_t OWReset()
 	do {
 			if (--retries == 0) return 0;
 			delayMicroseconds(2);
-	} while ( !GPIOPinRead(OW_port1, OW_pin1));
+	} while ( !(GPIOPinRead(OW_portbase1, OW_pin1) & OW_pin1));
 
 	DisableInterrupts();
 	GPIO_InitPortOutput(OW_port1, OW_pin1);	// drive output low
-	GPIO_SetPin(OW_port1, OW_pin1, 0);
+	GPIO_SetPin(OW_port1, OW_pin1, 0);	
+	
 	/*
+	delayMicroseconds(20);
+	//EnableInterrupts();
+	GPIO_SetPin(OW_port1, OW_pin1, OW_pin1);
+	delayMicroseconds(20);
+	//DisableInterrupts();
+	GPIO_SetPin(OW_port1, OW_pin1, 0);
+	GPIO_InitPortOutput(OW_port1, OW_pin1);	// drive output low
 	delayMicroseconds(20);
 	GPIO_SetPin(OW_port1, OW_pin1, OW_pin1);
 	delayMicroseconds(20);
+	GPIO_InitPortInput(OW_port1, OW_pin1, GPIO_PIN_TYPE_OD);	// allow it to float
+	delayMicroseconds(20);
+	GPIO_InitPortOutput(OW_port1, OW_pin1);	// drive output low
 	GPIO_SetPin(OW_port1, OW_pin1, 0);
 	*/
+	
 	EnableInterrupts();
-	delayMicroseconds(480);	// default 480
+	delayMicroseconds(470);	// default 480
 	DisableInterrupts();
 	GPIO_InitPortInput(OW_port1, OW_pin1, GPIO_PIN_TYPE_OD);	// allow it to float
-	delayMicroseconds(70);	// default 70
-	r = !GPIOPinRead(OW_port1, OW_pin1);
+	delayMicroseconds(50);	// default 70
+	
+	//PC_Display_Message_FP("", GPIOPinRead(OW_portbase1, OW_pin1), -1, "");
+	r = !(GPIOPinRead(OW_portbase1, OW_pin1) & OW_pin1);
 	EnableInterrupts();
-	delayMicroseconds(410);	// default 410
+	delayMicroseconds(400);	// default 410
 	return r;
 }
 //--------------------------------------------------------------------------
@@ -327,7 +342,7 @@ void OWWriteByte(uint8_t byte_value)
 	{
 		DisableInterrupts();
 		GPIO_InitPortInput(OW_port1, OW_pin1, GPIO_PIN_TYPE_OD);
-		delayMicroseconds(5);
+		delayMicroseconds(1);
 		GPIO_InitPortOutput(OW_port1, OW_pin1);	// drive output low
 		GPIO_SetPin(OW_port1, OW_pin1, 0);
 		EnableInterrupts();
@@ -342,18 +357,18 @@ void OWWriteBit(uint8_t bit_value)
 		DisableInterrupts();
 		GPIO_InitPortOutput(OW_port1, OW_pin1);	// drive output low
 		GPIO_SetPin(OW_port1, OW_pin1, 0);
-		delayMicroseconds(6);		//default 6
+		delayMicroseconds(4);		//default 6
 		GPIO_SetPin(OW_port1, OW_pin1, OW_pin1);	// drive output high
 		EnableInterrupts();
-		delayMicroseconds(64);	//default 64
+		delayMicroseconds(60);	//default 64
 	} else {
 		DisableInterrupts();
 		GPIO_InitPortOutput(OW_port1, OW_pin1);	// drive output low
 		GPIO_SetPin(OW_port1, OW_pin1, 0);
-		delayMicroseconds(60);	// default 60
+		delayMicroseconds(55);	// default 60
 		GPIO_SetPin(OW_port1, OW_pin1, OW_pin1);	// drive output high
 		EnableInterrupts();
-		delayMicroseconds(10);	// default 10
+		delayMicroseconds(8);	// default 10
 	}
 }
 //--------------------------------------------------------------------------
@@ -368,12 +383,13 @@ uint8_t OWReadBit()
 	DisableInterrupts();
 	GPIO_InitPortOutput(OW_port1, OW_pin1);	// drive output low
 	GPIO_SetPin(OW_port1, OW_pin1, 0);
-	delayMicroseconds(6);		// default 6
+	delayMicroseconds(4);		// default 6
 	GPIO_InitPortInput(OW_port1, OW_pin1, GPIO_PIN_TYPE_OD);	// let pin float, pull up will raise
-	delayMicroseconds(9);		// default 9
-	r = GPIOPinRead(OW_port1, OW_pin1);
+	delayMicroseconds(7);		// default 9
+	
+	r = !(GPIOPinRead(OW_portbase1, OW_pin1) & OW_pin1);
 	EnableInterrupts();
-	delayMicroseconds(55);	// default 55
+	delayMicroseconds(50);	// default 55
 	return r;
 }
 // TEST BUILD

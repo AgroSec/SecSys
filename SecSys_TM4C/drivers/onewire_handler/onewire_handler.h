@@ -5,7 +5,8 @@
 	#include <stdbool.h>	
 
 	#define OW_port1 PortE
-	#define OW_pin1 1<<1		//port PE1
+	#define OW_portbase1 GPIO_PORTE_BASE
+	#define OW_pin1 GPIO_PIN_1		//port PE1
 	#define delayMicroseconds(x) (SysCtlDelay(x * 12.5 +x))
 	
 	#define OW_parasitic_power 0
