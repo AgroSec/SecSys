@@ -20,6 +20,7 @@
 /*-------------------Service Includes-----------------*/
 #include "gpio_handler.h"
 #include "uart_handler.h"
+#include "onewire_handler.h"
 /*-------------Global Variable Definitions------------*/
 extern uint32_t HX711_CalibVal;
 /*-------------Local Variable Definitions-------------*/
@@ -45,6 +46,13 @@ void InitDrivers(void) {
 	
 	PC_Display_Message("HX711 Calibration value is : ", HX711_CalibVal, "");
 #endif
+	
+	
+#if TEMP_AVAILABLE
+	GPIO_InitPortOutput(OW_port1, OW_pin1);	// drive output high
+	GPIO_SetPin(OW_port1, OW_pin1, OW_pin1);
+#endif	// TEMP_AVAILABLE
+	
 	PC_Display_Message("Driver init done...",0," ");
 }
 

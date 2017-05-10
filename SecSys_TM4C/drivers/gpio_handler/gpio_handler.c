@@ -77,7 +77,7 @@ uint8_t GPIO_InitPortOutput(ports_t port, uint8_t pin){
 			GPIOPinTypeGPIOOutput(GPIO_PORTE_BASE, pin);
 			GPIODirModeSet(GPIO_PORTE_BASE, pin, GPIO_DIR_MODE_OUT);  //Set direction Output
 			GPIOPadConfigSet(GPIO_PORTE_BASE, pin, GPIO_STRENGTH_2MA,GPIO_PIN_TYPE_STD); //Configure pin
-			GPIOPinWrite(GPIO_PORTE_BASE, pin, 0);
+			//GPIOPinWrite(GPIO_PORTE_BASE, pin, 0);	// MiSU patch
 			break;
 		
 		case PortF:  //PortF*/

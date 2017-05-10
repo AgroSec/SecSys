@@ -76,21 +76,21 @@ void CYCL_1000ms(void) {
 	static uint32_t counter = 1;
 	//Function calls that runs only every 1000 ms
 	PC_Display_Message("Seconds passed: ", counter, " ");
-
 	if(!(counter%2)) {
 		//Every 2 second code
 	}
 	if(!(counter%3)) {
 		//Every 3 second code
+		
 	}
 	if(!(counter%6)) {
 		//Every 10 second code
 		GSMprocessMessage(1);
 	}
 	
-#if TEMP_AVAILABLE	
-	doStuffOnOneWire();
-#endif	// TEMP_AVAILABLE
+	#if TEMP_AVAILABLE	
+		doStuffOnOneWire();
+	#endif	// TEMP_AVAILABLE
 	
 #if PIR_AVAILABLE
 	if(!counter%PIR_TRIGGERS_TIMEFRAME) {  //this case is 10 seconds

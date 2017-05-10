@@ -6,9 +6,9 @@
 
 	#define OW_port1 PortE
 	#define OW_pin1 1<<1		//port PE1
-	#define delayMicroseconds(x) (SysCtlDelay(Micros2Ticks(x)))
+	#define delayMicroseconds(x) (SysCtlDelay(x * 12.5 +x))
 	
-	#define OW_parasitic_power 1
+	#define OW_parasitic_power 0
 
 	int16_t OWFirst(void);
 	int16_t OWNext(void);

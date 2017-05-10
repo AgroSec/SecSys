@@ -64,6 +64,7 @@ int16_t OWSearch()
 	int16_t last_zero, rom_byte_number, search_result;
 	int16_t id_bit, cmp_id_bit;
 	uint8_t rom_byte_mask, search_direction;
+	
 	// initialize for search
 	id_bit_number = 1;
 	last_zero = 0;
@@ -71,6 +72,7 @@ int16_t OWSearch()
 	rom_byte_mask = 1;
 	search_result = 0;
 	crc8 = 0;
+	
 	// if the last call was not the last one
 	if (!LastDeviceFlag)
 	{
@@ -85,12 +87,14 @@ int16_t OWSearch()
 		}
 		// issue the search command
 		OWWriteByte(0xF0);
+		
 		// loop to do the search
 		do
 		{
 			// read a bit and its complement
 			id_bit = OWReadBit();
 			cmp_id_bit = OWReadBit();
+			
 			// check for no devices on 1-wire
 			if ((id_bit == 1) && (cmp_id_bit == 1))
 				break;
@@ -104,12 +108,12 @@ int16_t OWSearch()
 					// if this discrepancy if before the Last Discrepancy
 					// on a previous next then pick the same as last time
 					if (id_bit_number < LastDiscrepancy)
-					search_direction = ((ROM_NO[rom_byte_number] &
-					rom_byte_mask) > 0);
+						search_direction = ((ROM_NO[rom_byte_number] & rom_byte_mask) > 0);
 					else
 					{
 						// if equal to last pick 1, if not then pick 0
 						search_direction = (id_bit_number == LastDiscrepancy);
+						
 						// if 0 was picked then record its position in LastZero
 					}
 					if (search_direction == 0)
@@ -117,7 +121,7 @@ int16_t OWSearch()
 						last_zero = id_bit_number;
 						// check for Last discrepancy in family
 						if (last_zero < 9)
-						LastFamilyDiscrepancy = last_zero;
+							LastFamilyDiscrepancy = last_zero;
 					}
 				}
 				// set or clear the bit in the ROM byte rom_byte_number
@@ -132,10 +136,12 @@ int16_t OWSearch()
 				}
 				// serial number search direction write bit
 				OWWriteBit(search_direction);
+				
 				// increment the byte counter id_bit_number
 				// and shift the mask rom_byte_mask
 				id_bit_number++;
 				rom_byte_mask <<= 1;
+				
 				// if the mask is 0 then go to new SerialNum byte rom_byte_number and reset mask
 				if (rom_byte_mask == 0)
 				{
@@ -146,14 +152,17 @@ int16_t OWSearch()
 			}
 		}
 		while(rom_byte_number < 8); // loop until through all ROM bytes 0-7
+		
 		// if the search was successful then
 		if (!((id_bit_number < 65) || (crc8 != 0)))
 		{
 			// search successful so set LastDiscrepancy,LastDeviceFlag,search_result
 			LastDiscrepancy = last_zero;
+			
 			// check for last device
 			if (LastDiscrepancy == 0)
-			LastDeviceFlag = TRUE;
+				LastDeviceFlag = TRUE;
+			
 			search_result = TRUE;
 		}
 	}
@@ -179,6 +188,7 @@ int16_t OWVerify()
 {
 	uint8_t rom_backup[8];
 	int16_t i, rslt, ld_backup, ldf_backup, lfd_backup;
+	
 	// keep a backup copy of the current state
 	for (i = 0; i < 8; i++)
 		rom_backup[i] = ROM_NO[i];
@@ -186,9 +196,11 @@ int16_t OWVerify()
 	ld_backup = LastDiscrepancy;
 	ldf_backup = LastDeviceFlag;
 	lfd_backup = LastFamilyDiscrepancy;
+	
 	// set search to find the same device
 	LastDiscrepancy = 64;
 	LastDeviceFlag = FALSE;
+	
 	if (OWSearch())
 	{
 		// check if same device found
@@ -214,6 +226,7 @@ int16_t OWVerify()
 	LastDiscrepancy = ld_backup;
 	LastDeviceFlag = ldf_backup;
 	LastFamilyDiscrepancy = lfd_backup;
+	
 	// return the result of the verify
 	return rslt;
 }
@@ -226,6 +239,7 @@ int16_t OWVerify()
 void OWTargetSetup(uint8_t family_code)
 {
 	int16_t i;
+	
 	// set the search state to find SearchFamily type devices
 	ROM_NO[0] = family_code;
 	for (i = 1; i < 8; i++)
@@ -247,6 +261,7 @@ void OWFamilySkipSetup()
 	// set the Last discrepancy to last family discrepancy
 	LastDiscrepancy = LastFamilyDiscrepancy;
 	LastFamilyDiscrepancy = 0;
+	
 	// check for end of list
 	if (LastDiscrepancy == 0)
 		LastDeviceFlag = TRUE;
@@ -270,6 +285,7 @@ int16_t OWReset()
 	DisableInterrupts();
 	GPIO_InitPortInput(OW_port1, OW_pin1, GPIO_PIN_TYPE_OD);
 	EnableInterrupts();
+	
 	// wait until the wire is high... just in case
 	do {
 			if (--retries == 0) return 0;
@@ -277,15 +293,22 @@ int16_t OWReset()
 	} while ( !GPIOPinRead(OW_port1, OW_pin1));
 
 	DisableInterrupts();
-	GPIO_InitPortOutput(OW_port1, OW_pin1);
+	GPIO_InitPortOutput(OW_port1, OW_pin1);	// drive output low
+	GPIO_SetPin(OW_port1, OW_pin1, 0);
+	/*
+	delayMicroseconds(20);
+	GPIO_SetPin(OW_port1, OW_pin1, OW_pin1);
+	delayMicroseconds(20);
+	GPIO_SetPin(OW_port1, OW_pin1, 0);
+	*/
 	EnableInterrupts();
-	delayMicroseconds(500);
+	delayMicroseconds(480);	// default 480
 	DisableInterrupts();
 	GPIO_InitPortInput(OW_port1, OW_pin1, GPIO_PIN_TYPE_OD);	// allow it to float
-	delayMicroseconds(80);
+	delayMicroseconds(70);	// default 70
 	r = !GPIOPinRead(OW_port1, OW_pin1);
 	EnableInterrupts();
-	delayMicroseconds(420);
+	delayMicroseconds(410);	// default 410
 	return r;
 }
 //--------------------------------------------------------------------------
@@ -304,6 +327,8 @@ void OWWriteByte(uint8_t byte_value)
 	{
 		DisableInterrupts();
 		GPIO_InitPortInput(OW_port1, OW_pin1, GPIO_PIN_TYPE_OD);
+		delayMicroseconds(5);
+		GPIO_InitPortOutput(OW_port1, OW_pin1);	// drive output low
 		GPIO_SetPin(OW_port1, OW_pin1, 0);
 		EnableInterrupts();
 	}
@@ -317,18 +342,18 @@ void OWWriteBit(uint8_t bit_value)
 		DisableInterrupts();
 		GPIO_InitPortOutput(OW_port1, OW_pin1);	// drive output low
 		GPIO_SetPin(OW_port1, OW_pin1, 0);
-		delayMicroseconds(6);
+		delayMicroseconds(6);		//default 6
 		GPIO_SetPin(OW_port1, OW_pin1, OW_pin1);	// drive output high
 		EnableInterrupts();
-		delayMicroseconds(64);
+		delayMicroseconds(64);	//default 64
 	} else {
 		DisableInterrupts();
 		GPIO_InitPortOutput(OW_port1, OW_pin1);	// drive output low
 		GPIO_SetPin(OW_port1, OW_pin1, 0);
-		delayMicroseconds(60);
+		delayMicroseconds(60);	// default 60
 		GPIO_SetPin(OW_port1, OW_pin1, OW_pin1);	// drive output high
 		EnableInterrupts();
-		delayMicroseconds(10);
+		delayMicroseconds(10);	// default 10
 	}
 }
 //--------------------------------------------------------------------------
@@ -341,14 +366,14 @@ uint8_t OWReadBit()
 	uint8_t r;
 
 	DisableInterrupts();
-	GPIO_InitPortOutput(OW_port1, OW_pin1);
+	GPIO_InitPortOutput(OW_port1, OW_pin1);	// drive output low
 	GPIO_SetPin(OW_port1, OW_pin1, 0);
-	delayMicroseconds(6);
+	delayMicroseconds(6);		// default 6
 	GPIO_InitPortInput(OW_port1, OW_pin1, GPIO_PIN_TYPE_OD);	// let pin float, pull up will raise
-	delayMicroseconds(9);
+	delayMicroseconds(9);		// default 9
 	r = GPIOPinRead(OW_port1, OW_pin1);
 	EnableInterrupts();
-	delayMicroseconds(55);
+	delayMicroseconds(55);	// default 55
 	return r;
 }
 // TEST BUILD
