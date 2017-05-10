@@ -26,10 +26,12 @@ void doStuffOnOneWire()
 	
 	PC_Display_Message_FP("FIND ALL", -32767, 0, "");
 	cnt = 0;
+	
 	rslt = OWFirst();
+	PC_Display_Message_FP("rslt: ", rslt, 0, "");
 	while (rslt)
 	{
-		// print16_t device found
+		// print device found
 		for (i = 7; i >= 0; i--)
 			PC_Display_Message_FP("asd", ROM_NO[i], 0, "");
 		PC_Display_Message_FP("", ++cnt, 0, "");
@@ -54,6 +56,7 @@ void doStuffOnOneWire()
 	PC_Display_Message_FP("FIND ALL EXCEPT 0x10, 0x04, 0x0A, 0x1A, 0x23, 0x01", -32767, 0, "");
 	cnt = 0;
 	rslt = OWFirst();
+	PC_Display_Message_FP("rslt: ", rslt, 0, "");
 	while (rslt)
 	{
 		// check for incorrect type
