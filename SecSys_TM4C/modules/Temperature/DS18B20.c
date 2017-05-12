@@ -33,10 +33,11 @@ void doStuffOnOneWire()
 	{
 		// print device found
 		for (i = 7; i >= 0; i--)
-			PC_Display_Message_FP("asd", ROM_NO[i], 0, "");
+			PC_Display_Message_FP("", ROM_NO[i], 0, "");
 		PC_Display_Message_FP("", ++cnt, 0, "");
 		rslt = OWNext();
 	}
+	/*
 	// find only 0x1A
 	PC_Display_Message_FP("FIND ONLY 0x1A", -32767, 0, "");
 	cnt = 0;
@@ -73,7 +74,7 @@ void doStuffOnOneWire()
 		}
 		rslt = OWNext();
 	}
-
+*/
 }
 
 //#endif	// TEMP_AVAILABLE
