@@ -79,6 +79,12 @@ uint8_t GPIO_InitPortOutput(ports_t port, uint8_t pin){
 			GPIODirModeSet(GPIO_PORTE_BASE, pin, GPIO_DIR_MODE_OUT);  //Set direction Output
 			GPIOPadConfigSet(GPIO_PORTE_BASE, pin, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD); //Configure pin
 			//GPIOPinWrite(GPIO_PORTE_BASE, pin, 0);	// MiSU patch
+		
+		 /*	
+			*	function GPIOPinTypeGPIOOutput calls GPIOPadConfigSet(ui32Port, ui8Pins, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD); and GPIODirModeSet(ui32Port, ui8Pins, GPIO_DIR_MODE_OUT);
+			*	 therefore, the above structure is redundant.
+			*	either call GPIOPinTypeGPIOOutput or GPIOPadConfigSet+GPIODirModeSet.
+			*/
 			break;
 		
 		case PortF:  //PortF*/
@@ -153,6 +159,11 @@ uint8_t GPIO_InitPortInput(ports_t port, uint8_t pin, uint8_t resistor)
 			GPIOPinTypeGPIOInput(GPIO_PORTE_BASE, pin);  //Set GPIO Input
 			GPIODirModeSet(GPIO_PORTE_BASE, pin, GPIO_DIR_MODE_IN);  //Set direction input
 			GPIOPadConfigSet(GPIO_PORTE_BASE, pin, GPIO_STRENGTH_2MA, resistor); //Configure PUR
+		 /*	
+			*	function GPIOPinTypeGPIOInput calls GPIODirModeSet(ui32Port, ui8Pins, GPIO_DIR_MODE_IN); and GPIOPadConfigSet(ui32Port, ui8Pins, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD);
+			*	 therefore, the above structure is redundant.
+			*	either call GPIOPinTypeGPIOInput or GPIODirModeSet+GPIOPadConfigSet.
+			*/
 			break;
 		case PortF:  //PortF
 			

@@ -415,7 +415,8 @@ uint8_t OWReadBit()
 	//EnableInterrupts();
 	delayMicroseconds(29);	// default 55
 	
-	return r;
+	if (r) return 1;
+	return 0;
 }
 // TEST BUILD
 

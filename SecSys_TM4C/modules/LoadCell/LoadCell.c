@@ -3,10 +3,10 @@
 /*-------------------Configuration Includes-----------*/
 #include "SecSys_Config.h"
 /*------Export interface---Self header Includes-------*/
+#include "LoadCell.h"
 
 #if HX711_AVAILABLE
 
-#include "LoadCell.h"
 /*-------------------Service Includes-----------------*/
 #include "gpio_handler.h"
 #include "hx711_handler.h"
@@ -17,7 +17,6 @@ extern uint32_t HX711_CalibVal;
 extern uint32_t loggedValues[arraySize];
 extern uint8_t arrayCounter;
 
-#include "LoadCell.h"
 uint32_t HX711_Calibrate(void)
 {	// first calibration, at system startup
 	uint8_t i;

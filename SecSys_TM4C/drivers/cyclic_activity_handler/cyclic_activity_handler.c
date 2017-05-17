@@ -21,10 +21,10 @@
 #include "onewire_handler.h"
 /*-----------------Application Includes---------------*/
 #include "LoadCell.h"
-#include "DS18B20.h"
 #include "PIR.h"
 #include "GSM.h"
 #include "pc_display.h"
+#include "DS18B20.c"
 /*-------------Global Variable Definitions------------*/
 extern int32_t GSMModule;
 extern uint32_t HX711_CalibVal;
@@ -89,7 +89,7 @@ void CYCL_1000ms(void) {
 	}
 	
 	#if TEMP_AVAILABLE	
-		doStuffOnOneWire();
+		call_DS18B20();	
 	#endif	// TEMP_AVAILABLE
 	
 #if PIR_AVAILABLE
