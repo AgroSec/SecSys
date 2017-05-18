@@ -1,4 +1,5 @@
 /*------------------Project Includes-----------------*/
+#include <math.h>
 #include "uart_handler.h"
 #include "os_config.h"
 #include "os_core.h"
@@ -56,7 +57,7 @@ void UART0_SendUDecimal(uint32_t n){
   UART0_SendChar(n+'0'); /* n is between 0 and 9 */
 }
 
-void UART0_SendNumeric(int32_t n, uint8_t digits)
+void UART0_SendNumeric(int32_t n, uint16_t digits)
 {	// function used to send numbers to uart0;
 	// accepts signed integers and also floating 
 	// point (by using and integer multiplied by 10^digits)
@@ -67,9 +68,9 @@ void UART0_SendNumeric(int32_t n, uint8_t digits)
 		UART0_SendUDecimal(n);
 	else 
 	{
-		UART0_SendUDecimal(n / digits);
+		UART0_SendUDecimal(n / (uint32_t)pow(10, digits));
 		UART0_SendChar('.');
-		UART0_SendUDecimal(n % digits);		
+		UART0_SendUDecimal(n % (uint32_t)pow(10, digits));		
 	}
 }
 

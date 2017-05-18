@@ -284,16 +284,14 @@ void OWFamilySkipSetup()
 //
 int16_t OWReset(onewire_t *ow)
 {
-	//uint8_t r;
 	uint8_t retries = 125;
-/*
-	GPIO_InitPortInput(OW_port1, OW_pin1, GPIO_PIN_TYPE_OD);
+	
 	// wait until the wire is high... just in case
 	do {
 			if (--retries == 0) return 0;
 			delayMicroseconds(2);
 	} while ( !(GPIOPinRead(OW_portbase1, OW_pin1) & OW_pin1));
-*/
+
 	onewire_line_low(ow);
   delayMicroseconds(475); // 480us minimum
   onewire_line_release(ow);
@@ -346,6 +344,23 @@ void OWWriteBit(onewire_t *ow, uint8_t bit)
   else
     delayMicroseconds(8);
 }
+
+//--------------------------------------------------------------------------
+// Read 1 byte (8 bits) of data from the 1-Wire bus
+uint8_t OWReadByte(onewire_t *ow)
+{
+	uint8_t bitMask, byte = 0;
+	
+	for (bitMask = 0x01; bitMask; bitMask<<=1)
+	{
+		if (OWReadBit(ow))
+			byte |= bitMask;
+	}
+	
+	return byte;
+}
+
+
 //--------------------------------------------------------------------------
 // Read 1 bit of data from the 1-Wire bus
 // Return 1 : bit read is 1

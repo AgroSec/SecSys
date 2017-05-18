@@ -4,10 +4,6 @@
 	#include <stdint.h>
 	#include <stdbool.h>	
 
-	#define OW_port1 PortE
-	#define OW_portbase1 GPIO_PORTE_BASE
-	#define OW_pin1 GPIO_PIN_1		//port PE1
-	
 	#define delayMicroseconds(x) (SysCtlDelay(x * 12.5 +x))
 	
 	#define OW_parasitic_power 0
@@ -28,6 +24,7 @@ typedef struct {
 	int16_t OWReset(onewire_t *ow);
 	void OWWriteByte(onewire_t *ow, uint8_t byte);
 	void OWWriteBit(onewire_t *ow, uint8_t bit);
+	uint8_t OWReadByte(onewire_t *ow);
 	uint8_t OWReadBit(onewire_t *ow);
 	int16_t OWSearch(onewire_t *ow);
 	uint8_t docrc8( uint8_t *addr, uint8_t len);			
