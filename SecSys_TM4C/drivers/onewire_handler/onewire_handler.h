@@ -3,8 +3,9 @@
 	/*-------------------Type Includes--------------------*/
 	#include <stdint.h>
 	#include <stdbool.h>	
+	#include "driverlib/rom.h"
 
-	#define delayMicroseconds(x) (SysCtlDelay(x * 12.5 +x))
+	#define delayMicroseconds(x) (ROM_SysCtlDelay(x * 25))
 	
 	#define OW_parasitic_power 0
 

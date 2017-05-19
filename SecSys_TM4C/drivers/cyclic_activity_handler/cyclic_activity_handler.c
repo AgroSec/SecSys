@@ -89,7 +89,9 @@ void CYCL_1000ms(void) {
 	}
 	
 	#if TEMP_AVAILABLE	
+	DisableInterrupts();
 		call_DS18B20();	
+	EnableInterrupts();
 	#endif	// TEMP_AVAILABLE
 	
 #if PIR_AVAILABLE

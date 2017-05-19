@@ -342,7 +342,7 @@ void OWWriteBit(onewire_t *ow, uint8_t bit)
   if (bit)
     delayMicroseconds(60);
   else
-    delayMicroseconds(8);
+    delayMicroseconds(7);
 }
 
 //--------------------------------------------------------------------------
