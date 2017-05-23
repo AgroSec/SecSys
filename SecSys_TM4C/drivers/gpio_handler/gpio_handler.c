@@ -132,7 +132,7 @@ uint8_t GPIO_SetPin(ports_t port, uint8_t pin, uint8_t status){
 	return 1;  //OK
 }
 
-uint8_t GPIO_InitPortInput(ports_t port, uint8_t pin, uint8_t resistor)
+uint8_t GPIO_InitPortInput(ports_t port, uint8_t pin, uint16_t resistor)
 {
 			
 			switch (port) {
@@ -172,24 +172,6 @@ uint8_t GPIO_InitPortInput(ports_t port, uint8_t pin, uint8_t resistor)
 			return 0;  //error
 	}
 	return 1;  //OK
-}
-
-uint8_t GPIO_SwitchToOutput(ports_t port, uint8_t pin)
-{
-			GPIOPinTypeGPIOOutput(port, pin);  //Set GPIO Output
-			GPIODirModeSet(port, pin, GPIO_DIR_MODE_OUT);  //Set direction output
-			GPIOPadConfigSet(port, pin, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD); //Configure PUR
-			
-	return 0;  //OK
-}
-
-uint8_t GPIO_SwitchToInput(ports_t port, uint8_t pin, uint8_t resistor)
-{
-			GPIOPinTypeGPIOInput(port, pin);  //Set GPIO Input
-			GPIODirModeSet(port, pin, GPIO_DIR_MODE_IN);  //Set direction input
-			GPIOPadConfigSet(port, pin, GPIO_STRENGTH_2MA, resistor); //Configure PUR
-			
-	return 0;  //OK
 }
 
 //EOF

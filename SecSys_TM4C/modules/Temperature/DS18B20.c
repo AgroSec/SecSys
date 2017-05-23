@@ -17,7 +17,7 @@
 	#include "pc_display.h"
 	/*-------------Global Variable Definitions------------*/
 	extern uint8_t ROM_NO[];
-	uint8_t FirstRun = 1;
+	uint8_t FirstRun = 0;
 	/*-------------Local Variable Definitions-------------*/
 
 	/*-------------------Function Definitions-------------*/
@@ -41,11 +41,14 @@
 		{
 		// print device found
 		#if SERIAL_DEBUG_ACTIVE
+			UART0_SendNewLine();
 			UART0_SendString(">>device: ");
 			for (i=0; i<8; i++)
 			{
+				if(ROM_NO[i] < 0x10) UART0_SendChar('0');
 				UART0_SendUHex((uint32_t)ROM_NO[i]);
-				UART0_SendString(" ");
+				if (i==7) break;
+				UART0_SendString("-");
 			}
 			UART0_SendNewLine();
 		#endif	// SERIAL_DEBUG_ACTIVE
@@ -69,69 +72,107 @@
 					return;
 				}
 				
-				OWReset(&ow);						// reset bus
-				OW_select(&ow, ROM_NO);	// select the current device
+				
 				
 				if (FirstRun)
 				{ 
 					PC_Display_Message_FP("First run. Programming device with value: ", CONFIG_REGISTER, -1, "");
-					// read current configuration
-					OW_readScratchpad(&ow);
-					for (i=0; i<9; i++)
-					{
-						scratchpad[i] = OWReadByte(&ow);
-					}
-					/*
-					// print scratchpad
-					#if SERIAL_DEBUG_ACTIVE
-						UART0_SendString("Current config: ");
-						for (i=0; i<9; i++)
-						{
-							UART0_SendUHex((uint32_t)scratchpad[i]);
-							UART0_SendString(" ");
-						}
-						UART0_SendNewLine();
-					#endif	//SERIAL_DEBUG_ACTIVE
-							*/		
-					OWReset(&ow);						// reset bus
-					OW_select(&ow, ROM_NO);	// select the current device
+					
+						#if SERIAL_DEBUG_ACTIVE	// read scratchpad is used only to print it
+							OWReset(&ow);						// reset bus
+							OW_select(&ow, ROM_NO);	// select the current device
+							// read current configuration
+							OW_readScratchpad(&ow);
+							for (i=0; i<9; i++)
+							{
+								scratchpad[i] = OWReadByte(&ow);
+							}
 
-					// set DS18B20 resolution to the one defined globally
-					OW_writeScratchpad(&ow, scratchpad[2], scratchpad[3], CONFIG_REGISTER);
-					
-					OWReset(&ow);						// reset bus
-					OW_select(&ow, ROM_NO);	// select the current device
-					
-					OW_readScratchpad(&ow);
-					for (i=0; i<9; i++)
-					{
-						scratchpad[i] = OWReadByte(&ow);
-					}
-					
-					// print scratchpad; check if all is ok
-					#if SERIAL_DEBUG_ACTIVE
-						UART0_SendString("New config: ");
-						for (i=0; i<9; i++)
-						{
-							UART0_SendUHex((uint32_t)scratchpad[i]);
-							UART0_SendString(" ");
-						}
-						UART0_SendNewLine();
+						// print scratchpad
+							UART0_SendString("Current config: ");
+							for (i=0; i<9; i++)
+							{
+								if(scratchpad[i] < 0x10) UART0_SendChar('0');
+								UART0_SendUHex((uint32_t)scratchpad[i]);
+								UART0_SendString(" ");
+							}
+							UART0_SendNewLine();
 					#endif	//SERIAL_DEBUG_ACTIVE
 					
-					OW_copyScratchpad(&ow);	// write data from scratchpad to non-volatile mem
-					for (i=0; i<99; i++)
-						delayMicroseconds(100);
-					#if SERIAL_DEBUG_ACTIVE
-						UART0_SendString("Non-volatile mem written! Resetting...");
-						UART0_SendNewLine();
-					#endif	// SERIAL_DEBUG_ACTIVE
+							
 					OWReset(&ow);						// reset bus
+					OW_select(&ow, ROM_NO);	// select the current device
+					// set DS18B20 resolution to the one defined globally
+					OW_writeScratchpad(&ow, 0xFF, 0x00, CONFIG_REGISTER);
+							
+							
+					#if SERIAL_DEBUG_ACTIVE // read scratchpad is used only to print it
+							OWReset(&ow);						// reset bus
+							OW_select(&ow, ROM_NO);	// select the current device
+							OW_readScratchpad(&ow);
+							for (i=0; i<9; i++)
+							{
+								scratchpad[i] = OWReadByte(&ow);
+							}
+							
+							// print scratchpad; check if all is ok
+							UART0_SendString("Read    config: ");
+							for (i=0; i<9; i++)
+							{
+								if(scratchpad[i] < 0x10) UART0_SendChar('0');
+								UART0_SendUHex((uint32_t)scratchpad[i]);
+								UART0_SendString(" ");
+							}
+							UART0_SendNewLine();
+					#endif	//SERIAL_DEBUG_ACTIVE
+
+							
+					OWReset(&ow);						// reset bus
+					OW_select(&ow, ROM_NO);	// select the current device
+					OW_copyScratchpad(&ow);	// write data from scratchpad to non-volatile mem
+
+					delayMicroseconds(10000);
+
+							
+					#if SERIAL_DEBUG_ACTIVE
+							UART0_SendString("Non-volatile mem written! Resetting...");
+							UART0_SendNewLine();
+					#endif	// SERIAL_DEBUG_ACTIVE
+
+
+					#if SERIAL_DEBUG_ACTIVE // read scratchpad is used only to print it
+							OWReset(&ow);						// reset bus
+							OW_select(&ow, ROM_NO);	// select the current device
+							OW_recallEEvalues(&ow);
+							delayMicroseconds(10);
+							
+							OWReset(&ow);
+							OW_select(&ow, ROM_NO);	// select the current device
+							OW_readScratchpad(&ow);
+							for (i=0; i<9; i++)
+							{
+								scratchpad[i] = OWReadByte(&ow);
+							}
+							
+							// print scratchpad; check if all is ok
+							UART0_SendString("New     config: ");
+							for (i=0; i<9; i++)
+							{
+								if(scratchpad[i] < 0x10) UART0_SendChar('0');
+								UART0_SendUHex((uint32_t)scratchpad[i]);
+								UART0_SendString(" ");
+							}
+							UART0_SendNewLine();
+					#endif	//SERIAL_DEBUG_ACTIVE
 				}
+				
 				else
+					
 				{
+					OWReset(&ow);								// reset bus
+					OW_select(&ow, ROM_NO);			// select the current device					
 					OWWriteByte(&ow, 0x44);			// start conversion			
-					delayMicroseconds(T_CONV);	// wait for conversion to finnish
+					delayMicroseconds(T_CONV);	// wait for conversion to finish
 					OWReset(&ow);								// reset bus
 					OW_select(&ow, ROM_NO);			// select the current device
 					OW_readScratchpad(&ow);			// send 'read scratchpad' command
@@ -139,19 +180,21 @@
 					{
 						scratchpad[i] = OWReadByte(&ow);
 					}
-					/*
-					// print scratchpad
+					
+					// print scratchpad01
 					#if SERIAL_DEBUG_ACTIVE
-						UART0_SendString("Scratchpad: ");
-						for (i=0; i<9; i++)
-						{
-							UART0_SendUHex((uint32_t)scratchpad[i]);
-							UART0_SendString(" ");
-						}
-						UART0_SendNewLine();
+							UART0_SendString("Scratchpad: ");
+							for (i=0; i<9; i++)
+							{
+								if(scratchpad[i] < 0x10) UART0_SendChar('0');
+								UART0_SendUHex((uint32_t)scratchpad[i]);
+								UART0_SendString(" ");
+							}
+							UART0_SendNewLine();
 					#endif	// SERIAL_DEBUG_ACTIVE
-					*/
+					
 					//check crc
+					
 					raw = (scratchpad[1] << 8) | scratchpad[0];	// raw temperature value
 					
 					if (type_s)
@@ -175,21 +218,21 @@
 						//// default is 12 bit resolution, 750 ms conversion time
 					
 					}
-					tempCelsius = (int16_t)((float)(1000.0 * raw / 16.0 ));
+					tempCelsius = (int16_t)(1000.0 * (float)raw / 16.0 );
 					PC_Display_Message_FP("Current temp: ", tempCelsius, 3, " *C");				
 				}			
-				
+		cnt++;
+
 		#if SERIAL_DEBUG_ACTIVE
-			PC_Display_Message_FP("Device number: ", ++cnt, 0, "");
-			//UART0_SendNewLine();
+				PC_Display_Message_FP("Device number: ", cnt, 0, "");
 		#endif	// SERIAL_DEBUG_ACTIVE
 				
 		rslt = OWNext(&ow);
 		}
 		
 		#if SERIAL_DEBUG_ACTIVE
-			PC_Display_Message_FP("No more addresses.", -32767, 0, "");
-			//UART0_SendNewLine();
+				PC_Display_Message_FP("No more addresses.", -32767, 0, "");
+				UART0_SendNewLine();
 		#endif	// SERIAL_DEBUG_ACTIVE
 		FirstRun = 0;
 
@@ -249,8 +292,6 @@
 	void OW_copyScratchpad(onewire_t *ow)
 	{
 			OWWriteByte(ow, 0x48);           // copy SP to non-volatile mem; operation takes about 10ms.
-			onewire_line_high(ow);
-			onewire_line_release(ow);
 	}
 
 	//
@@ -261,5 +302,16 @@
 			OWWriteByte(ow, 0xB8);						// send command to recall from non-volatile mem; 
 	}		// The recall operation happens automatically at power-up, so valid data is available in the scratchpad as soon as power is applied to the device.
 
+	//
+	// skip reading ROM address
+	//
+	void OW_skipROM(onewire_t *ow)
+	{
+			OWWriteByte(ow, 0xCC);						// send command to skip reading ROM address
+	}
+
+	
+	
+	
 #endif	// TEMP_AVAILABLE
 // EOF

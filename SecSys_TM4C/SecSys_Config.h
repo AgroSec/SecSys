@@ -56,8 +56,7 @@
 	#define OW_port1 PortE
 	#define OW_portbase1 GPIO_PORTE_BASE
 	#define OW_pin1 GPIO_PIN_1		//port PE1
-	#define TEMPERATURE_RESOLUTION (11)
-	
+	#define TEMPERATURE_RESOLUTION (11)	
 	/*	---	end of 	TEMPERATURE			---	*/
 
 

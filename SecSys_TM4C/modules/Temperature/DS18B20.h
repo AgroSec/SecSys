@@ -13,19 +13,19 @@
 	#define RESOLUTION TEMPERATURE_RESOLUTION
 	
 	#if (RESOLUTION == 9)
-		#define T_CONV 93
+		#define T_CONV 92500
 		#define CONFIG_REGISTER (0x1F)
 	#endif
 	#if (RESOLUTION == 10)
-		#define T_CONV 187
+		#define T_CONV 187500
 		#define CONFIG_REGISTER (0x3F)
 	#endif
 	#if (RESOLUTION == 11)
-		#define T_CONV 375
+		#define T_CONV 375000
 		#define CONFIG_REGISTER (0x5F)
 	#endif
 	#if (RESOLUTION == 12)
-		#define T_CONV 750
+		#define T_CONV 750000
 		#define CONFIG_REGISTER (0x7F)
 	#endif
 	
@@ -37,6 +37,8 @@
 	void OW_writeScratchpad(onewire_t *ow, uint8_t TH, uint8_t TL, uint8_t configRegister);
 	void OW_readScratchpad(onewire_t *ow);
 	void OW_copyScratchpad(onewire_t *ow);	
+	void OW_recallEEvalues(onewire_t *ow);
+	void OW_skipROM(onewire_t *ow);
 		
 #endif	// DS18B20_H
 	// EOF

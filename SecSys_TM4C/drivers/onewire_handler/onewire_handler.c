@@ -284,7 +284,7 @@ void OWFamilySkipSetup()
 //
 int16_t OWReset(onewire_t *ow)
 {
-	uint8_t retries = 125;
+	uint8_t readVal = 2, retries = 125;
 	
 	// wait until the wire is high... just in case
 	do {
@@ -296,10 +296,10 @@ int16_t OWReset(onewire_t *ow)
   delayMicroseconds(475); // 480us minimum
   onewire_line_release(ow);
   delayMicroseconds(70); // slave waits 15-60us
-  if (*(ow->port_in) & ow->pin) return 0; // line should be pulled down by slave
+  if (*(ow->port_in) & ow->pin) readVal = 0; // line should be pulled down by slave
   delayMicroseconds(410); // slave TX presence pulse 60-240us
-  if (!(*(ow->port_in) & ow->pin)) return 1; // line should be "released" by slave
-  return 2;
+  if (!(*(ow->port_in) & ow->pin)) readVal = 1; // line should be "released" by slave
+  return readVal;
 }
 //--------------------------------------------------------------------------
 // Send 8 bits of data to the 1-Wire bus
@@ -312,19 +312,6 @@ void OWWriteByte(onewire_t *ow, uint8_t byte)
     OWWriteBit(ow, byte & 1);
     byte >>= 1;
   }
-  
-	/*
-  if (!OW_parasitic_power) 
-	{
-		//DisableInterrupts();
-		GPIO_InitPortInput(OW_port1, OW_pin1, GPIO_PIN_TYPE_OD);
-		//delayMicroseconds(1);
-		GPIO_InitPortOutput(OW_port1, OW_pin1);	// drive output low
-		GPIO_SetPin(OW_port1, OW_pin1, 0);
-		//EnableInterrupts();
-	}
-	*/
-	
 }
 //--------------------------------------------------------------------------
 // Send 1 bit of data to teh 1-Wire bus
