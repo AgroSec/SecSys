@@ -2,7 +2,7 @@
 	#define ONEWIRE_HANDLER_H
 	/*-------------------Type Includes--------------------*/
 	#include <stdint.h>
-	#include <stdbool.h>	
+	//#include <stdbool.h>	
 	#include "driverlib/rom.h"
 
 	#define delayMicroseconds(x) (ROM_SysCtlDelay(x * 25))

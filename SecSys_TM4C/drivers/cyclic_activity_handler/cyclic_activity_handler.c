@@ -24,10 +24,12 @@
 #include "PIR.h"
 #include "GSM.h"
 #include "pc_display.h"
-#include "DS18B20.c"
+#include "DS18B20.h"
 /*-------------Global Variable Definitions------------*/
 extern int32_t GSMModule;
 extern uint32_t HX711_CalibVal;
+//extern void call_DS(void);
+
 /*-------------Local Variable Definitions-------------*/
 
 /*-------------------Function Definitions-------------*/
@@ -43,39 +45,57 @@ void CYCL_50ms(void) {
 void CYCL_100ms(void) {
 	//Function calls that runs only every 100 ms
 	
+		static uint32_t loop = 1;
+	
 #if HX711_AVAILABLE
-	uint32_t currentRead = HX711_ReadCount();
-	int8_t check = HX711_Check(currentRead);
-	int32_t currentValue;
-	
-	if (check ==  1) 
-	{ // positive value, above sensitivity limit
-		PC_Display_Message_FP("...............Tripped!!", -32767, 0, "");
-	}
-	if (check ==  -1) 
-	{ // negative value, above sensitivity limit
-		PC_Display_Message_FP("...............Cut!!", -32767, 0, "");
-	}
-	if (check ==  0) 
-	{ // nil value, between upper and lower sensitivity limits
-		PC_Display_Message_FP("...............All good.", -32767, 0, "");
-	}
-	
-	currentValue = (int32_t)(100.0*((int64_t)currentRead - (int64_t)HX711_CalibVal) / conversionFactor);
-	PC_Display_Message_FP("", currentValue, 2, "");
-	//GPIO_SetPin(PortE, 1<<3, 1<<3);		// set SLK pin to HIGH for powersave	
+		uint32_t currentRead = HX711_ReadCount();
+		int8_t check = HX711_Check(currentRead);
+		int32_t currentValue;
+		
+		if (check ==  1) 
+		{ // positive value, above sensitivity limit
+			PC_Display_Message_FP("...............Tripped!!", -32767, 0, "");
+			#if GSM_AVAILABLE
+					if(!(loop % 10))	// execute each second
+					{
+							SendSMS(Wire_1_Pull);
+					}
+			#endif	// GSM_AVAILABLE
+		}
+		if (check ==  -1) 
+		{ // negative value, above sensitivity limit
+			PC_Display_Message_FP("...............Cut!!", -32767, 0, "");
+			#if GSM_AVAILABLE
+					if(!(counter % 10))	// execute each second
+					{
+							SendSMS(Wire_1_Cut);
+					}
+			#endif	// GSM_AVAILABLE
+		}
+		if (check ==  0) 
+		{ // nil value, between upper and lower sensitivity limits
+			PC_Display_Message_FP("...............All good.", -32767, 0, "");
+		}
+		
+		currentValue = (int32_t)(100.0*((int64_t)currentRead - (int64_t)HX711_CalibVal) / conversionFactor);
+		PC_Display_Message_FP("", currentValue, 2, "");
+		//GPIO_SetPin(PortE, 1<<3, 1<<3);		// set SLK pin to HIGH for powersave
 #endif	// HX711_AVAILABLE
 	
+		loop++;
 }
 
-void CYCL_500ms(void) {
+void CYCL_500ms(void) 
+{
 	//Function calls that runs only every 500 ms
 }
 
-void CYCL_1000ms(void) {
+void CYCL_1000ms(void)
+{
 	static uint32_t counter = 1;
 	//Function calls that runs only every 1000 ms
 	PC_Display_Message("Seconds passed: ", counter, " ");
+	
 	if(!(counter%2)) {
 		//Every 2 second code
 	}
@@ -85,12 +105,14 @@ void CYCL_1000ms(void) {
 	}
 	if(!(counter%6)) {
 		//Every 10 second code
+		#if GSM_AVAILABLE
 		GSMprocessMessage(1);
+		#endif	// GSM_AVAILABLE
 	}
 	
 	#if TEMP_AVAILABLE	
 	DisableInterrupts();
-		call_DS18B20();	
+		call_DS();
 	EnableInterrupts();
 	#endif	// TEMP_AVAILABLE
 	

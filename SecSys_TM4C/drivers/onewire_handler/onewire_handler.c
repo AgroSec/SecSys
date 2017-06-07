@@ -11,6 +11,7 @@
 #include "PC_Display.h"
 /*-----------------Application Includes---------------*/
 #include "inc/hw_types.h"
+#include "DS18B20.h"
 /*-------------Global Variable Definitions------------*/
 #if TEMP_AVAILABLE
 // global search state
@@ -19,6 +20,8 @@ int16_t LastDiscrepancy;
 int16_t LastFamilyDiscrepancy;
 int16_t LastDeviceFlag;
 uint8_t crc8;
+
+extern onewire_t ow;
 /*-------------Local Variable Definitions-------------*/
 #define FALSE 0
 #define TRUE 1
@@ -403,7 +406,7 @@ uint8_t docrc8( uint8_t *addr, uint8_t len)
 	return crc;
 }
 
-inline void onewire_line_low(onewire_t *ow)
+void onewire_line_low(onewire_t *ow)
 {
   *(ow->port_dir) |= ow->pin;
   *(ow->port_out) &= ~ow->pin;
@@ -412,7 +415,7 @@ inline void onewire_line_low(onewire_t *ow)
 
 //#####################################################################
 
-inline void onewire_line_high(onewire_t *ow)
+void onewire_line_high(onewire_t *ow)
 {
   *(ow->port_dir) |= ow->pin;
   *(ow->port_out) |= ow->pin;
@@ -421,7 +424,7 @@ inline void onewire_line_high(onewire_t *ow)
 
 //#####################################################################
 
-inline void onewire_line_release(onewire_t *ow)
+void onewire_line_release(onewire_t *ow)
 {
   *(ow->port_dir) &= ~ow->pin; // input
   *(ow->port_ren) |= ow->pin;
