@@ -6,6 +6,7 @@
 
 /*-------------------Service Includes-----------------*/
 #include "onewire_handler.h"
+#include "uart_handler.h"
 #include "hw_gpio.h"
 #include "SecSys_Config.h"
 #include "inc/hw_types.h"
@@ -44,13 +45,13 @@ void init_DS(void)
 		// print device found
 		#if SERIAL_DEBUG_ACTIVE
 			UART0_SendNewLine();
-			UART0_SendString(">>>device: ");
+			UART0_SendString((uint8_t*)">>>device: ");
 			for (i=0; i<8; i++)
 			{
 				if(ROM_NO[i] < 0x10) UART0_SendChar('0');
 				UART0_SendUHex((uint32_t)ROM_NO[i]);
 				if (i==7) break;
-				UART0_SendString("-");
+				UART0_SendString((uint8_t*)"-");
 			}
 			UART0_SendNewLine();
 		#endif	// SERIAL_DEBUG_ACTIVE
@@ -87,12 +88,12 @@ void init_DS(void)
 				}
 
 				// print scratchpad
-				UART0_SendString("Current config: ");
+				UART0_SendString((uint8_t*)"Current config: ");
 				for (i=0; i<9; i++)
 				{
 					if(scratchpad[i] < 0x10) UART0_SendChar('0');
 					UART0_SendUHex((uint32_t)scratchpad[i]);
-					UART0_SendString(" ");
+					UART0_SendString((uint8_t*)" ");
 				}
 				UART0_SendNewLine();
 		#endif	//SERIAL_DEBUG_ACTIVE
@@ -114,12 +115,12 @@ void init_DS(void)
 				}
 				
 				// print scratchpad; check if all is ok
-				UART0_SendString("Read    config: ");
+				UART0_SendString((uint8_t*)"Read    config: ");
 				for (i=0; i<9; i++)
 				{
 					if(scratchpad[i] < 0x10) UART0_SendChar('0');
 					UART0_SendUHex((uint32_t)scratchpad[i]);
-					UART0_SendString(" ");
+					UART0_SendString((uint8_t*)" ");
 				}
 				UART0_SendNewLine();
 		#endif	//SERIAL_DEBUG_ACTIVE
@@ -133,7 +134,7 @@ void init_DS(void)
 
 			
 	#if SERIAL_DEBUG_ACTIVE
-			UART0_SendString("Non-volatile mem written! Resetting...");
+			UART0_SendString((uint8_t*)"Non-volatile mem written! Resetting...");
 			UART0_SendNewLine();
 	#endif	// SERIAL_DEBUG_ACTIVE
 
@@ -153,12 +154,12 @@ void init_DS(void)
 			}
 			
 			// print scratchpad; check if all is ok
-			UART0_SendString("New     config: ");
+			UART0_SendString((uint8_t*)"New     config: ");
 			for (i=0; i<9; i++)
 			{
 				if(scratchpad[i] < 0x10) UART0_SendChar('0');
 				UART0_SendUHex((uint32_t)scratchpad[i]);
-				UART0_SendString(" ");
+				UART0_SendString((uint8_t*)" ");
 			}
 			UART0_SendNewLine();
 	#endif	// SERIAL_DEBUG_ACTIVE
@@ -193,13 +194,13 @@ void call_DS(void)
 		// print device found
 		#if SERIAL_DEBUG_ACTIVE
 			UART0_SendNewLine();
-			UART0_SendString(">>device: ");
+			UART0_SendString((uint8_t*)">>device: ");
 			for (i=0; i<8; i++)
 			{
 				if(ROM_NO[i] < 0x10) UART0_SendChar('0');
 				UART0_SendUHex((uint32_t)ROM_NO[i]);
 				if (i==7) break;
-				UART0_SendString("-");
+				UART0_SendString((uint8_t*)"-");
 			}
 			UART0_SendNewLine();
 		#endif	// SERIAL_DEBUG_ACTIVE
@@ -240,12 +241,12 @@ void call_DS(void)
 							}
 
 						// print scratchpad
-							UART0_SendString("Current config: ");
+							UART0_SendString((uint8_t*)"Current config: ");
 							for (i=0; i<9; i++)
 							{
 								if(scratchpad[i] < 0x10) UART0_SendChar('0');
 								UART0_SendUHex((uint32_t)scratchpad[i]);
-								UART0_SendString(" ");
+								UART0_SendString((uint8_t*)" ");
 							}
 							UART0_SendNewLine();
 					#endif	//SERIAL_DEBUG_ACTIVE
@@ -267,12 +268,12 @@ void call_DS(void)
 							}
 							
 							// print scratchpad; check if all is ok
-							UART0_SendString("Read    config: ");
+							UART0_SendString((uint8_t*)"Read    config: ");
 							for (i=0; i<9; i++)
 							{
 								if(scratchpad[i] < 0x10) UART0_SendChar('0');
 								UART0_SendUHex((uint32_t)scratchpad[i]);
-								UART0_SendString(" ");
+								UART0_SendString((uint8_t*)" ");
 							}
 							UART0_SendNewLine();
 					#endif	//SERIAL_DEBUG_ACTIVE
@@ -286,7 +287,7 @@ void call_DS(void)
 
 							
 					#if SERIAL_DEBUG_ACTIVE
-							UART0_SendString("Non-volatile mem written! Resetting...");
+							UART0_SendString((uint8_t*)"Non-volatile mem written! Resetting...");
 							UART0_SendNewLine();
 					#endif	// SERIAL_DEBUG_ACTIVE
 
@@ -306,12 +307,12 @@ void call_DS(void)
 							}
 							
 							// print scratchpad; check if all is ok
-							UART0_SendString("New     config: ");
+							UART0_SendString((uint8_t*)"New     config: ");
 							for (i=0; i<9; i++)
 							{
 								if(scratchpad[i] < 0x10) UART0_SendChar('0');
 								UART0_SendUHex((uint32_t)scratchpad[i]);
-								UART0_SendString(" ");
+								UART0_SendString((uint8_t*)" ");
 							}
 							UART0_SendNewLine();
 					#endif	//SERIAL_DEBUG_ACTIVE
@@ -337,12 +338,12 @@ void call_DS(void)
 					
 					// print scratchpad01
 					#if SERIAL_DEBUG_ACTIVE
-							UART0_SendString("Scratchpad: ");
+							UART0_SendString((uint8_t*)"Scratchpad: ");
 							for (i=0; i<9; i++)
 							{
 								if(scratchpad[i] < 0x10) UART0_SendChar('0');
 								UART0_SendUHex((uint32_t)scratchpad[i]);
-								UART0_SendString(" ");
+								UART0_SendString((uint8_t*)" ");
 							}
 							UART0_SendNewLine();
 					#endif	// SERIAL_DEBUG_ACTIVE
@@ -372,7 +373,7 @@ void call_DS(void)
 						//// default is 12 bit resolution, 750 ms conversion time
 					
 					}
-					tempCelsius = (int16_t)(1000.0 * (float)raw / 16.0 );
+					tempCelsius = (int16_t)(1000.0 * (double)raw / 16.0 );
 					PC_Display_Message_FP("Current temp: ", tempCelsius, 3, " *C");				
 				}			
 		cnt++;
