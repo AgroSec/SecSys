@@ -10,7 +10,7 @@
       <TargetName>SecSysTM4C</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060300::V5.06 update 3 (build 300)::ARMCC</pCCUsed>
+      <pCCUsed>5060422::V5.06 update 4 (build 422)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>TM4C123GH6PM</Device>
@@ -473,6 +473,11 @@
               <FileName>startup_handler.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\drivers\startup_handler\startup_handler.c</FilePath>
+            </File>
+            <File>
+              <FileName>uartstdio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\TivaWare_C_Series-2.1.1.71\utils\uartstdio.c</FilePath>
             </File>
           </Files>
         </Group>

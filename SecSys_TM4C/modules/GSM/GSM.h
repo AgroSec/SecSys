@@ -6,6 +6,7 @@
 #include "stdint.h"
 #include "custom_types.h"
 
+void GSMgetCommand(uint8_t *command,uint8_t msgId);
 void PowerOnGSM(void);
 void SendSMS(SMS_Message_en message);
 uint8_t GSMgetResponse(void);
