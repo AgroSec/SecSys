@@ -44,9 +44,9 @@ uint32_t PIR_B_Alarm_Nr = 0;
 int32_t Task7Sync;
 int32_t Task8Sync;
 //fifo_t FifoA;
+int32_t SystemReset; //Semaphore to block startup task
 int32_t SerialMonitor; //Semaphore to block serial monitor
 int32_t GSMModule; //Semaphore to block GSM module
-int32_t SMSReceived; //Semaphore to block GSM module
 
 extern ptcbType PerTask[NUMPERIODIC];
 extern PortSema_t SemPortC;
@@ -56,6 +56,13 @@ extern PortSema_t SemPortF;
 /*-------------Local Variable Definitions-------------*/
 
 /*-------------------Function Definitions-------------*/
+void StartUp_Task(void){
+	while(1){
+	}
+	//OS_Wait(&SystemReset);
+	//InitDrivers();
+	//InitApplications();
+}
 void Task0_PIRA(void){	//Edge triggered task
   Count0_PIRA = 0;
   while(1){
@@ -181,28 +188,32 @@ Count8_PIRB_Process = 0;
 }
 
 void Task9_BlankTask(void){
-	//unsigned short message = 0;
-	//static uint32_t message_number = 0;
 	while(1){
-		//OS_Sleep(1000);
-		/*
-		OS_Wait(&SMSReceived);
-		PC_Display_Message("Message nr: ",message_number," received.");
-		message = ReceiveSMS();
-		PC_Display_Message("Message nr: ",message_number," processed.");
-		*/
 		OS_Wait(&SemPortF.pin0);  // signaled in OS on button touch
 		OS_Sleep(50);  //sleep to debounce switch		
-		//if(GPIOPinRead(GPIO_PORTF_BASE,GPIO_INT_PIN_0)!=GPIO_PIN_0) {   
-			//Profile_Toggle2();
-			//Action to perform
-			GSMprocessMessage(1);
-		//}
+		if(GPIOPinRead(GPIO_PORTF_BASE,GPIO_INT_PIN_0)!=GPIO_PIN_0) {   
+			OS_Wait(&GSMModule);
+			SendSMS(PIR_A);
+			OS_Signal(&GSMModule);
+			PC_Display_Message("Task 9 - SMS send test executed",0,"");
+		}
 		OS_EdgeTrigger_Restart(PortF,GPIO_PIN_0);
 	}
 }
 
-//TODO add task 10 - blank task for future inplementation
+void Task10_BlankTask(void){
+	while(1){
+		OS_Wait(&SemPortF.pin0);  // signaled in OS on button touch
+		OS_Sleep(50);  //sleep to debounce switch		
+		if(GPIOPinRead(GPIO_PORTF_BASE,GPIO_INT_PIN_4)!=GPIO_PIN_4) { 
+			OS_Wait(&GSMModule);			
+			GSMprocessMessage(1);
+			OS_Signal(&GSMModule);
+			PC_Display_Message("Task 10 - SMS receive test executed",0,"");
+		}
+		OS_EdgeTrigger_Restart(PortF,GPIO_PIN_0);
+	}
+}
 
 void Idle_Task(void){
   CountIdle = 0;
@@ -222,10 +233,10 @@ int main(void){
 	OS_InitSemaphore(&SemPortF.pin0,0);
 	OS_InitSemaphore(&SemPortF.pin4,0);
 	OS_InitSemaphore(&SerialMonitor,1);
+	OS_InitSemaphore(&SystemReset,1);
 	
 #if GSM_AVAILABLE	
 	OS_InitSemaphore(&GSMModule,1);
-	OS_InitSemaphore(&SMSReceived,0);
 #endif
 	
 	//4	
@@ -237,7 +248,7 @@ int main(void){
 	OS_InitSemaphore(&Task8Sync,0);
 #endif
 
-	OS_EdgeTrigger_Init(PortF,GPIO_PIN_0,INT_PRIO_PIN,GPIO_FALLING_EDGE,GPIO_PIN_TYPE_STD_WPU);
+	OS_EdgeTrigger_Init(PortF,GPIO_PIN_0|GPIO_PIN_4,INT_PRIO_PIN,GPIO_FALLING_EDGE,GPIO_PIN_TYPE_STD_WPU);
 	//5
 	OS_AddPeriodicEventThread(&PerTask[0].semaphore, 10);
 	OS_AddPeriodicEventThread(&PerTask[1].semaphore, 50);
@@ -246,7 +257,8 @@ int main(void){
 	OS_AddPeriodicEventThread(&PerTask[4].semaphore, 1000);
 	
 	//6
-  OS_AddThreads(&Task0_PIRA, TASK0_PRIO,
+  OS_AddThreads(&StartUp_Task, IDLE_TASK_PRIO,/*STARTUP_PRIO,*/
+								&Task0_PIRA, TASK0_PRIO,
 	              &Task1_PIRB, TASK1_PRIO,
 								&Task2_Cyclic10ms,  TASK2_PRIO,
 								&Task3_Cyclic50ms,  TASK3_PRIO,
@@ -256,6 +268,7 @@ int main(void){
 								&Task7_ProcessPIRA,BLANK_TASK_PRIO,
                 &Task8_ProcessPIRB,BLANK_TASK_PRIO,
 								&Task9_BlankTask ,TASK0_PRIO,
+								&Task10_BlankTask ,TASK0_PRIO,
 	              &Idle_Task,IDLE_TASK_PRIO);	//Idle task is lowest priority
 	//7
 	//OS_FIFO_Init(&FifoA);
@@ -263,7 +276,9 @@ int main(void){
 	//OS_InitSemaphore(&Task87Sync,0);
   //9
 	InitDrivers();
+	EnableInterrupts();
 	InitApplications();
+	DisableInterrupts();
 	OS_Launch(SysCtlClockGet()/THREADFREQ); // doesn't return, interrupts enabled in here
   return 0;  // this never executes
 }

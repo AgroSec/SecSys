@@ -87,7 +87,9 @@ int OS_AddThreads(void(*thread0)(void), uint32_t p0,
 									void(*thread7)(void), uint32_t p7,
                   void(*thread8)(void), uint32_t p8,
                   void(*thread9)(void), uint32_t p9,
-									void(*thread10)(void), uint32_t p10){
+									void(*thread10)(void), uint32_t p10,
+									void(*thread11)(void), uint32_t p11,
+									void(*thread12)(void), uint32_t p12){
   int32_t status; //I bit status
   int32_t i;	//thread index
   status = StartCritical(); //Disable Interrupts
@@ -102,8 +104,10 @@ int OS_AddThreads(void(*thread0)(void), uint32_t p0,
 	tcbs[6].next = &tcbs[7];	//main thread 6 points to main thread 7
 	tcbs[7].next = &tcbs[8];	//main thread 7 points to main thread 8
 	tcbs[8].next = &tcbs[9];	//main thread 8 points to main thread 9
-	tcbs[9].next = &tcbs[10];	//main thread 9 points to main thread 0
-	tcbs[10].next = &tcbs[0];	//main thread 9 points to main thread 0
+	tcbs[9].next = &tcbs[10];	//main thread 9 points to main thread 10
+	tcbs[10].next = &tcbs[11];	//main thread 10 points to main thread 11
+	tcbs[11].next = &tcbs[12];	//main thread 11 points to main thread 12
+	tcbs[12].next = &tcbs[0];	//main thread 12 points to main thread 0
 										
 	//initialize threads as not blocked									
 	for(i=0; i< NUMTHREADS; i++){tcbs[i].blocked = 0;}
@@ -134,6 +138,10 @@ int OS_AddThreads(void(*thread0)(void), uint32_t p0,
 	Stacks[9][STACKSIZE-2] = (int32_t)(thread9);	//Set address of thread 9 as PC
 	SetInitialStack(10);	//SetInitialStack initial stack of main thread 10
 	Stacks[10][STACKSIZE-2] = (int32_t)(thread10);	//Set address of thread 10 as PC
+	SetInitialStack(11);	//SetInitialStack initial stack of main thread 11
+	Stacks[11][STACKSIZE-2] = (int32_t)(thread11);	//Set address of thread 11 as PC
+	SetInitialStack(12);	//SetInitialStack initial stack of main thread 12
+	Stacks[12][STACKSIZE-2] = (int32_t)(thread12);	//Set address of thread 12 as PC
 	
 	//initialize priority for each thread
 	tcbs[0].priority = p0;
@@ -147,6 +155,8 @@ int OS_AddThreads(void(*thread0)(void), uint32_t p0,
 	tcbs[8].priority = p8;
 	tcbs[9].priority = p9;
 	tcbs[10].priority = p10;
+	tcbs[11].priority = p11;
+	tcbs[12].priority = p12;
 	
 	EndCritical(status);	//Enable Interrupts
 	return 1;         // successful

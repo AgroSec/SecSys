@@ -70,8 +70,10 @@ int OS_AddThreads(void(*thread0)(void), uint32_t p0,
 									void(*thread7)(void), uint32_t p7,
                   void(*thread8)(void), uint32_t p8,
                   void(*thread9)(void), uint32_t p9,
-									void(*thread10)(void), uint32_t p10);
-
+									void(*thread10)(void), uint32_t p10,
+									void(*thread11)(void), uint32_t p11,										
+									void(*thread12)(void), uint32_t p12);
+									
 //******** OS_AddPeriodicEventThread ***************
 // Add one background periodic event thread
 // Typically this function receives the highest priority

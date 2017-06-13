@@ -73,6 +73,9 @@ void CYCL_1000ms(void) {
 	static uint32_t counter = 1;
 	//Function calls that runs only every 1000 ms
 	PC_Display_Message("Seconds passed: ", counter, " ");
+	OS_Wait(&GSMModule);
+	GSMprocessMessage(1);  //Read SMS
+	OS_Signal(&GSMModule);
 
 	if(!(counter%2)) {
 		//Every 2 second code
@@ -82,7 +85,7 @@ void CYCL_1000ms(void) {
 	}
 	if(!(counter%6)) {
 		//Every 10 second code
-		GSMprocessMessage(1);
+		//GSMprocessMessage(1);
 	}
 #if PIR_AVAILABLE
 	if(!counter%PIR_TRIGGERS_TIMEFRAME) {  //this case is 10 seconds

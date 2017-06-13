@@ -32,15 +32,5 @@ uint32_t UART0_GetUHex(void);
 
 //UART2 functions
 void UART2_Init(void);
-void UART2_SendChar(uint8_t data);
-void UART2_SendString(uint8_t *pt);
-void UART2_SendUDecimal(uint32_t n);
-void UART2_SendDecimal(int32_t n);
-void UART2_SendUHex(uint32_t number);
-void UART2_SendNewLine(void);
-char UART2_GetChar(void);
-void UART2_GetString(char *bufPt, uint16_t max);
-uint32_t UART2_GetUDecimal(void);
-uint32_t UART2_GetUHex(void);
 #endif
 //EOF
