@@ -13,10 +13,10 @@
 		#define RFID_AVAILABLE	(0)
 		#define TEMP_AVAILABLE	(1)
 
-		#define DIGI_ALEX_GAAL1 0744424818
+		#define DIGI_ALEX_GAAL1   0744424818
 		#define ORANGE_ALEX_GAAL2 0758438903
-		#define ORANGE_CLAUDIU_1 0751538300
-		#define ORANGE_CLAUDIU_2 0749256822
+		#define ORANGE_CLAUDIU_1  0751538300
+		#define ORANGE_CLAUDIU_2  0749256822
 
 		#define Micros2Ticks(x) ((((SysCtlClockGet()*(x))/1000)/1000))	
 		#define Millis2Ticks(x) (((SysCtlClockGet()*(x))/1000) - 1)	
@@ -59,7 +59,7 @@
 		#define OW_port1 PortE
 		#define OW_portbase1 GPIO_PORTE_BASE
 		#define OW_pin1 GPIO_PIN_1		//port PE1
-		#define TEMPERATURE_RESOLUTION (11)	
+		#define TEMPERATURE_RESOLUTION (10)	
 		/*	---	end of 	TEMPERATURE			---	*/
 
 
