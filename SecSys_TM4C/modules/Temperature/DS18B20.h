@@ -11,6 +11,8 @@
 	#define PORT_REN  &(HWREG(GPIO_PORTE_BASE + GPIO_O_ODR));
 	#define PORT_DIR  &(HWREG(GPIO_PORTE_BASE + GPIO_O_DIR));
 	
+	#define MAX_SENSORS 10
+	
 	#if (TEMPERATURE_RESOLUTION == 9)
 		#define T_CONV 92500
 		#define CONFIG_REGISTER (0x1F)
@@ -28,7 +30,19 @@
 		#define CONFIG_REGISTER (0x7F)
 	#endif
 
+	typedef struct {
+					uint8_t	B0;
+					uint8_t	B1;
+					uint8_t	B2;
+					uint8_t	B3;
+					uint8_t	B4;
+					uint8_t	B5;
+					uint8_t	B6;
+					uint8_t	B7;
+				} DS_address;
+
 	void init_DS(void);
+	void getAdresses_DS(void);
 	void call_DS(void);
 	void OW_select(onewire_t *ow, uint8_t rom[8]);
 	void OW_readROM(onewire_t *ow);
