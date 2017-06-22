@@ -3,7 +3,6 @@
 /*-------------------Configuration Includes-----------*/
 #include "SecSys_Config.h"
 
-#if HX711_AVAILABLE
 /*------Export interface---Self header Includes-------*/
 #include "hx711_handler.h"
 /*-------------------Service Includes-----------------*/
@@ -11,16 +10,20 @@
 /*-----------------Application Includes---------------*/
 
 /*-------------Global Variable Definitions------------*/
-uint32_t HX711_CalibVal = 0;
-uint32_t loggedValues[arraySize];
-uint8_t arrayCounter = 0;
+#if HX711_AVAILABLE
+	uint32_t HX711_CalibVal = 0;
+	uint32_t loggedValues[arraySize];
+	uint8_t arrayCounter = 0;
+#endif	// HX711_AVAILABLE
 /*-------------Local Variable Definitions-------------*/
 
 /*-------------------Function Definitions-------------*/
 //  DOUT -  input - PortE, pin 2
 //   SLK - output - PortE, pin 3
 
-uint32_t HX711_ReadCount(void){
+uint32_t HX711_ReadCount(void)
+	{
+#if HX711_AVAILABLE
 	uint32_t Count=0;
 	uint8_t i=0;
 	
@@ -44,9 +47,9 @@ uint32_t HX711_ReadCount(void){
 	loggedValues[arrayCounter++] = Count;		//save this value
 	if (arrayCounter >= 100) arrayCounter = 0;
 	
-	return(Count);
-} 
-
+	return (Count);
 #endif	// HX711_AVAILABLE
+	return 0;
+} 
 
 // EOF

@@ -23,8 +23,15 @@
 #include "uart_handler.h"
 //#include "onewire_handler.h"
 /*-------------Global Variable Definitions------------*/
-extern uint32_t HX711_CalibVal;
-//extern void init_DS();
+#if HX711_AVAILABLE
+	extern uint32_t HX711_CalibVal;
+	extern uint32_t HX711_Calibrate(void);
+#endif	// HX711_AVAILABLE
+
+#if TEMP_AVAILABLE
+	//extern void init_DS(void);
+#endif	// TEMP_AVAILABLE
+
 /*-------------Local Variable Definitions-------------*/
 
 /*-------------------Function Definitions-------------*/
@@ -51,8 +58,8 @@ void InitDrivers(void) {
 	
 	
 #if TEMP_AVAILABLE
-	GPIO_InitPortOutput(OW_port1, OW_pin1);	// drive output high
-	GPIO_SetPin(OW_port1, OW_pin1, OW_pin1);		
+	GPIO_InitPortOutput(OW_port1, OW_pin1);
+	GPIO_SetPin(OW_port1, OW_pin1, OW_pin1);
 	init_DS();
 #endif	// TEMP_AVAILABLE
 	

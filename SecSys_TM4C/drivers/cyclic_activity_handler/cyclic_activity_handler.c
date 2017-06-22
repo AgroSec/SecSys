@@ -27,8 +27,15 @@
 #include "DS18B20.h"
 /*-------------Global Variable Definitions------------*/
 extern int32_t GSMModule;
-extern uint32_t HX711_CalibVal;
-//extern void call_DS(void);
+#if HX711_AVAILABLE
+	extern uint32_t HX711_CalibVal;
+	extern uint32_t HX711_ReadCount(void);
+	extern int8_t HX711_Check(uint32_t val);
+#endif	// HX711_AVAILABLE
+
+#if TEMP_AVAILABLE
+	//extern void call_DS(void);
+#endif	// HX711_AVAILABLE
 
 /*-------------Local Variable Definitions-------------*/
 
@@ -45,7 +52,7 @@ void CYCL_50ms(void) {
 void CYCL_100ms(void) {
 	//Function calls that runs only every 100 ms
 	
-		static uint32_t loop = 1;
+		static uint32_t loopvar = 1;
 	
 #if HX711_AVAILABLE
 		uint32_t currentRead = HX711_ReadCount();
@@ -54,27 +61,31 @@ void CYCL_100ms(void) {
 		
 		if (check ==  1) 
 		{ // positive value, above sensitivity limit
-			PC_Display_Message_FP("...............Tripped!!", -32767, 0, "");
+			PC_Display_Message_FP(">>>Tripped!!", -32767, 0, "");
+			
 			#if GSM_AVAILABLE
-					if(!(loop % 10))	// execute each second
+					if(!(loopvar % 10))	// execute each second
 					{
 							SendSMS(Wire_1_Pull);
 					}
 			#endif	// GSM_AVAILABLE
+					
 		}
 		if (check ==  -1) 
 		{ // negative value, above sensitivity limit
-			PC_Display_Message_FP("...............Cut!!", -32767, 0, "");
+			PC_Display_Message_FP(">>>Cut!!", -32767, 0, "");
+			
 			#if GSM_AVAILABLE
-					if(!(counter % 10))	// execute each second
+					if(!(loopvar % 10))	// execute each second
 					{
 							SendSMS(Wire_1_Cut);
 					}
 			#endif	// GSM_AVAILABLE
+					
 		}
 		if (check ==  0) 
 		{ // nil value, between upper and lower sensitivity limits
-			PC_Display_Message_FP("...............All good.", -32767, 0, "");
+			PC_Display_Message_FP(">>All good.", -32767, 0, "");
 		}
 		
 		currentValue = (int32_t)(100.0*((int64_t)currentRead - (int64_t)HX711_CalibVal) / conversionFactor);
@@ -82,7 +93,7 @@ void CYCL_100ms(void) {
 		//GPIO_SetPin(PortE, 1<<3, 1<<3);		// set SLK pin to HIGH for powersave
 #endif	// HX711_AVAILABLE
 	
-		loop++;
+		loopvar++;
 }
 
 void CYCL_500ms(void) 
