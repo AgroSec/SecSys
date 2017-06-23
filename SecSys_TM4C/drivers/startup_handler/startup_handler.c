@@ -32,6 +32,7 @@ void InitDrivers(void) {
 	
 #if GSM_AVAILABLE
 	UART2_Init();
+	PC_Display_Message("UART 2 Ready...", 0, "");
 #endif
 	
 #if HX711_AVAILABLE
@@ -52,10 +53,12 @@ void InitApplications(void) {
 	//Function calls to init applications
 #if GSM_AVAILABLE
 	PowerOnGSM();
+	PC_Display_Message("GSM Ready...", 0, "");
 #endif
 	
 #if PIR_AVAILABLE
 	Init_PIR();
+	PC_Display_Message("PIR Ready...", 0, "");
 	SendSMS(System_Ready);
 #endif
 	PC_Display_Message("Applications init done...",0," ");

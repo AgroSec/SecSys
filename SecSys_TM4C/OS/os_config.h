@@ -47,7 +47,6 @@
 #define TASK5_PRIO (200)
 #define TASK6_PRIO (250)
 #define BLANK_TASK_PRIO (253)
-#define BLANK_TASK_PRIO (253)
 #define IDLE_TASK_PRIO (254)
 
 //Number of OS embedded periodic tasks, DO NOT modify this if you are not changing the OS.

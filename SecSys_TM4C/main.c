@@ -53,178 +53,216 @@ extern PortSema_t SemPortC;
 //extern PortSema_t SemPortD;
 extern PortSema_t SemPortF;
 
+bool startupReady = True;
+
 /*-------------Local Variable Definitions-------------*/
 
 /*-------------------Function Definitions-------------*/
-void StartUp_Task(void){
-	while(1){
-	}
-	//OS_Wait(&SystemReset);
-	//InitDrivers();
-	//InitApplications();
-}
+
 void Task0_PIRA(void){	//Edge triggered task
   Count0_PIRA = 0;
   while(1){
-		OS_Wait(&SemPortC.pin6);  // signaled in ISR
-		OS_Sleep(50); //sleep to debounce switch		
-		if(GPIOPinRead(GPIO_PORTC_BASE,GPIO_INT_PIN_6)) {   
-			Count0_PIRA++;
-			Toggle0();
-			OS_Wait(&SerialMonitor);
-			PC_Display_Message("PIR A Triggered a number of: ",Count0_PIRA," times.");
-			OS_Signal(&SerialMonitor);
-			PIR_A_Trigger_Nr++;	
-			if(PIR_A_Trigger_Nr == 1) OS_Signal(&Task7Sync); //1st trigger in PIR process timeperiod
+		if(startupReady) {
+			OS_Wait(&SemPortC.pin6);  // signaled in ISR
+			OS_Sleep(50); //sleep to debounce switch		
+			if(GPIOPinRead(GPIO_PORTC_BASE,GPIO_INT_PIN_6)) {   
+				Count0_PIRA++;
+				Toggle0();
+				OS_Wait(&SerialMonitor);
+				PC_Display_Message("PIR A Triggered a number of: ",Count0_PIRA," times.");
+				OS_Signal(&SerialMonitor);
+				PIR_A_Trigger_Nr++;	
+				if(PIR_A_Trigger_Nr == 1) OS_Signal(&Task7Sync); //1st trigger in PIR process timeperiod
+			}
+			OS_EdgeTrigger_Restart(PortC,GPIO_PIN_6);
 		}
-		OS_EdgeTrigger_Restart(PortC,GPIO_PIN_6);
-		//OS_Signal(&Task7Sync);
   }
 }
 void Task1_PIRB(void){	//Edge triggered task
   Count1_PIRB = 0;
   while(1){
-		OS_Wait(&SemPortC.pin7);  // signaled in ISR
-		OS_Sleep(50); //sleep to debounce switch		
-		if(GPIOPinRead(GPIO_PORTC_BASE,GPIO_INT_PIN_7)) {
-			Count1_PIRB++;
-			Toggle1();
-			OS_Wait(&SerialMonitor);
-				PC_Display_Message("PIR B Triggered a number of: ",Count1_PIRB," times.");
-			OS_Signal(&SerialMonitor);
-			PIR_B_Trigger_Nr++;
-			if(PIR_B_Trigger_Nr == 1) OS_Signal(&Task8Sync); //1st trigger in PIR process timeperiod
+		if(startupReady) {
+			OS_Wait(&SemPortC.pin7);  // signaled in ISR
+			OS_Sleep(50); //sleep to debounce switch		
+			if(GPIOPinRead(GPIO_PORTC_BASE,GPIO_INT_PIN_7)) {
+				Count1_PIRB++;
+				Toggle1();
+				OS_Wait(&SerialMonitor);
+					PC_Display_Message("PIR B Triggered a number of: ",Count1_PIRB," times.");
+				OS_Signal(&SerialMonitor);
+				PIR_B_Trigger_Nr++;
+				if(PIR_B_Trigger_Nr == 1) OS_Signal(&Task8Sync); //1st trigger in PIR process timeperiod
+			}
+			OS_EdgeTrigger_Restart(PortC,GPIO_PIN_7);
 		}
-		//OS_Signal(&Task7Sync);
-		OS_EdgeTrigger_Restart(PortC,GPIO_PIN_7);
   }
 }
 void Task2_Cyclic10ms(void){  //Periodic task 10ms
   Count2_Cyclic10ms = 0;
   while(1){
-		OS_Wait(&PerTask[0].semaphore);
-		CYCL_10ms();
-		Count2_Cyclic10ms++;
-		Toggle2();
+		if(startupReady) {
+			OS_Wait(&PerTask[0].semaphore);
+			CYCL_10ms();
+			Count2_Cyclic10ms++;
+			Toggle2();
+		}
 	}
 }
 void Task3_Cyclic50ms(void){  //Periodic task 50ms
   Count3_Cyclic50ms = 0;
   while(1){
-		OS_Wait(&PerTask[1].semaphore);
-		CYCL_50ms();
-		Count3_Cyclic50ms++;
-		Toggle3();	
+		if(startupReady) {
+			OS_Wait(&PerTask[1].semaphore);
+			CYCL_50ms();
+			Count3_Cyclic50ms++;
+			Toggle3();	
+		}
 	}
 }
 
 void Task4_Cyclic100ms(void){  //Periodic task 100ms
 	Count4_Cyclic100ms = 0;
   while(1){
-		OS_Wait(&PerTask[2].semaphore);
-		CYCL_100ms();
-		Count4_Cyclic100ms++;
-		Toggle4();	
+		if(startupReady) {
+			OS_Wait(&PerTask[2].semaphore);
+			CYCL_100ms();
+			Count4_Cyclic100ms++;
+			Toggle4();	
+		}
 	}
 }
 
 void Task5_Cyclic500ms(void){  //Periodic task 500ms
 	Count5_Cyclic500ms = 0;
   while(1){
-		OS_Wait(&PerTask[3].semaphore);
-		CYCL_500ms();
-		Count5_Cyclic500ms++;
-		Toggle5();
+		if(startupReady) {
+			OS_Wait(&PerTask[3].semaphore);
+			CYCL_500ms();
+			Count5_Cyclic500ms++;
+			Toggle5();
+		}
 	}
 }
 
 void Task6_Cyclic1000ms(void){
 	Count6_Cyclic1000ms = 0;
 	while(1){
-		OS_Wait(&PerTask[4].semaphore);
-		CYCL_1000ms();
-		Count6_Cyclic1000ms++;
-		Toggle6();
+		if(startupReady) {
+			OS_Wait(&PerTask[4].semaphore);
+			CYCL_1000ms();
+			Count6_Cyclic1000ms++;
+			Toggle6();
+		}
 	}
 }
 
 void Task7_ProcessPIRA(void){
 	Count7_PIRA_Process = 0;
 	while(1){
-		OS_Wait(&Task7Sync);  //Wait for first PIR trigger in timeframe
-		Toggle0();  //Process task starts
-		OS_Sleep(PIR_TRIGGERS_TIMEFRAME*1000);  //Sleep for PIR_TRIGGERS_TIMEFRAME seconds
-		Count7_PIRA_Process++;
-		if(PIR_A_Trigger_Nr >= PIR_TRIGGERS_TO_ALARM){  //Check if it's necessary to raise alarm
-			PIR_A_Alarm_Nr++;
-			OS_Wait(&GSMModule); 
-			SendSMS(PIR_A);
-			OS_Signal(&GSMModule); 
-			PC_Display_Message("PIR A Alarm raised: ",PIR_A_Alarm_Nr," times.");
+		if(startupReady) {
+			OS_Wait(&Task7Sync);  //Wait for first PIR trigger in timeframe
+			Toggle0();  //Process task starts
+			OS_Sleep(PIR_TRIGGERS_TIMEFRAME*1000);  //Sleep for PIR_TRIGGERS_TIMEFRAME seconds
+			Count7_PIRA_Process++;
+			if(PIR_A_Trigger_Nr >= PIR_TRIGGERS_TO_ALARM){  //Check if it's necessary to raise alarm
+				PIR_A_Alarm_Nr++;
+				OS_Wait(&GSMModule); 
+				SendSMS(PIR_A);
+				OS_Signal(&GSMModule); 
+				PC_Display_Message("PIR A Alarm raised: ",PIR_A_Alarm_Nr," times.");
+			}
+			PIR_A_Trigger_Nr = 0
+			Toggle0();  //Process task ends
 		}
-		PIR_A_Trigger_Nr = 0
-		Toggle0();  //Process task ends
 	}
 }
 
 void Task8_ProcessPIRB(void){
 Count8_PIRB_Process = 0;
 	while(1){
-		OS_Wait(&Task8Sync);
-		Toggle1();
-		OS_Sleep(PIR_TRIGGERS_TIMEFRAME*1000);  //Sleep for PIR_TRIGGERS_TIMEFRAME seconds
-		Count8_PIRB_Process++;
-		if(PIR_B_Trigger_Nr >= PIR_TRIGGERS_TO_ALARM){  //Check if it's necessary to raise alarm
-			PIR_B_Alarm_Nr++;
-			OS_Wait(&GSMModule);
-			SendSMS(PIR_B);
-			OS_Signal(&GSMModule); 
-			PC_Display_Message("PIR B Alarm raised: ",PIR_B_Alarm_Nr," times.");
+		if(startupReady) {
+			OS_Wait(&Task8Sync);
+			Toggle1();
+			OS_Sleep(PIR_TRIGGERS_TIMEFRAME*1000);  //Sleep for PIR_TRIGGERS_TIMEFRAME seconds
+			Count8_PIRB_Process++;
+			if(PIR_B_Trigger_Nr >= PIR_TRIGGERS_TO_ALARM){  //Check if it's necessary to raise alarm
+				PIR_B_Alarm_Nr++;
+				OS_Wait(&GSMModule);
+				SendSMS(PIR_B);
+				OS_Signal(&GSMModule); 
+				PC_Display_Message("PIR B Alarm raised: ",PIR_B_Alarm_Nr," times.");
+			}
+			PIR_B_Trigger_Nr = 0
+			Toggle1();
 		}
-		PIR_B_Trigger_Nr = 0
-		Toggle1();
-
 	}
 }
 
 void Task9_BlankTask(void){
 	while(1){
-		OS_Wait(&SemPortF.pin0);  // signaled in OS on button touch
-		OS_Sleep(50);  //sleep to debounce switch		
-		if(GPIOPinRead(GPIO_PORTF_BASE,GPIO_INT_PIN_0)!=GPIO_PIN_0) {   
-			OS_Wait(&GSMModule);
-			SendSMS(PIR_A);
-			OS_Signal(&GSMModule);
-			PC_Display_Message("Task 9 - SMS send test executed",0,"");
+		if(startupReady) {
+			OS_Wait(&SemPortF.pin0);  // signaled in OS on button touch
+			OS_Sleep(50);  //sleep to debounce switch		
+			if(GPIOPinRead(GPIO_PORTF_BASE,GPIO_INT_PIN_0)!=GPIO_PIN_0) {
+				PC_Display_Message("Task 9 - SMS send test started",0,"");
+				OS_Wait(&GSMModule);
+				SendSMS(PIR_A);
+				OS_Signal(&GSMModule);
+				PC_Display_Message("Task 9 - SMS send test executed",0,"");
+			}
+			OS_EdgeTrigger_Restart(PortF,GPIO_PIN_0);
 		}
-		OS_EdgeTrigger_Restart(PortF,GPIO_PIN_0);
 	}
 }
 
 void Task10_BlankTask(void){
 	while(1){
-		OS_Wait(&SemPortF.pin0);  // signaled in OS on button touch
-		OS_Sleep(50);  //sleep to debounce switch		
-		if(GPIOPinRead(GPIO_PORTF_BASE,GPIO_INT_PIN_4)!=GPIO_PIN_4) { 
-			OS_Wait(&GSMModule);			
-			GSMprocessMessage(1);
-			OS_Signal(&GSMModule);
-			PC_Display_Message("Task 10 - SMS receive test executed",0,"");
+		if(startupReady) {
+			OS_Wait(&SemPortF.pin4);  // signaled in OS on button touch
+			OS_Sleep(50);  //sleep to debounce switch		
+			if(GPIOPinRead(GPIO_PORTF_BASE,GPIO_INT_PIN_4)!=GPIO_PIN_4) { 
+				PC_Display_Message("Task 10 - SMS receive test started",0,"");
+				OS_Wait(&GSMModule);			
+				GSMprocessMessage(1);
+				OS_Signal(&GSMModule);
+				PC_Display_Message("Task 10 - SMS receive test executed",0,"");
+			}
+			OS_EdgeTrigger_Restart(PortF,GPIO_PIN_0);
 		}
-		OS_EdgeTrigger_Restart(PortF,GPIO_PIN_0);
 	}
 }
 
+void Task11_BlankTask(void){
+	while(1){
+		if(startupReady) {
+			//do nothing
+		}
+		else {  // not ready
+			//InitApplications();
+			//startupReady = True;
+		}
+	}
+	//OS_Wait(&SystemReset);
+	//InitDrivers();
+	//InitApplications();
+}
 void Idle_Task(void){
   CountIdle = 0;
   while(1){
-    CountIdle++;
-		//CountIdle = ReceiveSMS();  //When system is in IDLE just wait for new SMS
-  }
+		if(startupReady) {
+			CountIdle++;
+		}
+	}
 }
 
 int main(void){
 	//2
+	
+	InitDrivers();
+	EnableInterrupts();
+	InitApplications();
+	DisableInterrupts();
+	
 	OS_Init(80);  // initialize, disable interrupts
 	
 	Profile_Init();  // enable digital I/O on profile pins
@@ -257,8 +295,7 @@ int main(void){
 	OS_AddPeriodicEventThread(&PerTask[4].semaphore, 1000);
 	
 	//6
-  OS_AddThreads(&StartUp_Task, IDLE_TASK_PRIO,/*STARTUP_PRIO,*/
-								&Task0_PIRA, TASK0_PRIO,
+  OS_AddThreads(&Task0_PIRA, TASK0_PRIO,
 	              &Task1_PIRB, TASK1_PRIO,
 								&Task2_Cyclic10ms,  TASK2_PRIO,
 								&Task3_Cyclic50ms,  TASK3_PRIO,
@@ -269,16 +306,13 @@ int main(void){
                 &Task8_ProcessPIRB,BLANK_TASK_PRIO,
 								&Task9_BlankTask ,TASK0_PRIO,
 								&Task10_BlankTask ,TASK0_PRIO,
+								&Task11_BlankTask, BLANK_TASK_PRIO,
 	              &Idle_Task,IDLE_TASK_PRIO);	//Idle task is lowest priority
 	//7
 	//OS_FIFO_Init(&FifoA);
 	//8
-	//OS_InitSemaphore(&Task87Sync,0);
+
   //9
-	InitDrivers();
-	EnableInterrupts();
-	InitApplications();
-	DisableInterrupts();
 	OS_Launch(SysCtlClockGet()/THREADFREQ); // doesn't return, interrupts enabled in here
   return 0;  // this never executes
 }
