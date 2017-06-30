@@ -15,13 +15,19 @@
 /*-----------------Application Includes---------------*/
 #include "GSM.h"
 #include "PIR.h"
-#include "HX711.h"
+#include "LoadCell.h"
 #include "pc_display.h"
+#include "DS18B20.h"
 /*-------------------Service Includes-----------------*/
 #include "gpio_handler.h"
 #include "uart_handler.h"
 /*-------------Global Variable Definitions------------*/
+#if HX711_AVAILABLE
 extern uint32_t HX711_CalibVal;
+	extern uint32_t HX711_Calibrate(void);
+#endif	// HX711_AVAILABLE
+#if TEMP_AVAILABLE
+#endif	// TEMP_AVAILABLE
 /*-------------Local Variable Definitions-------------*/
 
 /*-------------------Function Definitions-------------*/
@@ -46,6 +52,11 @@ void InitDrivers(void) {
 	
 	PC_Display_Message("HX711 Calibration value is : ", HX711_CalibVal, "");
 #endif
+#if TEMP_AVAILABLE
+	GPIO_InitPortOutput(OW_port1, OW_pin1);
+	GPIO_SetPin(OW_port1, OW_pin1, OW_pin1);
+	init_DS();
+#endif	// TEMP_AVAILABLE
 	PC_Display_Message("Driver init done...",0," ");
 }
 

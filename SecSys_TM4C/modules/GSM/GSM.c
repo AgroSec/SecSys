@@ -34,6 +34,8 @@ extern uint32_t Count1_PIRB;  // number of times Task1 loops
 extern uint32_t Count8_Blank; //increments every minute
 extern uint32_t PIR_A_Alarm_Nr;
 extern uint32_t PIR_B_Alarm_Nr;
+extern int16_t Global_Temp1;
+extern int16_t Global_Temp2;
 
 bool testDelete = 1;  // Delete messages during processing
 
@@ -137,8 +139,8 @@ void SendSMS(SMS_Message_en message){
 			#if TEMP_AVAILABLE
 			//Report temperature readings
 			//TODO replace Temp* with global variable from temperature reading 
-			UARTprintf("Temp 1: %d *C\n",Temp1);
-			UARTprintf("Temp 2: %d *C\n",Temp2);
+			UARTprintf("Temp 1: %d *C\n", Global_Temp1);
+			UARTprintf("Temp 2: %d *C\n", Global_Temp2);
 			#endif
 	
 			#if HX711_AVAILABLE

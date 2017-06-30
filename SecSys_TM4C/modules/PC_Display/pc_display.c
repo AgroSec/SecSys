@@ -11,10 +11,26 @@
 /*-------------Local Variable Definitions-------------*/
 
 /*-------------------Function Definitions-------------*/
-void PC_Display_Message( char *string1, uint32_t value, char *string2){
+void PC_Display_Message(char *string1, uint32_t value, char *string2)
+{
 #if SERIAL_DEBUG_ACTIVE
 	UART0_SendString((uint8_t*)string1);  //TODO check if casting is made OK
 	UART0_SendUDecimal(value);
+	UART0_SendString((uint8_t*)string2);
+	UART0_SendNewLine();
+#endif
+}
+void PC_Display_Message_FP(char *string1, int32_t value, int8_t digits, char *string2)
+{
+#if SERIAL_DEBUG_ACTIVE
+	UART0_SendString((uint8_t*)string1);
+	if (digits == -1)
+	{
+		UART0_SendUHex((uint32_t)value);
+	}
+	else
+	if (value != -32767)	// don't print if value is -32767
+		UART0_SendNumeric(value, digits);
 	UART0_SendString((uint8_t*)string2);
 	UART0_SendNewLine();
 #endif

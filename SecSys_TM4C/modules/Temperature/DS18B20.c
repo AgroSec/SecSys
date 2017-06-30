@@ -4,559 +4,486 @@
 
 /*-------------------Configuration Includes-----------*/
 
+/*-------------------Service Includes-----------------*/
+#include "onewire_handler.h"
+#include "uart_handler.h"
+#include "hw_gpio.h"
+#include "SecSys_Config.h"
+#include "inc/hw_types.h"
 /*------Export interface---Self header Includes-------*/
 #include "DS18B20.h"
-
-/*-------------------Service Includes-----------------*/
-
 /*-----------------Application Includes---------------*/
-
+#include "pc_display.h"
 /*-------------Global Variable Definitions------------*/
+extern uint8_t ROM_NO[];
+DS_address addressList[MAX_SENSORS];
+uint8_t currentSensor = 0;
+uint8_t lastSensorCount = 0;
 
+int16_t Global_Temp1, averageT1 = 0;
+int16_t Global_Temp2, averageT2 = 0;
 /*-------------Local Variable Definitions-------------*/
 
 /*-------------------Function Definitions-------------*/
 
-#include "OneWire.h"
-
-
-OneWire::OneWire(uint8_t pin)
-{
-	pinMode(pin, OUTPUT);
-	bitmask = PIN_TO_BITMASK(pin);
-	baseReg = PIN_TO_BASEREG(pin);
-#if ONEWIRE_SEARCH
-	reset_search();
-#endif
-}
-
-
-// Perform the onewire reset function.  We will wait up to 250uS for
-// the bus to come high, if it doesn't then it is broken or shorted
-// and we return a 0;
-//
-// Returns 1 if a device asserted a presence pulse, 0 otherwise.
-//
-uint8_t OneWire::reset(void)
-{
-	IO_REG_TYPE mask = bitmask;
-	volatile IO_REG_TYPE *reg IO_REG_ASM = baseReg;
-	uint8_t r;
-	uint8_t retries = 125;
-
-	noInterrupts();
-	DIRECT_MODE_INPUT(reg, mask);
-	interrupts();
-	// wait until the wire is high... just in case
-	do {
-		if (--retries == 0) return 0;
-		delayMicroseconds(2);
-	} while ( !DIRECT_READ(reg, mask));
-
-	noInterrupts();
-	DIRECT_MODE_OUTPUT(reg, mask);	// drive output low
-	DIRECT_WRITE_LOW(reg, mask);
-	interrupts();
-	delayMicroseconds(500);
-	noInterrupts();
-	DIRECT_MODE_INPUT(reg, mask);	// allow it to float
-	delayMicroseconds(80);
-	r = !DIRECT_READ(reg, mask);
-	interrupts();
-	delayMicroseconds(420);
-	return r;
-}
-
-#ifdef ENERGIA
-// 2013-01-26 Michel Veerman
-//
-// Launchpad Stellaris needs different timings as the original code.
-// Might be that this timing will also work for the arduino, but as
-// I don't have one, I can't test that.
-// So if someone can confirm that the new timings work on arduino, 
-// we can merge the code below
-
-//
-// Write a bit. Port and bit is used to cut lookup time and provide
-// more certain timing.
-//
-void OneWire::write_bit(uint8_t v)
-{
-	IO_REG_TYPE mask=bitmask;
-	volatile IO_REG_TYPE *reg IO_REG_ASM = baseReg;
-
-	if (v & 1) {
-		noInterrupts();
-		DIRECT_MODE_OUTPUT(reg, mask);	// drive output low
-		DIRECT_WRITE_LOW(reg, mask);
-		delayMicroseconds(6);
-		DIRECT_WRITE_HIGH(reg, mask);	// drive output high
-		interrupts();
-		delayMicroseconds(64);
-	} else {
-		noInterrupts();
-		DIRECT_MODE_OUTPUT(reg, mask);	// drive output low
-		DIRECT_WRITE_LOW(reg, mask);
-		delayMicroseconds(60);
-		DIRECT_WRITE_HIGH(reg, mask);	// drive output high
-		interrupts();
-		delayMicroseconds(10);
-	}
-}
-
-//
-// Read a bit. Port and bit is used to cut lookup time and provide
-// more certain timing.
-//
-uint8_t OneWire::read_bit(void)
-{
-	IO_REG_TYPE mask=bitmask;
-	volatile IO_REG_TYPE *reg IO_REG_ASM = baseReg;
-	uint8_t r;
-
-	noInterrupts();
-	DIRECT_MODE_OUTPUT(reg, mask);
-	DIRECT_WRITE_LOW(reg, mask);
-	delayMicroseconds(6);
-	DIRECT_MODE_INPUT(reg, mask);	// let pin float, pull up will raise
-	delayMicroseconds(9);
-	r = DIRECT_READ(reg, mask);
-	interrupts();
-	delayMicroseconds(55);
-	return r;
-}
-
-#else
-
-//
-// Write a bit. Port and bit is used to cut lookup time and provide
-// more certain timing.
-//
-void OneWire::write_bit(uint8_t v)
-{
-	IO_REG_TYPE mask=bitmask;
-	volatile IO_REG_TYPE *reg IO_REG_ASM = baseReg;
-
-	if (v & 1) {
-		noInterrupts();
-		DIRECT_MODE_OUTPUT(reg, mask);	// drive output low
-		DIRECT_WRITE_LOW(reg, mask);
-		delayMicroseconds(10);
-		DIRECT_WRITE_HIGH(reg, mask);	// drive output high
-		interrupts();
-		delayMicroseconds(55);
-	} else {
-		noInterrupts();
-		DIRECT_MODE_OUTPUT(reg, mask);	// drive output low
-		DIRECT_WRITE_LOW(reg, mask);
-		delayMicroseconds(65);
-		DIRECT_WRITE_HIGH(reg, mask);	// drive output high
-		interrupts();
-		delayMicroseconds(5);
-	}
-}
-
-//
-// Read a bit. Port and bit is used to cut lookup time and provide
-// more certain timing.
-//
-uint8_t OneWire::read_bit(void)
-{
-	IO_REG_TYPE mask=bitmask;
-	volatile IO_REG_TYPE *reg IO_REG_ASM = baseReg;
-	uint8_t r;
-
-	noInterrupts();
-	DIRECT_MODE_OUTPUT(reg, mask);
-	DIRECT_WRITE_LOW(reg, mask);
-	delayMicroseconds(3);
-	DIRECT_MODE_INPUT(reg, mask);	// let pin float, pull up will raise
-	delayMicroseconds(10);
-	r = DIRECT_READ(reg, mask);
-	interrupts();
-	delayMicroseconds(53);
-	return r;
-}
-
-#endif
-
-//
-// Write a byte. The writing code uses the active drivers to raise the
-// pin high, if you need power after the write (e.g. DS18S20 in
-// parasite power mode) then set 'power' to 1, otherwise the pin will
-// go tri-state at the end of the write to avoid heating in a short or
-// other mishap.
-//
-void OneWire::write(uint8_t v, uint8_t power /* = 0 */) {
-    uint8_t bitMask;
-
-    for (bitMask = 0x01; bitMask; bitMask <<= 1) {
-	OneWire::write_bit( (bitMask & v)?1:0);
-    }
-    if ( !power) {
-	noInterrupts();
-	DIRECT_MODE_INPUT(baseReg, bitmask);
-	DIRECT_WRITE_LOW(baseReg, bitmask);
-	interrupts();
-    }
-}
-
-void OneWire::write_bytes(const uint8_t *buf, uint16_t count, bool power /* = 0 */) {
-  for (uint16_t i = 0 ; i < count ; i++)
-    write(buf[i]);
-  if (!power) {
-    noInterrupts();
-    DIRECT_MODE_INPUT(baseReg, bitmask);
-    DIRECT_WRITE_LOW(baseReg, bitmask);
-    interrupts();
-  }
-}
-
-//
-// Read a byte
-//
-uint8_t OneWire::read() {
-    uint8_t bitMask;
-    uint8_t r = 0;
-
-    for (bitMask = 0x01; bitMask; bitMask <<= 1) {
-	if ( OneWire::read_bit()) r |= bitMask;
-    }
-    return r;
-}
-
-void OneWire::read_bytes(uint8_t *buf, uint16_t count) {
-  for (uint16_t i = 0 ; i < count ; i++)
-    buf[i] = read();
-}
-
-//
-// Do a ROM select
-//
-void OneWire::select( uint8_t rom[8])
-{
-    int i;
-
-    write(0x55);           // Choose ROM
-
-    for( i = 0; i < 8; i++) write(rom[i]);
-}
-
-//
-// Do a ROM skip
-//
-void OneWire::skip()
-{
-    write(0xCC);           // Skip ROM
-}
-
-void OneWire::depower()
-{
-	noInterrupts();
-	DIRECT_MODE_INPUT(baseReg, bitmask);
-	interrupts();
-}
-
-#if ONEWIRE_SEARCH
-
-//
-// You need to use this function to start a search again from the beginning.
-// You do not need to do it for the first search, though you could.
-//
-void OneWire::reset_search()
-  {
-  // reset the search state
-  LastDiscrepancy = 0;
-  LastDeviceFlag = FALSE;
-  LastFamilyDiscrepancy = 0;
-  for(int i = 7; ; i--)
-    {
-    ROM_NO[i] = 0;
-    if ( i == 0) break;
-    }
-  }
-
-//
-// Perform a search. If this function returns a '1' then it has
-// enumerated the next device and you may retrieve the ROM from the
-// OneWire::address variable. If there are no devices, no further
-// devices, or something horrible happens in the middle of the
-// enumeration then a 0 is returned.  If a new device is found then
-// its address is copied to newAddr.  Use OneWire::reset_search() to
-// start over.
-//
-// --- Replaced by the one from the Dallas Semiconductor web site ---
 //--------------------------------------------------------------------------
-// Perform the 1-Wire Search Algorithm on the 1-Wire bus using the existing
-// search state.
-// Return TRUE  : device found, ROM number in ROM_NO buffer
-//        FALSE : device not found, end of search
-//
-uint8_t OneWire::search(uint8_t *newAddr)
+
+
+/*
+ *	void init_DS(void)	- Makes a pass over all the sensors connected to the bus and programs them with the defined resolution
+ *											- Runs only once, at system startup
+ */
+ 
+void init_DS(void)
 {
-   uint8_t id_bit_number;
-   uint8_t last_zero, rom_byte_number, search_result;
-   uint8_t id_bit, cmp_id_bit;
+	#if TEMP_AVAILABLE
+		onewire_t ow;
+		//uint8_t type_s, cfg; 
+		uint8_t scratchpad[9];
+		//int16_t raw = 0, tempCelsius = 0;
+		int16_t rslt, i, cnt = 0;
+	 
+		ow.port_out = (uint8_t *)PORT_OUT;
+		ow.port_in  = (uint8_t *)PORT_IN;
+		ow.port_ren = (uint8_t *)PORT_REN;
+		ow.port_dir = (uint8_t *)PORT_DIR;
+		ow.pin = (GPIO_PIN_1);
+		
+		rslt = OWFirst(&ow);
+		while (rslt)
+		{
+		// print device found
+		#if SERIAL_DEBUG_ACTIVE
+				UART0_SendNewLine();
+				UART0_SendString((uint8_t*)">>>device: ");
+				for (i=0; i<8; i++)
+				{
+						if(ROM_NO[i] < 0x10) UART0_SendChar('0');
+						UART0_SendUHex((uint32_t)ROM_NO[i]);
+						if (i==7) break;
+						UART0_SendString((uint8_t*)"-");
+				}
+				UART0_SendNewLine();
+		#endif	// SERIAL_DEBUG_ACTIVE
+			/*
+		switch (ROM_NO[0]) 
+			{	// print to UART the device type and select proper handling (DS1820 and DS18S20 offer only 9-bit resolution)
+			case 0x10:
+				PC_Display_Message_FP("Chip = DS18S20", -32767, 0, "");  // or old DS1820
+				//type_s = 1;
+				break;
+			case 0x28:
+				PC_Display_Message_FP("Chip = DS18B20", -32767, 0, "");
+				//type_s = 0;
+				break;
+			case 0x22:
+				PC_Display_Message_FP("Chip = DS1822", -32767, 0, "");
+				//type_s = 0;
+				break;
+			default:
+				PC_Display_Message_FP("Device is not a DS18x20 family device.", -32767, 0, "");
+				return;
+			}
+	*/
+		PC_Display_Message_FP("First run. Programming device with value: ", CONFIG_REGISTER, -1, "");
+	/*
+		#if SERIAL_DEBUG_ACTIVE	// read scratchpad is used only to print it
+				OWReset(&ow);						// reset bus
+				OW_select(&ow, ROM_NO);	// select the current device
+				// read current configuration
+				OW_readScratchpad(&ow);
+				for (i=0; i<9; i++)
+				{
+					scratchpad[i] = OWReadByte(&ow);
+				}
 
-   unsigned char rom_byte_mask, search_direction;
+				// print scratchpad
+				UART0_SendString((uint8_t*)"Current config: ");
+				for (i=0; i<9; i++)
+				{
+					if(scratchpad[i] < 0x10) UART0_SendChar('0');
+					UART0_SendUHex((uint32_t)scratchpad[i]);
+					UART0_SendString((uint8_t*)" ");
+				}
+				UART0_SendNewLine();
+		#endif	//SERIAL_DEBUG_ACTIVE
+	*/
+			
+		OWReset(&ow);						// reset bus
+		OW_select(&ow, ROM_NO);	// select the current device
+			// set DS18B20 resolution to the one defined globally
+		OW_writeScratchpad(&ow, 0xFF, 0x00, CONFIG_REGISTER);
+			
+	/*		
+		#if SERIAL_DEBUG_ACTIVE // read scratchpad is used only to print it
+				OWReset(&ow);						// reset bus
+				OW_select(&ow, ROM_NO);	// select the current device
+				OW_readScratchpad(&ow);
+				for (i=0; i<9; i++)
+				{
+					scratchpad[i] = OWReadByte(&ow);
+				}
+				
+				// print scratchpad; check if all is ok
+				UART0_SendString((uint8_t*)"Read    config: ");
+				for (i=0; i<9; i++)
+				{
+					if(scratchpad[i] < 0x10) UART0_SendChar('0');
+					UART0_SendUHex((uint32_t)scratchpad[i]);
+					UART0_SendString((uint8_t*)" ");
+				}
+				UART0_SendNewLine();
+		#endif	//SERIAL_DEBUG_ACTIVE
+	*/
+			
+		OWReset(&ow);						// reset bus
+		OW_select(&ow, ROM_NO);	// select the current device
+		OW_copyScratchpad(&ow);	// write data from scratchpad to non-volatile mem
 
-   // initialize for search
-   id_bit_number = 1;
-   last_zero = 0;
-   rom_byte_number = 0;
-   rom_byte_mask = 1;
-   search_result = 0;
+		delayMicroseconds(10000);
 
-   // if the last call was not the last one
-   if (!LastDeviceFlag)
-   {
-      // 1-Wire reset
-      if (!reset())
-      {
-         // reset the search
-         LastDiscrepancy = 0;
-         LastDeviceFlag = FALSE;
-         LastFamilyDiscrepancy = 0;
-         return FALSE;
-      }
+				
+		#if SERIAL_DEBUG_ACTIVE
+				UART0_SendString((uint8_t*)"Non-volatile mem written! Resetting...");
+				UART0_SendNewLine();
+		#endif	// SERIAL_DEBUG_ACTIVE
 
-      // issue the search command
-      write(0xF0);
 
-      // loop to do the search
-      do
-      {
-         // read a bit and its complement
-         id_bit = read_bit();
-         cmp_id_bit = read_bit();
+		#if SERIAL_DEBUG_ACTIVE // read scratchpad is used only to print it
+				OWReset(&ow);						// reset bus
+				OW_select(&ow, ROM_NO);	// select the current device
+				OW_recallEEvalues(&ow);
+				delayMicroseconds(10);
+				
+				OWReset(&ow);
+				OW_select(&ow, ROM_NO);	// select the current device
+				OW_readScratchpad(&ow);
+				for (i=0; i<9; i++)
+				{
+					scratchpad[i] = OWReadByte(&ow);
+				}
+				
+				// print scratchpad; check if all is ok
+				UART0_SendString((uint8_t*)"New     config: ");
+				for (i=0; i<9; i++)
+				{
+					if(scratchpad[i] < 0x10) UART0_SendChar('0');
+					UART0_SendUHex((uint32_t)scratchpad[i]);
+					UART0_SendString((uint8_t*)" ");
+				}
+				UART0_SendNewLine();
+		#endif	// SERIAL_DEBUG_ACTIVE
 
-         // check for no devices on 1-wire
-         if ((id_bit == 1) && (cmp_id_bit == 1))
-            break;
-         else
-         {
-            // all devices coupled have 0 or 1
-            if (id_bit != cmp_id_bit)
-               search_direction = id_bit;  // bit write value for search
-            else
-            {
-               // if this discrepancy if before the Last Discrepancy
-               // on a previous next then pick the same as last time
-               if (id_bit_number < LastDiscrepancy)
-                  search_direction = ((ROM_NO[rom_byte_number] & rom_byte_mask) > 0);
-               else
-                  // if equal to last pick 1, if not then pick 0
-                  search_direction = (id_bit_number == LastDiscrepancy);
+		cnt++;
 
-               // if 0 was picked then record its position in LastZero
-               if (search_direction == 0)
-               {
-                  last_zero = id_bit_number;
-
-                  // check for Last discrepancy in family
-                  if (last_zero < 9)
-                     LastFamilyDiscrepancy = last_zero;
-               }
-            }
-
-            // set or clear the bit in the ROM byte rom_byte_number
-            // with mask rom_byte_mask
-            if (search_direction == 1)
-              ROM_NO[rom_byte_number] |= rom_byte_mask;
-            else
-              ROM_NO[rom_byte_number] &= ~rom_byte_mask;
-
-            // serial number search direction write bit
-            write_bit(search_direction);
-
-            // increment the byte counter id_bit_number
-            // and shift the mask rom_byte_mask
-            id_bit_number++;
-            rom_byte_mask <<= 1;
-
-            // if the mask is 0 then go to new SerialNum byte rom_byte_number and reset mask
-            if (rom_byte_mask == 0)
-            {
-                rom_byte_number++;
-                rom_byte_mask = 1;
-            }
-         }
-      }
-      while(rom_byte_number < 8);  // loop until through all ROM bytes 0-7
-
-      // if the search was successful then
-      if (!(id_bit_number < 65))
-      {
-         // search successful so set LastDiscrepancy,LastDeviceFlag,search_result
-         LastDiscrepancy = last_zero;
-
-         // check for last device
-         if (LastDiscrepancy == 0)
-            LastDeviceFlag = TRUE;
-
-         search_result = TRUE;
-      }
-   }
-
-   // if no device found then reset counters so next 'search' will be like a first
-   if (!search_result || !ROM_NO[0])
-   {
-      LastDiscrepancy = 0;
-      LastDeviceFlag = FALSE;
-      LastFamilyDiscrepancy = 0;
-      search_result = FALSE;
-   }
-   for (int i = 0; i < 8; i++) newAddr[i] = ROM_NO[i];
-   return search_result;
-  }
-
-#endif
-
-#if ONEWIRE_CRC
-// The 1-Wire CRC scheme is described in Maxim Application Note 27:
-// "Understanding and Using Cyclic Redundancy Checks with Maxim iButton Products"
-//
-
-#if ONEWIRE_CRC8_TABLE
-// This table comes from Dallas sample code where it is freely reusable,
-// though Copyright (C) 2000 Dallas Semiconductor Corporation
-
-#ifdef ENERGIA
-
-// 2013-01-26 Michel Veerman
-// The TI doesn't have PROGMEM, so the table, and the code to read it
-// needs to differ a little
-
-static const uint8_t dscrc_table[] = {
-      0, 94,188,226, 97, 63,221,131,194,156,126, 32,163,253, 31, 65,
-    157,195, 33,127,252,162, 64, 30, 95,  1,227,189, 62, 96,130,220,
-     35,125,159,193, 66, 28,254,160,225,191, 93,  3,128,222, 60, 98,
-    190,224,  2, 92,223,129, 99, 61,124, 34,192,158, 29, 67,161,255,
-     70, 24,250,164, 39,121,155,197,132,218, 56,102,229,187, 89,  7,
-    219,133,103, 57,186,228,  6, 88, 25, 71,165,251,120, 38,196,154,
-    101, 59,217,135,  4, 90,184,230,167,249, 27, 69,198,152,122, 36,
-    248,166, 68, 26,153,199, 37,123, 58,100,134,216, 91,  5,231,185,
-    140,210, 48,110,237,179, 81, 15, 78, 16,242,172, 47,113,147,205,
-     17, 79,173,243,112, 46,204,146,211,141,111, 49,178,236, 14, 80,
-    175,241, 19, 77,206,144,114, 44,109, 51,209,143, 12, 82,176,238,
-     50,108,142,208, 83, 13,239,177,240,174, 76, 18,145,207, 45,115,
-    202,148,118, 40,171,245, 23, 73,  8, 86,180,234,105, 55,213,139,
-     87,  9,235,181, 54,104,138,212,149,203, 41,119,244,170, 72, 22,
-    233,183, 85, 11,136,214, 52,106, 43,117,151,201, 74, 20,246,168,
-    116, 42,200,150, 21, 75,169,247,182,232, 10, 84,215,137,107, 53};
-
-//
-// Compute a Dallas Semiconductor 8 bit CRC. These show up in the ROM
-// and the registers.  (note: this might better be done without to
-// table, it would probably be smaller and certainly fast enough
-// compared to all those delayMicrosecond() calls.  But I got
-// confused, so I use this table from the examples.)
-//
-uint8_t OneWire::crc8( uint8_t *addr, uint8_t len)
-{
-	uint8_t crc = 0;
-
-	while (len--) {
-		crc = *(dscrc_table + (crc ^ *addr++));
-	}
-	return crc;
-}
-
-#else
-
-static const uint8_t PROGMEM dscrc_table[] = {
-      0, 94,188,226, 97, 63,221,131,194,156,126, 32,163,253, 31, 65,
-    157,195, 33,127,252,162, 64, 30, 95,  1,227,189, 62, 96,130,220,
-     35,125,159,193, 66, 28,254,160,225,191, 93,  3,128,222, 60, 98,
-    190,224,  2, 92,223,129, 99, 61,124, 34,192,158, 29, 67,161,255,
-     70, 24,250,164, 39,121,155,197,132,218, 56,102,229,187, 89,  7,
-    219,133,103, 57,186,228,  6, 88, 25, 71,165,251,120, 38,196,154,
-    101, 59,217,135,  4, 90,184,230,167,249, 27, 69,198,152,122, 36,
-    248,166, 68, 26,153,199, 37,123, 58,100,134,216, 91,  5,231,185,
-    140,210, 48,110,237,179, 81, 15, 78, 16,242,172, 47,113,147,205,
-     17, 79,173,243,112, 46,204,146,211,141,111, 49,178,236, 14, 80,
-    175,241, 19, 77,206,144,114, 44,109, 51,209,143, 12, 82,176,238,
-     50,108,142,208, 83, 13,239,177,240,174, 76, 18,145,207, 45,115,
-    202,148,118, 40,171,245, 23, 73,  8, 86,180,234,105, 55,213,139,
-     87,  9,235,181, 54,104,138,212,149,203, 41,119,244,170, 72, 22,
-    233,183, 85, 11,136,214, 52,106, 43,117,151,201, 74, 20,246,168,
-    116, 42,200,150, 21, 75,169,247,182,232, 10, 84,215,137,107, 53};
-
-//
-// Compute a Dallas Semiconductor 8 bit CRC. These show up in the ROM
-// and the registers.  (note: this might better be done without to
-// table, it would probably be smaller and certainly fast enough
-// compared to all those delayMicrosecond() calls.  But I got
-// confused, so I use this table from the examples.)
-//
-uint8_t OneWire::crc8( uint8_t *addr, uint8_t len)
-{
-	uint8_t crc = 0;
-
-	while (len--) {
-		crc = pgm_read_byte(dscrc_table + (crc ^ *addr++));
-	}
-	return crc;
-}
-
-#endif // ENERGIA switch
-
-#else
-//
-// Compute a Dallas Semiconductor 8 bit CRC directly.
-// this is much slower, but much smaller, than the lookup table.
-//
-uint8_t OneWire::crc8( uint8_t *addr, uint8_t len)
-{
-	uint8_t crc = 0;
-	
-	while (len--) {
-		uint8_t inbyte = *addr++;
-		for (uint8_t i = 8; i; i--) {
-			uint8_t mix = (crc ^ inbyte) & 0x01;
-			crc >>= 1;
-			if (mix) crc ^= 0x8C;
-			inbyte >>= 1;
+		#if SERIAL_DEBUG_ACTIVE
+				PC_Display_Message_FP("Device number: ", cnt, 0, "");
+		#endif	// SERIAL_DEBUG_ACTIVE
+				
+		rslt = OWNext(&ow);
 		}
+		
+		#if SERIAL_DEBUG_ACTIVE
+				PC_Display_Message_FP("No more addresses. Total count: ", cnt, 0, "");
+				UART0_SendNewLine();
+		#endif	// SERIAL_DEBUG_ACTIVE
+		
+#endif	// TEMP_AVAILABLE
+}
+
+/*
+ *	void getAdresses_DS(void) - Makes a pass over all the sensors connected to the bus and saves their addresses in addressList[]
+ *
+ */
+
+void getAdresses_DS(void)
+{
+#if TEMP_AVAILABLE
+		onewire_t ow;
+		//uint8_t type_s;
+		int16_t rslt, i, cnt = 0;
+	 
+		ow.port_out = (uint8_t *)PORT_OUT;
+		ow.port_in  = (uint8_t *)PORT_IN;
+		ow.port_ren = (uint8_t *)PORT_REN;
+		ow.port_dir = (uint8_t *)PORT_DIR;
+		ow.pin = (GPIO_PIN_1);
+		
+		rslt = OWFirst(&ow);
+		while (rslt)
+		{
+				// print device found
+				#if SERIAL_DEBUG_ACTIVE
+						UART0_SendNewLine();
+						UART0_SendString((uint8_t*)">>>device addr: ");
+						for (i=0; i<8; i++)
+						{
+								if(ROM_NO[i] < 0x10) UART0_SendChar('0');
+								UART0_SendUHex((uint32_t)ROM_NO[i]);
+								if (i==7) break;
+								UART0_SendString((uint8_t*)"-");
+						}
+						UART0_SendNewLine();
+				#endif	// SERIAL_DEBUG_ACTIVE
+
+				// save address
+				addressList[cnt].B0 = ROM_NO[0];
+				addressList[cnt].B1 = ROM_NO[1];
+				addressList[cnt].B2 = ROM_NO[2];
+				addressList[cnt].B3 = ROM_NO[3];
+				addressList[cnt].B4 = ROM_NO[4];
+				addressList[cnt].B5 = ROM_NO[5];
+				addressList[cnt].B6 = ROM_NO[6];
+				addressList[cnt].B7 = ROM_NO[7];
+
+				switch (ROM_NO[0]) 
+					{	// print to UART the device type and select proper handling (DS1820 and DS18S20 offer only 9-bit resolution)
+					case 0x10:
+						PC_Display_Message_FP("Chip = DS18S20", -32767, 0, "");  // or old DS1820
+						//type_s = 1;
+						break;
+					case 0x28:
+						PC_Display_Message_FP("Chip = DS18B20", -32767, 0, "");
+						//type_s = 0;
+						break;
+					case 0x22:
+						PC_Display_Message_FP("Chip = DS1822", -32767, 0, "");
+						//type_s = 0;
+						break;
+					default:
+						PC_Display_Message_FP("Device is not a DS18x20 family device.", -32767, 0, "");
+						return;
+					}
+			
+
+				cnt++;
+
+				#if SERIAL_DEBUG_ACTIVE
+						PC_Display_Message_FP("Device number: ", cnt, 0, "");
+				#endif	// SERIAL_DEBUG_ACTIVE
+						
+				rslt = OWNext(&ow);
+		}
+		
+		lastSensorCount = cnt;
+		
+		#if SERIAL_DEBUG_ACTIVE
+				PC_Display_Message_FP("Found: ", cnt, 0, " devices.");
+				UART0_SendNewLine();
+		#endif	// SERIAL_DEBUG_ACTIVE
+		
+#endif	// TEMP_AVAILABLE
+}
+
+/*
+ *	void call_DS(void)	- Selects a sensor with the address configured in addressList[] and reads its temperature value (stored in the scratchpad)
+ *											- Reads only one sensor per call
+ */
+
+void call_DS(void)
+{
+	#if TEMP_AVAILABLE
+			onewire_t ow;
+			uint8_t type_s, cfg, scratchpad[9];
+			int16_t i, raw = 0, tempCelsius = 0;	
+		 
+			ow.port_out = (uint8_t *)PORT_OUT;
+			ow.port_in  = (uint8_t *)PORT_IN;
+			ow.port_ren = (uint8_t *)PORT_REN;
+			ow.port_dir = (uint8_t *)PORT_DIR;
+			ow.pin = (GPIO_PIN_1);
+	
+	if (currentSensor == 0)		// if we are at the first sensor, do a search then proceed as normal.
+	{
+			getAdresses_DS();
 	}
-	return crc;
+	
+	if (lastSensorCount == 0)		//if there are no sensors connected to the bus
+	{
+			#if SERIAL_DEBUG_ACTIVE
+					PC_Display_Message_FP("No sensors detected.", -32767, 0, "");
+					UART0_SendNewLine();
+			#endif	// SERIAL_DEBUG_ACTIVE
+		
+			return;	
+	}
+	
+	// restore address
+				ROM_NO[0] = addressList[currentSensor].B0;
+				ROM_NO[1] = addressList[currentSensor].B1;
+				ROM_NO[2] = addressList[currentSensor].B2;
+				ROM_NO[3] = addressList[currentSensor].B3;
+				ROM_NO[4] = addressList[currentSensor].B4;
+				ROM_NO[5] = addressList[currentSensor].B5;
+				ROM_NO[6] = addressList[currentSensor].B6;
+				ROM_NO[7] = addressList[currentSensor].B7;
+			
+	switch (ROM_NO[0]) 
+			{	// print to UART the device type and select proper handling (DS1820 and DS18S20 offer only 9-bit resolution)
+				case 0x10:
+					PC_Display_Message_FP("Chip = DS18S20", -32767, 0, "");  // or old DS1820
+					type_s = 1;
+					break;
+				case 0x28:
+					PC_Display_Message_FP("Chip = DS18B20", -32767, 0, "");
+					type_s = 0;
+					break;
+				case 0x22:
+					PC_Display_Message_FP("Chip = DS1822", -32767, 0, "");
+					type_s = 0;
+					break;
+				default:
+					PC_Display_Message_FP("Device is not a DS18x20 family device.", -32767, 0, "");
+					return;
+			}
+
+			OWReset(&ow);								// reset bus
+			OW_select(&ow, ROM_NO);			// select the current device
+			OWWriteByte(&ow, 0x44);			// start conversion
+			delayMicroseconds(T_CONV);	// wait for conversion to finish
+			
+			OWReset(&ow);								// reset bus
+			OW_select(&ow, ROM_NO);			// select the current device
+			OW_readScratchpad(&ow);			// send 'read scratchpad' command
+			for (i=0; i<9; i++)
+			{
+				scratchpad[i] = OWReadByte(&ow);
+			}
+			
+			#if SERIAL_DEBUG_ACTIVE		// print scratchpad
+					UART0_SendString((uint8_t*)"Scratchpad: ");
+					for (i=0; i<9; i++)
+					{
+						if(scratchpad[i] < 0x10) UART0_SendChar('0');
+						UART0_SendUHex((uint32_t)scratchpad[i]);
+						UART0_SendString((uint8_t*)" ");
+					}
+					UART0_SendNewLine();
+			#endif	// SERIAL_DEBUG_ACTIVE
+					
+			//check crc here
+
+
+			raw = (scratchpad[1] << 8) | scratchpad[0];	// raw temperature value
+			
+			if (type_s)
+			{
+				raw <<= 3;	// 9 bit resolution for DS1820 and DS18S20
+				if (scratchpad[7] == 0x10)
+				{	// byte "count remain" gives full 12 bit resolution
+					raw = (raw & 0xFFF0) + 12 - scratchpad[6];
+				}
+			}
+			else
+			{
+				cfg = (scratchpad[4] & 0x60);
+				
+				if (cfg == 0x00)
+					raw = raw & ~7;			// 9 bit resolution, 93.75 ms
+				else if (cfg == 0x20)
+						raw = raw & ~3;		// 10 bit res, 187.5 ms
+					else if (cfg == 0x40)
+							raw = raw & ~1;	// 11 bit res, 375 ms
+				//// default is 12 bit resolution, 750 ms conversion time
+			
+			}
+			tempCelsius = (int16_t)(1000.0 * (double)raw / 16.0 );
+			PC_Display_Message_FP("Current temp: ", tempCelsius, 3, " *C");
+			averageT1 += tempCelsius;
+			averageT2 += tempCelsius;	// add to average
+
+			#if SERIAL_DEBUG_ACTIVE
+					PC_Display_Message_FP("Device number: ", currentSensor+1, 0, "");
+			#endif	// SERIAL_DEBUG_ACTIVE
+					
+			
+
+			currentSensor++;	// go to next stored sensor address
+			if (currentSensor >= lastSensorCount)		// if we are at the last sensor, reset to first
+			{
+			#if SERIAL_DEBUG_ACTIVE
+					PC_Display_Message_FP("No more addresses. Total count: ", currentSensor, 0, "");
+					UART0_SendNewLine();
+			#endif	// SERIAL_DEBUG_ACTIVE
+				averageT1 /= currentSensor;
+				averageT2 /= currentSensor;	// divide by number of sensors
+				Global_Temp1 = averageT1;
+				Global_Temp2 = averageT2;		// copy to global vars that are called by GSM module
+				currentSensor = 0;			
+			}
+					
+#endif	// TEMP_AVAILABLE
 }
-#endif
 
-#if ONEWIRE_CRC16
-bool OneWire::check_crc16(uint8_t* input, uint16_t len, uint8_t* inverted_crc)
-{
-    uint16_t crc = ~crc16(input, len);
-    return (crc & 0xFF) == inverted_crc[0] && (crc >> 8) == inverted_crc[1];
-}
+	//
+	// Do a ROM select
+	//
+	void OW_select(onewire_t *ow, uint8_t rom[8])
+	{
+			int i;
 
-uint16_t OneWire::crc16(uint8_t* input, uint16_t len)
-{
-    static const uint8_t oddparity[16] =
-        { 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1, 0 };
-    uint16_t crc = 0;    // Starting seed is zero.
+			OWWriteByte(ow, 0x55);           // Choose (or match) ROM
 
-    for (uint16_t i = 0 ; i < len ; i++) {
-      // Even though we're just copying a byte from the input,
-      // we'll be doing 16-bit computation with it.
-      uint16_t cdata = input[i];
-      cdata = (cdata ^ (crc & 0xff)) & 0xff;
-      crc >>= 8;
+			for( i = 0; i < 8; i++) OWWriteByte(ow, rom[i]);
+	}
 
-      if (oddparity[cdata & 0x0F] ^ oddparity[cdata >> 4])
-          crc ^= 0xC001;
+	//
+	// Do a ROM read
+	//
+	void OW_readROM(onewire_t *ow)	// this is not to be used on a multidrop bus (bus with more than one slave)
+	{
+			OWWriteByte(ow, 0x33);           // Read ROM
+	}
 
-      cdata <<= 6;
-      crc ^= cdata;
-      cdata <<= 1;
-      crc ^= cdata;
-    }
-    return crc;
-}
-#endif
+	//
+	// Do a ROM skip
+	//
+	void OW_skip(onewire_t *ow)	// this is not to be used on a multidrop bus (bus with more than one slave)
+	{
+			OWWriteByte(ow, 0xCC);           // Skip ROM
+	}
 
-#endif
+	//
+	// Do a write to Scratchpad
+	//
+	void OW_writeScratchpad(onewire_t *ow, uint8_t TH, uint8_t TL, uint8_t configRegister)
+	{
+			OWWriteByte(ow, 0x4E);						// send command to write to SP
+			OWWriteByte(ow, TH);							// TH - temperature high threshold
+			OWWriteByte(ow, TL);							// TL - temperature low threshold
+			OWWriteByte(ow, configRegister);	// configuration register (for setting conversion resolution)
+	}
 
+	//
+	// Do a read from Scratchpad
+	//
+	void OW_readScratchpad(onewire_t *ow)
+	{
+			OWWriteByte(ow, 0xBE);						// send command to read from SP; this should be followed by reading 8+1 Bytes from the bus. Last Byte is CRC.
+	}																			// If not all locations are to be read, the master may issue a reset to terminate reading at any time.
 
+	//
+	// Do a copy from Scratchpad to non-volatile memory
+	//
+	void OW_copyScratchpad(onewire_t *ow)
+	{
+			OWWriteByte(ow, 0x48);           // copy SP to non-volatile mem; operation takes about 10ms.
+	}
 
+	//
+	// Recall saved values to scratchpad
+	//
+	void OW_recallEEvalues(onewire_t *ow)
+	{
+			OWWriteByte(ow, 0xB8);						// send command to recall from non-volatile mem; 
+	}		// The recall operation happens automatically at power-up, so valid data is available in the scratchpad as soon as power is applied to the device.
+
+	//
+	// skip reading ROM address
+	//
+	void OW_skipROM(onewire_t *ow)
+	{
+			OWWriteByte(ow, 0xCC);						// send command to skip reading ROM address
+	}
+	
 // EOF
