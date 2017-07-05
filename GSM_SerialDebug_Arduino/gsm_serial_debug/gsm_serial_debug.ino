@@ -3,15 +3,16 @@
 
 #define SERIAL_DEBUG (1)
 //Pin definition is correct, DO NOT try to reverse order!!!
-#define GSM_RX_Pin     (10)  //Pin to receive data from GSM module
-#define GSM_TX_Pin     (11)  //Pin to transmit data to GSM module
-
-
-SoftwareSerial mySerial(GSM_RX_Pin, GSM_TX_Pin);  //10-RX, 11-TX
+#define GSM_TX_Pin     (11)  //Pin to receive data from GSM module  //Checked - OK
+#define GSM_RX_Pin     (10)  //Pin to transmit data to GSM module  //Checked - OK
+#define BAUDRATE_GSM  (115200)
+#define BAUDRATE_PRINT  (115200)
+//example: mySerial(TxPin, RxPin);
+SoftwareSerial mySerial(10, 11);  //10-TX, 11-RX
 /*-------------------------------Setup secion--------------------------------*/
 void setup() {
-  Serial.begin(19200);  //Setting the baud rate of serial communication with serial monitor
-  mySerial.begin(9600);  //Setting the baud rate of GSM Module
+  Serial.begin(BAUDRATE_PRINT);  //Setting the baud rate of serial communication with serial monitor
+  mySerial.begin(BAUDRATE_GSM);  //Setting the baud rate of GSM Module
   mySerial.println("AT+CMGF=1\r");  //message format text
   //mySerial.println("AT+CMGD=1,4\r");  //delete all messages
   //mySerial.println("AT+CNMI=0,0,0,0,1\r");  //set message indication mode. details bellow
@@ -37,9 +38,18 @@ void Serial_Debug() {
 #endif
 }
 
+void Send_Sms(){
+  mySerial.println("AT+CMGS=\"0751538300\"\r");  //set the mobile number to send the SMS
+  mySerial.println("SMS sent");
+  mySerial.println((char)26);  //ASCII code of CTRL+Z indicating end of message
+  Serial.write("SMS Sent");
+  delay(5000);
+}
+
 /*--------------------------------Loop secion---------------------------------*/
 void loop() {
   Serial_Debug();
+  //Send_Sms();
 }
 
 

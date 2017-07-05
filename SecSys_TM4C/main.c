@@ -202,14 +202,17 @@ Count8_PIRB_Process = 0;
 }
 
 void Task9_BlankTask(void){
+	uint8_t portState = 0x00;
 	while(1){
 		if(startupReady) {
+			portState = 0x00;
 			OS_Wait(&SemPortF.pin0);  // signaled in OS on button touch
-			OS_Sleep(50);  //sleep to debounce switch		
-			if(GPIOPinRead(GPIO_PORTF_BASE,GPIO_INT_PIN_0)!=GPIO_PIN_0) {
+			OS_Sleep(50);  //sleep to debounce switch
+			portState = !(GPIOPinRead(GPIO_PORTF_BASE,GPIO_INT_PIN_0));
+			if(portState&GPIO_PIN_0) {
 				PC_Display_Message("Task 9 - SMS send test started",0,"");
 				OS_Wait(&GSMModule);
-				SendSMS(PIR_A);
+				SendSMS(Switch2_Feedback);
 				OS_Signal(&GSMModule);
 				PC_Display_Message("Task 9 - SMS send test executed",0,"");
 			}
@@ -223,14 +226,15 @@ void Task10_BlankTask(void){
 		if(startupReady) {
 			OS_Wait(&SemPortF.pin4);  // signaled in OS on button touch
 			OS_Sleep(50);  //sleep to debounce switch		
-			if(GPIOPinRead(GPIO_PORTF_BASE,GPIO_INT_PIN_4)!=GPIO_PIN_4) { 
+			//if(GPIOPinRead(GPIO_PORTF_BASE,GPIO_INT_PIN_4)!=GPIO_PIN_4) { 
 				PC_Display_Message("Task 10 - SMS receive test started",0,"");
-				OS_Wait(&GSMModule);			
-				GSMprocessMessage(1);
+				OS_Wait(&GSMModule);
+				SendSMS(Switch1_Feedback);			
+				//GSMprocessMessage(1);
 				OS_Signal(&GSMModule);
 				PC_Display_Message("Task 10 - SMS receive test executed",0,"");
-			}
-			OS_EdgeTrigger_Restart(PortF,GPIO_PIN_0);
+			
+			OS_EdgeTrigger_Restart(PortF,GPIO_PIN_4);
 		}
 	}
 }

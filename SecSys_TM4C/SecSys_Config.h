@@ -7,11 +7,11 @@
 		#include "driverlib/gpio.h"
 
 		/*	---					General purpose			---	*/
-		#define PIR_AVAILABLE		(1)
+		#define PIR_AVAILABLE		(0)
 		#define GSM_AVAILABLE		(1)
-		#define HX711_AVAILABLE	(1)
-		#define RFID_AVAILABLE	(1)
-		#define TEMP_AVAILABLE	(1)
+		#define HX711_AVAILABLE	(0)
+		#define RFID_AVAILABLE	(0)
+		#define TEMP_AVAILABLE	(0)
 
 		#define DIGI_818 "0744424818"
 		#define ORANGE_903 "0758438903"

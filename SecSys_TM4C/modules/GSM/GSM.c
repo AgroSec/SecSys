@@ -17,8 +17,8 @@
 #include "stdio.h"
 
 /*-------------------Macro Definitions----------------*/
-#define SEND_SMS (1)  //Disable SMS Sending
-#define RECEIVE_SMS (0)  //Disable SMS Receiving
+#define SEND_SMS (1)  //Enable or Disable SMS Sending
+#define RECEIVE_SMS (0)  //Enable or Disable SMS Receiving
 #define DELETE_ALL_SMS (1)  //Delete all SMS on startup (Disable for testing)
 #define RESONSE_MAX_LINE (15)  //Max number of lines for a response message (ussually 12 is enaugh)
 #define RESONSE_MAX_LENGHT (160)
@@ -91,8 +91,10 @@ void PowerOnGSM(void){
 
 void SendSMS(SMS_Message_en message){
 	#if SEND_SMS
-	UARTprintf("AT+CMGF=\"%s\"\n",ORANGE_300);  //set the mobile number to send the SMS
-	SysCtlDelay(Millis2Ticks(100)); //Interrupts are NOT disabled and OS is NOT stoped during delay!
+	//UARTprintf("AT+CMGS=\"%s\"\n",ORANGE_300);  //set the mobile number to send the SMS
+	//UARTprintf("AT+CMGS=\"0751538300\"\n");  //set the mobile number to send the SMS
+	UARTprintf("AT+CMGS=\"0751538300\"\r");  //set the mobile number to send the SMS
+	//SysCtlDelay(Millis2Ticks(2)); //Interrupts are NOT disabled and OS is NOT stoped during delay!
 	switch (message) {
 		#if PIR_AVAILABLE		
 		case PIR_A:
@@ -158,6 +160,12 @@ void SendSMS(SMS_Message_en message){
 		case Wrong_Command:
 			//Wrong SMS command received
 			UARTprintf("Wrong Command. (1)Deactivate Security. (2)Deactivate Alarm. (3)Trigger Alarm. (4)Get Status");
+			break;
+		case Switch1_Feedback:
+			UARTprintf("SW1 (PF4) Feedback \n");
+			break;
+		case Switch2_Feedback:
+			UARTprintf("SW2 (PF0) Feedback \n");
 			break;
 		default:
 			UARTprintf("Something misterious happened");

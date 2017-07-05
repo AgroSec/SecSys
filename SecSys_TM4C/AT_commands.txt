@@ -24,7 +24,7 @@ AT+CNMI=2,2,0,0,0		set message indication mode. details bellow
 AT+CNMI=0,0/1,0,0,1
 	
 	
-	
+AT+COPS?			Network operator
 AT+CPMS?			message memory report
 AT+CSDH=1			show complete message header
 

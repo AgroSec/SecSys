@@ -13,7 +13,7 @@
 #include "inc/hw_types.h"
 #include "DS18B20.h"
 /*-------------Global Variable Definitions------------*/
-#if TEMP_AVAILABLE
+//#if TEMP_AVAILABLE
 // global search state
 uint8_t ROM_NO[8];
 int16_t LastDiscrepancy;
@@ -432,4 +432,4 @@ void onewire_line_release(onewire_t *ow)
 }
 
 
-#endif	// TEMP_AVAILABLE
+//#endif	// TEMP_AVAILABLE

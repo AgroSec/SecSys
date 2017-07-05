@@ -24,21 +24,6 @@ typedef struct Xyz
 	char x;
 } Xyz_st;
 
-typedef enum SMS_Message
-{
-	PIR_A = 0,
-	PIR_B,
-	Wire_1_Pull,
-	Wire_1_Cut,
-	Wire_2_Pull,
-	Wire_2_Cut,
-	Wire_3_Pull,
-	Wire_3_Cut,
-	Status,
-	System_Ready,
-	Wrong_Command
-} SMS_Message_en;
-
 #endif
 //EOF
 
