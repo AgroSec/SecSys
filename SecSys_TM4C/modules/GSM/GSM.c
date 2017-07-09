@@ -15,6 +15,7 @@
 #include "utils\uartstdio.h"
 #include "string.h"
 #include "stdio.h"
+#include "stdlib.h"
 
 /*-------------------Macro Definitions----------------*/
 #define SEND_SMS (1)  //Enable or Disable SMS Sending
@@ -51,38 +52,64 @@ static char *msgTime = NULL;  // Message time
 /*-------------Local Variable Definitions-------------*/
 
 /*-------------------Function Definitions-------------*/
-void SyncWithGSM(void){
-	UARTprintf("AT\n");
-	while ((UARTgetc()!='O')&&(UARTgetc()!='K')){}; //Wait for OK response
+//SendCommand auxiliary function repeats the sended commend until GSM module responses with OK
+//Use with caution as not all AT commands have "OK" as good response
+static void SendCommand(char *cmd){
+	uint8_t cmdDone = 0;
+	char	cmdResponse[30];
+	char pinState = 0;
+	uint8_t index = 0;
+	do{
+		UARTprintf(cmd);
+		//GPIOPinWrite(GPIO_PORTF_BASE,GPIO_PIN_3,GPIO_PIN_3);
+		SysCtlDelay(Millis2Ticks(30));
+		while(UARTRxBytesAvail()) {
+			cmdResponse[index] = UARTgetc();
+			if((cmdResponse[index] == '\r') || (cmdResponse[index] == '\n') || 
+				 (cmdResponse[index] == 0x1b) || (cmdResponse[index] == 0x0a) || 
+			   (cmdResponse[index] == 0x0d)) {
+				//do noting
+			}
+			else {
+				index++;
+			}		
+		}
+		//GPIOPinWrite(GPIO_PORTF_BASE,GPIO_PIN_3,0);
+		if(strstr(cmdResponse,"OK") != '\0' ) {
+			cmdDone = 1;
+		}
+	} while (!cmdDone);
 }
+
 void PowerOnGSM(void){
 	/*
 	TODO: Keep GSM module reset pin in the following states to reset it.
 	GSM_Power_Pin = High -> wait 1 second
 	GSM_Power_Pin = Low -> WaitForInterrupt 7 seconds
 	*/
-	SyncWithGSM();
+	//SyncWithGSM
+	SendCommand("AT\r\n");
 	
 	//Setup message format: TEXT
-	UARTprintf("AT+CMGF=%u\n",1);
+	SendCommand("AT+CMGF=1\r\n");
 	SysCtlDelay(Millis2Ticks(100));
 	
 	//Setup message header display: OFF
-	UARTprintf("AT+CSDH=%u\n",0);
+	SendCommand("AT+CSDH=0\r\n");	
 	SysCtlDelay(Millis2Ticks(100));
 
 	//Setup new message indication: OFF
 	//Messages are stored on GSM module, no indication is provided
 	//AT+CMGR=1 will read the messages when user triggers GSMprocessMessage(msgNum)
-	UARTprintf("AT+CNMI=%u%u%u%u%u\n",0,0,0,0,1);
+	SendCommand("AT+CNMI=0,0,0,0,1\r\n");	
 	SysCtlDelay(Millis2Ticks(100));
 	
 #if DELETE_ALL_SMS
-	UARTprintf("AT+CMGD=1,4\n");
+	SendCommand("AT+CMGDA=\"DEL ALL\"\r\n");
 	SysCtlDelay(Millis2Ticks(100));
 #endif	
-
-	UARTFlushRx();
+	UARTFlushRx();  //Discard everitying from Rx
+	UARTFlushTx(true);  //Discard everitying from Tx
 	
 #if SHOW_STARTUP_INFO
 	UART0_SendString((uint8_t*)"GSM init done...");
@@ -91,10 +118,21 @@ void PowerOnGSM(void){
 
 void SendSMS(SMS_Message_en message){
 	#if SEND_SMS
-	//UARTprintf("AT+CMGS=\"%s\"\n",ORANGE_300);  //set the mobile number to send the SMS
-	//UARTprintf("AT+CMGS=\"0751538300\"\n");  //set the mobile number to send the SMS
-	UARTprintf("AT+CMGS=\"0751538300\"\r");  //set the mobile number to send the SMS
-	//SysCtlDelay(Millis2Ticks(2)); //Interrupts are NOT disabled and OS is NOT stoped during delay!
+	UARTFlushRx();  //Discard everitying from Rx
+	UARTFlushTx(true);  //Discard everitying from Tx
+	//AleGaa: Buffered sending method, unfortunatly does not work properly
+	//Needs ~15ms delay between setting phone number and message
+	//But SysCtlDelay sets a delay while the phone number is being sent
+	//Use dirrect sending method (unbuffered)
+	//UARTprintf("AT+CMGS=\"0744424818\"\r\n");  //set the mobile number to send the SMS
+	//SysCtlDelay(Millis2Ticks(5)); //Interrupts are NOT disabled and OS is NOT stoped during delay!
+
+	//AleGaa: Direct Sending method. Application writes directly to HW Fifo, NOT a SW buffer
+	UART2_DirectSendString("AT+CMGS=\"0744424818\"");  //set the mobile number to send the SMS
+	UART2_DirectSendChar(CR);  //Send a carriage return
+	//Next statement introduces a delay of ~15ms
+	SysCtlDelay(Millis2Ticks(5)); //Interrupts are NOT disabled and OS is NOT stoped during delay!
+	
 	switch (message) {
 		#if PIR_AVAILABLE		
 		case PIR_A:
@@ -170,10 +208,11 @@ void SendSMS(SMS_Message_en message){
 		default:
 			UARTprintf("Something misterious happened");
 	}
-	//UART2_SendChar(SUB);  //ASCII code of CTRL+Z indicating end of message
 	UARTprintf("%c",SUB);
 	PC_Display_Message("SMS sent with message ID: ",(uint8_t)message," ->");
 	#endif
+	UARTFlushTx(false);  //Send out everitying from Tx
+	GPIOPinWrite(GPIO_PORTF_BASE,GPIO_PIN_3,0);  //Turn off Green LED at end of SMS Sending
 }
 
 void GSMgetCommand(uint8_t *command,uint8_t msgId){
@@ -195,10 +234,13 @@ void GSMprocessMessage(uint8_t msgNum) {
 	char index = 0;
 	uint32_t time = 500000;
 	
+	UARTFlushRx();  //Discard everitying from Rx
+	UARTFlushTx(true);  //Discard everitying from Tx
+	
 	// Start message retrieval/parsing/error checking (runs simultaneously to
 	// reduce calls to the SIM module).
 	// Request the message and get the lines of the response (includes envelope, nulls, SIM responses)
-	UARTprintf("AT+CMGR=%u\n",msgNum);
+	UARTprintf("AT+CMGR=%u\r\n",msgNum);
 	if(!first_execution) {
 		SysCtlDelay(Millis2Ticks(1));
 		lineCount = GSMgetResponse();
@@ -212,8 +254,9 @@ void GSMprocessMessage(uint8_t msgNum) {
 			PC_Display_Message("> ON :",0,msgTime);
 			PC_Display_Message("> TEXT :",0,msgContent);
 			SysCtlDelay(Millis2Ticks(100));		
-			UARTprintf("AT+CMGD=1,4\n");  //AleGaa maybe \r
-			UARTprintf("AT+CMGDA=\"DEL ALL\"\n");
+			//AleGaa TODO replace with send command
+			UARTprintf("AT+CMGD=1,4\r\n");  //AleGaa maybe \r
+			UARTprintf("AT+CMGDA=\"DEL ALL\"\r\n");
 			SysCtlDelay(Millis2Ticks(100));
 			PC_Display_Message("> Message deleted!!!",0,"");
 			#endif
