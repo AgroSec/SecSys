@@ -65,40 +65,36 @@ bool startupReady = True;
 void Task0_PIRA(void){	//Edge triggered task
   Count0_PIRA = 0;
   while(1){
-		if(startupReady) {
-			OS_Wait(&SemPortC.pin6);  // signaled in ISR
-			OS_Sleep(50); //sleep to debounce switch		
-			if(GPIOPinRead(GPIO_PORTC_BASE,GPIO_INT_PIN_6)) {   
-				Count0_PIRA++;
-				Toggle0();
-				OS_Wait(&SerialMonitor);
-				PC_Display_Message("PIR A Triggered a number of: ",Count0_PIRA," times.");
-				OS_Signal(&SerialMonitor);
-				PIR_A_Trigger_Nr++;	
-				if(PIR_A_Trigger_Nr == 1) OS_Signal(&Task7Sync); //1st trigger in PIR process timeperiod
-			}
-			OS_EdgeTrigger_Restart(PortC,GPIO_PIN_6);
+		OS_Wait(&SemPortC.pin6);  // signaled in ISR
+		OS_Sleep(50); //sleep to debounce switch		
+		if(GPIOPinRead(GPIO_PORTC_BASE,GPIO_INT_PIN_6)) {   
+			Count0_PIRA++;
+			Toggle0();
+			OS_Wait(&SerialMonitor);
+			PC_Display_Message("PIR A Triggered a number of: ",Count0_PIRA," times.");
+			OS_Signal(&SerialMonitor);
+			PIR_A_Trigger_Nr++;	
+			if(PIR_A_Trigger_Nr == 1) OS_Signal(&Task7Sync); //1st trigger in PIR process timeperiod
 		}
+		OS_EdgeTrigger_Restart(PortC,GPIO_PIN_6);
   }
 }
 void Task1_PIRB(void){	//Edge triggered task
   Count1_PIRB = 0;
   while(1){
-		if(startupReady) {
-			OS_Wait(&SemPortC.pin7);  // signaled in ISR
-			OS_Sleep(50); //sleep to debounce switch		
-			if(GPIOPinRead(GPIO_PORTC_BASE,GPIO_INT_PIN_7)) {
-				Count1_PIRB++;
-				Toggle1();
-				OS_Wait(&SerialMonitor);
-					PC_Display_Message("PIR B Triggered a number of: ",Count1_PIRB," times.");
-				OS_Signal(&SerialMonitor);
-				PIR_B_Trigger_Nr++;
-				if(PIR_B_Trigger_Nr == 1) OS_Signal(&Task8Sync); //1st trigger in PIR process timeperiod
-			}
-			OS_EdgeTrigger_Restart(PortC,GPIO_PIN_7);
+		OS_Wait(&SemPortC.pin7);  // signaled in ISR
+		OS_Sleep(50); //sleep to debounce switch		
+		if(GPIOPinRead(GPIO_PORTC_BASE,GPIO_INT_PIN_7)) {
+			Count1_PIRB++;
+			Toggle1();
+			OS_Wait(&SerialMonitor);
+				PC_Display_Message("PIR B Triggered a number of: ",Count1_PIRB," times.");
+			OS_Signal(&SerialMonitor);
+			PIR_B_Trigger_Nr++;
+			if(PIR_B_Trigger_Nr == 1) OS_Signal(&Task8Sync); //1st trigger in PIR process timeperiod
 		}
-  }
+		OS_EdgeTrigger_Restart(PortC,GPIO_PIN_7);
+	}
 }
 void Task2_Cyclic10ms(void){  //Periodic task 10ms
   Count2_Cyclic10ms = 0;
@@ -138,24 +134,20 @@ void Task4_Cyclic100ms(void){  //Periodic task 100ms
 void Task5_Cyclic500ms(void){  //Periodic task 500ms
 	Count5_Cyclic500ms = 0;
   while(1){
-		if(startupReady) {
-			OS_Wait(&PerTask[3].semaphore);
-			CYCL_500ms();
-			Count5_Cyclic500ms++;
-			Toggle5();
-		}
+		OS_Wait(&PerTask[3].semaphore);
+		CYCL_500ms();
+		Count5_Cyclic500ms++;
+		Toggle5();
 	}
 }
 
 void Task6_Cyclic1000ms(void){
 	Count6_Cyclic1000ms = 0;
 	while(1){
-		if(startupReady) {
-			OS_Wait(&PerTask[4].semaphore);
-			CYCL_1000ms();
-			Count6_Cyclic1000ms++;
-			Toggle6();
-		}
+		OS_Wait(&PerTask[4].semaphore);
+		CYCL_1000ms();
+		Count6_Cyclic1000ms++;
+		Toggle6();
 	}
 }
 
@@ -264,6 +256,7 @@ void Idle_Task(void){
 
 int main(void){
 	//2
+	OS_Clock_Init(80);  //Init clock at 80 Mhz
 	
 	InitDrivers();
 	EnableInterrupts();
@@ -271,7 +264,6 @@ int main(void){
 	DisableInterrupts();
 	
 	OS_Init(80);  // initialize, disable interrupts
-	
 	Profile_Init();  // enable digital I/O on profile pins
 	
 	//3
@@ -300,7 +292,6 @@ int main(void){
 	OS_AddPeriodicEventThread(&PerTask[2].semaphore, 100);
 	OS_AddPeriodicEventThread(&PerTask[3].semaphore, 500);
 	OS_AddPeriodicEventThread(&PerTask[4].semaphore, 1000);
-	
 	//6
   OS_AddThreads(&Task0_PIRA, TASK0_PRIO,
 	              &Task1_PIRB, TASK1_PRIO,
@@ -319,7 +310,7 @@ int main(void){
 	//OS_FIFO_Init(&FifoA);
 	//8
 
-  //9
+	//9
 	OS_Launch(SysCtlClockGet()/THREADFREQ); // doesn't return, interrupts enabled in here
   return 0;  // this never executes
 }

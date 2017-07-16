@@ -24,6 +24,14 @@
 #include "GSM.h"
 #include "pc_display.h"
 #include "DS18B20.h"
+
+/*-----------------Macro Definitions------------------*/
+#define PF3_ON	GPIOPinWrite(GPIO_PORTF_BASE,GPIO_PIN_3,GPIO_PIN_3);
+#define PF3_OFF	GPIOPinWrite(GPIO_PORTF_BASE,GPIO_PIN_3,0);
+#define PF2_ON	GPIOPinWrite(GPIO_PORTF_BASE,GPIO_PIN_2,GPIO_PIN_2);
+#define PF2_OFF	GPIOPinWrite(GPIO_PORTF_BASE,GPIO_PIN_2,0);
+#define PF1_ON	GPIOPinWrite(GPIO_PORTF_BASE,GPIO_PIN_1,GPIO_PIN_1);
+#define PF1_OFF	GPIOPinWrite(GPIO_PORTF_BASE,GPIO_PIN_1,0);
 /*-------------Global Variable Definitions------------*/
 extern int32_t GSMModule;
 #if HX711_AVAILABLE
@@ -43,6 +51,7 @@ void CYCL_10ms(void) {
 
 void CYCL_50ms(void) {
 	//Function calls that runs only every 50 ms
+	PF1_OFF
 }
 
 void CYCL_100ms(void) {
@@ -96,15 +105,16 @@ void CYCL_1000ms(void)
 {
 	static uint32_t counter = 1;
 	//Function calls that runs only every 1000 ms
+	PF1_ON
 	PC_Display_Message("Seconds passed: ", counter, " ");
-	#if GSM_AVAILABLE
-		OS_Wait(&GSMModule);
-		GSMprocessMessage(1);  //Read SMS
-		OS_Signal(&GSMModule);
-	#endif	// GSM_AVAILABLE
 
 	if(!(counter%2)) {
 		//Every 2 second code
+		#if GSM_AVAILABLE
+			OS_Wait(&GSMModule);
+			GSMprocessMessage(1);  //Read SMS
+			OS_Signal(&GSMModule);
+		#endif	// GSM_AVAILABLE
 	}
 	if(!(counter%3)) {
 		//Every 3 second code

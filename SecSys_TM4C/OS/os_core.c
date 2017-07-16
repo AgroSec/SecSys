@@ -9,6 +9,7 @@
 
 #include "profile.h"
 
+#include "pc_display.h"
 // *******************************************************************************************************
 // ***************************************** Declaration section *****************************************
 // *******************************************************************************************************
@@ -36,14 +37,13 @@ void (*OS_PeriodicTask[NUM_OS_PERIODIC_TASK])(void);   //array of pointers to vo
 
 // ******** OS_Init ************
 // Initialize operating system, disable interrupts
-// Initialize OS controlled I/O: periodic interrupt, bus clock as fast as possible
+// Initialize OS controlled I/O: periodic interrupt
 // Initialize OS global variables
 // Inputs:  none
 // Outputs: none
 void OS_Init(uint8_t clock_Mhz){
   // perform any initializations needed
   DisableInterrupts();
-  OS_Clock_Init(80);  //Init clock at 80 Mhz
 	OS_PeriodicTask[0] = runsleep;  //periodic wait decrement funcion
 	OS_Timer_Init(WTimer0A,RUN_SLEEP_FREQ,INT_PRIO_SLEEP);
 	OS_PeriodicTask[1] = runperiodicevents;  //sleep decrement funcion
@@ -177,6 +177,7 @@ void OS_Launch(uint32_t theTimeSlice){
 	//and needs to be interrupted by event threads
   STRELOAD = theTimeSlice - 1; // reload value
   STCTRL = 0x00000007;         // enable, core clock and interrupt arm
+	PC_Display_Message("OK5",0,"");
 	StartOS();                   // start on the first task
 }
 

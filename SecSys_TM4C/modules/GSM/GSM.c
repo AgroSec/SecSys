@@ -5,6 +5,7 @@
 /*-------------------Driver Includes-----------------*/
 #include "driverlib/sysctl.h"
 #include "driverlib/uart.h"
+#include "driverlib/gpio.h"
 #include "inc/hw_memmap.h"
 /*-----------------Application Includes---------------*/
 #include "pc_display.h"
@@ -12,14 +13,14 @@
 /*-------------------Service Includes-----------------*/
 #include "gpio_handler.h"
 #include "uart_handler.h"
-#include "utils\uartstdio.h"
+#include "utils/uartstdio.h"
 #include "string.h"
 #include "stdio.h"
 #include "stdlib.h"
 
 /*-------------------Macro Definitions----------------*/
 #define SEND_SMS (1)  //Enable or Disable SMS Sending
-#define RECEIVE_SMS (0)  //Enable or Disable SMS Receiving
+#define RECEIVE_SMS (1)  //Enable or Disable SMS Receiving
 #define DELETE_ALL_SMS (1)  //Delete all SMS on startup (Disable for testing)
 #define RESONSE_MAX_LINE (15)  //Max number of lines for a response message (ussually 12 is enaugh)
 #define RESONSE_MAX_LENGHT (160)
@@ -28,6 +29,11 @@
 #define SHOW_PARSING_INFO (0)  //Show message information during parsing
 #define SHOW_FINAL_INFO (1)  //Show message information after processing
 #define MESSAGE_READ_REAPEATS (5)  //Read message 5 times to get the valid response
+
+#define PF3_ON	GPIOPinWrite(GPIO_PORTF_BASE,GPIO_PIN_3,GPIO_PIN_3);
+#define PF3_OFF	GPIOPinWrite(GPIO_PORTF_BASE,GPIO_PIN_3,0);
+#define PF2_ON	GPIOPinWrite(GPIO_PORTF_BASE,GPIO_PIN_2,GPIO_PIN_2);
+#define PF2_OFF	GPIOPinWrite(GPIO_PORTF_BASE,GPIO_PIN_2,0);
 
 /*-------------Global Variable Definitions------------*/
 extern uint32_t Count0_PIRA;  // number of times Task0 loops
@@ -61,7 +67,6 @@ static void SendCommand(char *cmd){
 	uint8_t index = 0;
 	do{
 		UARTprintf(cmd);
-		//GPIOPinWrite(GPIO_PORTF_BASE,GPIO_PIN_3,GPIO_PIN_3);
 		SysCtlDelay(Millis2Ticks(30));
 		while(UARTRxBytesAvail()) {
 			cmdResponse[index] = UARTgetc();
@@ -74,7 +79,6 @@ static void SendCommand(char *cmd){
 				index++;
 			}		
 		}
-		//GPIOPinWrite(GPIO_PORTF_BASE,GPIO_PIN_3,0);
 		if(strstr(cmdResponse,"OK") != '\0' ) {
 			cmdDone = 1;
 		}
@@ -116,10 +120,18 @@ void PowerOnGSM(void){
 #endif
 }
 
+void GSMgetCommand(uint8_t *command,uint8_t msgId){
+	GSMprocessMessage(msgId);
+}
+
 void SendSMS(SMS_Message_en message){
 	#if SEND_SMS
-	UARTFlushRx();  //Discard everitying from Rx
+	static uint16_t sendCounter = 1;  //counts how many sms have been sent from restart
+	PF3_ON //Turn on Green LED at start of SMS Sending
+
+	//UARTFlushRx();  //Discard everitying from Rx
 	UARTFlushTx(true);  //Discard everitying from Tx
+	
 	//AleGaa: Buffered sending method, unfortunatly does not work properly
 	//Needs ~15ms delay between setting phone number and message
 	//But SysCtlDelay sets a delay while the phone number is being sent
@@ -128,7 +140,7 @@ void SendSMS(SMS_Message_en message){
 	//SysCtlDelay(Millis2Ticks(5)); //Interrupts are NOT disabled and OS is NOT stoped during delay!
 
 	//AleGaa: Direct Sending method. Application writes directly to HW Fifo, NOT a SW buffer
-	UART2_DirectSendString("AT+CMGS=\"0744424818\"");  //set the mobile number to send the SMS
+	UART2_DirectSendString("AT+CMGS=\"0751538300\"");  //set the mobile number to send the SMS
 	UART2_DirectSendChar(CR);  //Send a carriage return
 	//Next statement introduces a delay of ~15ms
 	SysCtlDelay(Millis2Ticks(5)); //Interrupts are NOT disabled and OS is NOT stoped during delay!
@@ -208,15 +220,14 @@ void SendSMS(SMS_Message_en message){
 		default:
 			UARTprintf("Something misterious happened");
 	}
+	UARTprintf("SMS Number: %d",sendCounter);
 	UARTprintf("%c",SUB);
-	PC_Display_Message("SMS sent with message ID: ",(uint8_t)message," ->");
+	PC_Display_Message("SMS sent with message ID: ",(uint8_t)message,"");
+	PC_Display_Message("              message nr: ",(uint8_t)sendCounter,"");
 	#endif
 	UARTFlushTx(false);  //Send out everitying from Tx
-	GPIOPinWrite(GPIO_PORTF_BASE,GPIO_PIN_3,0);  //Turn off Green LED at end of SMS Sending
-}
-
-void GSMgetCommand(uint8_t *command,uint8_t msgId){
-	GSMprocessMessage(msgId);
+	sendCounter ++;
+	PF3_OFF  //Turn off Green LED at end of SMS Sending
 }
 
 //*****************************************************************************
@@ -234,15 +245,16 @@ void GSMprocessMessage(uint8_t msgNum) {
 	char index = 0;
 	uint32_t time = 500000;
 	
-	UARTFlushRx();  //Discard everitying from Rx
+	//UARTFlushRx();  //Discard everitying from Rx
 	UARTFlushTx(true);  //Discard everitying from Tx
 	
 	// Start message retrieval/parsing/error checking (runs simultaneously to
 	// reduce calls to the SIM module).
 	// Request the message and get the lines of the response (includes envelope, nulls, SIM responses)
+	PC_Display_Message("> Processing message :",msgNum," ");
 	UARTprintf("AT+CMGR=%u\r\n",msgNum);
 	if(!first_execution) {
-		SysCtlDelay(Millis2Ticks(1));
+		SysCtlDelay(Millis2Ticks(20));
 		lineCount = GSMgetResponse();
 		// Make sure there's message content, process for envelope and content
 		msgPresent = GSMparseMessage(lineCount);
@@ -253,11 +265,14 @@ void GSMprocessMessage(uint8_t msgNum) {
 			PC_Display_Message("> AT :",0,msgDate);			
 			PC_Display_Message("> ON :",0,msgTime);
 			PC_Display_Message("> TEXT :",0,msgContent);
-			SysCtlDelay(Millis2Ticks(100));		
+			//SysCtlDelay(Millis2Ticks(100));		
+			#endif
+			
+			#if DELETE_ALL_SMS
 			//AleGaa TODO replace with send command
 			UARTprintf("AT+CMGD=1,4\r\n");  //AleGaa maybe \r
 			UARTprintf("AT+CMGDA=\"DEL ALL\"\r\n");
-			SysCtlDelay(Millis2Ticks(100));
+			//SysCtlDelay(Millis2Ticks(100));
 			PC_Display_Message("> Message deleted!!!",0,"");
 			#endif
 		}
@@ -279,20 +294,24 @@ uint8_t GSMgetResponse(void) {
 	char g_cInput[RESONSE_MAX_LENGHT];  // String input to a UART
 
 	while(readResponse&&(readLine<RESONSE_MAX_LINE)) {  //TODO, do not hardcode, use macro
+		PF2_ON
 		// Grab a line
-		if(UARTRxBytesAvail() > 2) UARTgets(g_cInput,sizeof(g_cInput));  //TODO test smaller FIFI levels
-		// Stop after: \n, \r, ESC, LF, CR, 
+		if(UARTRxBytesAvail()){
+			UARTgets(g_cInput,sizeof(g_cInput));  //TODO test smaller FIFO levels
+		} // Stop after: \n, \r, ESC, LF, CR, 
+		
 		#if SHOW_READING_INFO
 		PC_Display_Message(">>> Line nr: ", readLine, g_cInput);
 		#endif
 		strcpy(responseLine[readLine],g_cInput);
-		
+		//AleGaa TODO: Try to inplement int ustrncasecmp(const char *s1,const char *s2, size_t n)) function, page 181 Utils doc
 		// If this line says OK or ERROR we've got the whole message
-		if((strncmp(responseLine[readLine],"OK",2)==0)||
-			 (strncmp(responseLine[readLine],"ERROR",5)==0)){
+		if((strncmp(responseLine[readLine],"OK",2)==0)||  //TODO ustrncasecmp
+			 (strncmp(responseLine[readLine],"ERROR",5)==0)){  //TODO ustrncasecmp
 			readResponse = false;
 		}
 		else readLine++;
+		PF2_OFF
 	}
 	return (readLine+1);
 	#else
@@ -315,7 +334,7 @@ bool GSMparseMessage(uint8_t lineCount) {
 	msgContent = NULL; // Clear out the old message
 	// Parse the new message
 	while (activeLine < lineCount) //lineCount is larger by 1 than responseLine [index]
-	{
+	{ // AleGaa TODO:Try to use ustrstr instead of strstr
 		// CASE FOR ENVELOPE (which will look like:)
 		// +CMGR: "REC READ","+40758438903","","17/04/12,22:53:48+12"
 		if ( strstr(responseLine[activeLine],"+CMGR:") != '\0' )  //if message received
